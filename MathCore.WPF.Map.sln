@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.31515.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathCore.WPF.Map", "MathCore.WPF.Map\MathCore.WPF.Map.csproj", "{5C392176-C601-471D-AA1B-1AFE176B33CA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1E6B16B1-EB30-4C73-B293-5C5D0629876B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathCore.WPF.Map.TestWPF", "Tests\MathCore.WPF.Map.TestWPF\MathCore.WPF.Map.TestWPF.csproj", "{6F7F4F6D-E45F-4CEF-91CB-8A03D5A61F71}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +19,16 @@ Global
 		{5C392176-C601-471D-AA1B-1AFE176B33CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C392176-C601-471D-AA1B-1AFE176B33CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C392176-C601-471D-AA1B-1AFE176B33CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F7F4F6D-E45F-4CEF-91CB-8A03D5A61F71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F7F4F6D-E45F-4CEF-91CB-8A03D5A61F71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F7F4F6D-E45F-4CEF-91CB-8A03D5A61F71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F7F4F6D-E45F-4CEF-91CB-8A03D5A61F71}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6F7F4F6D-E45F-4CEF-91CB-8A03D5A61F71} = {1E6B16B1-EB30-4C73-B293-5C5D0629876B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {01527A84-EB92-4CAA-AE95-3434D13C5238}
