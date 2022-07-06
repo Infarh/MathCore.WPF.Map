@@ -91,7 +91,14 @@ public class MapBase : MapPanel
             typeof(MapBase),
             new FrameworkPropertyMetadata(
                 1d, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-                (o, e) => ((MapBase)o).ZoomLevelPropertyChanged((double)e.NewValue)));
+                (o, e) => ((MapBase)o).ZoomLevelPropertyChanged((double)e.NewValue),
+                (o, e) =>
+                {
+                    if (o is not MapBase map) throw new InvalidOperationException();
+                    if (e is not double v) throw new InvalidOperationException();
+                    return Math.Max(map.MinZoomLevel, Math.Min(map.MaxZoomLevel, v));
+                }),
+            v => v is double and > 0 and < 100);
 
     /// <summary>Уровень приближения карты</summary>
     public double ZoomLevel

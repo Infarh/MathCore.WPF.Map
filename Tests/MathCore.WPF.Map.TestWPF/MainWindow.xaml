@@ -25,7 +25,7 @@
                DoubleLeftMouseCommand="{Binding AddLocationCommand}">
             <m:MapPolyline Stroke="Red" StrokeThickness="1" Fill="Blue" 
                            Location="55.75,37.62" 
-                           Locations="55.75,37.62 55.65505,37.7578"/>
+                           Locations="55.75,37.62 55.63405,37.7868 55.61805,37.5538 55.81805,37.5538"/>
             <m:MapPolyline Stroke="Red" StrokeThickness="3"
                            Location="0,10" 
                            StrokeLineJoin="Round"
