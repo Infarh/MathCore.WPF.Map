@@ -333,10 +333,10 @@ internal ref struct StringBuilderValued
     public StringBuilderValued Append(bool value)
     {
 #if NET5_0_OR_GREATER
-        const int double_chars_buffer_size = 32;
+        const int double_chars_buffer_size = 5;
         Span<char> buffer = stackalloc char[double_chars_buffer_size];
         if(!value.TryFormat(buffer, out var write_chars_count))
-            throw new InvalidOperationException("Не удалось выполнить преобразование вещественного числа в массив символов");
+            throw new InvalidOperationException("Не удалось выполнить преобразование bool-значения в массив символов");
 #else
         var buffer = value.ToString().AsSpan();
         var write_chars_count = buffer.Length;

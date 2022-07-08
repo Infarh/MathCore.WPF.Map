@@ -11,13 +11,34 @@
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Version>0.0.0.0</Version>
+    <PackageReleaseNotes>
+      Старт
+    </PackageReleaseNotes>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>Shmachilin P.A.</Authors>
+    <Description>Библиотека инструментов для работы с картами в WPF</Description>
+    <Copyright>shmachilin@gmail.com</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/infarh/mathcore.wpf.map</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/infarh/mathcore.wpf.map.git</RepositoryUrl>
+    <PackageTags>wpf;toolkit;map</PackageTags>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>MathCoreWPFMapSign.snk</AssemblyOriginatorKeyFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(TargetFramework)' == 'net4.6.1-windows'">
     <Define>NET461</Define>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Primitives" Version="6.0.0" />
-    <PackageReference Include="ParallelExtensionsExtras.NetFxStandard" Version="1.4.0" />
     <PackageReference Include="System.Runtime.Caching" Version="6.0.0" />
   </ItemGroup>
 
