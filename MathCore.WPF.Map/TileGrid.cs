@@ -1,4 +1,6 @@
-﻿namespace MathCore.WPF.Map;
+﻿using MathCore.WPF.Map.Infrastructure;
+
+namespace MathCore.WPF.Map;
 
 public sealed class TileGrid : IEquatable<TileGrid>
 {
@@ -31,5 +33,10 @@ public sealed class TileGrid : IEquatable<TileGrid>
 
     public override bool Equals(object obj) => Equals(obj as TileGrid);
 
-    public override int GetHashCode() => HashCode.Combine(ZoomLevel, XMin, YMin, XMax, YMax);
+    public override int GetHashCode() =>
+#if NET5_0_OR_GREATER
+        HashCode.Combine(ZoomLevel, XMin, YMin, XMax, YMax);
+#else
+        HashBuilder.Create().Append(ZoomLevel).Append(XMin).Append(YMin).Append(YMax);
+#endif
 }

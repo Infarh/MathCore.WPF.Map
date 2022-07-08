@@ -112,19 +112,35 @@ public class BoundingBox : IEquatable<BoundingBox>
 
         if (!token.MoveNext())
             throw new FormatException("BoundingBox: ошибка чтения данных из строки географической области");
+#if NET5_0_OR_GREATER
         var north = double.Parse(token.Current, number_styles, culture);
+#else
+        var north = double.Parse(token.Current.ToString(), number_styles, culture);
+#endif
 
         if (!token.MoveNext())
             throw new FormatException("BoundingBox: ошибка чтения данных из строки географической области");
+#if NET5_0_OR_GREATER
         var east = double.Parse(token.Current, number_styles, culture);
+#else
+        var east = double.Parse(token.Current.ToString(), number_styles, culture);
+#endif
 
         if (!token.MoveNext())
             throw new FormatException("BoundingBox: ошибка чтения данных из строки географической области");
+#if NET5_0_OR_GREATER
         var south = double.Parse(token.Current, number_styles, culture);
+#else
+        var south = double.Parse(token.Current.ToString(), number_styles, culture);
+#endif
 
         if (!token.MoveNext())
             throw new FormatException("BoundingBox: ошибка чтения данных из строки географической области");
+#if NET5_0_OR_GREATER
         var west = double.Parse(token.Current, number_styles, culture);
+#else
+        var west = double.Parse(token.Current.ToString(), number_styles, culture);
+#endif
 
         return new(north, east, south, west);
     }

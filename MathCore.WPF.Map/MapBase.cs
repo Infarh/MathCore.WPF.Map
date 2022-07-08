@@ -1,8 +1,11 @@
-﻿using System.Windows;
+﻿#nullable enable
+using System.Diagnostics.CodeAnalysis;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 
+using MathCore.WPF.Map.Commands;
 using MathCore.WPF.Map.Infrastructure;
 using MathCore.WPF.Map.Primitives;
 using MathCore.WPF.Map.Primitives.Base;
@@ -24,7 +27,7 @@ public class MapBase : MapPanel
     }
 
     /// <summary>Возникает при изменении состояния отображения карты</summary>
-    public event EventHandler<ViewportChangedEventArgs> ViewportChanged;
+    public event EventHandler<ViewportChangedEventArgs>? ViewportChanged;
 
     private const FillBehavior __AnimationFillBehavior = FillBehavior.Stop;
 
@@ -224,9 +227,9 @@ public class MapBase : MapPanel
     /// Опциональный центр азимутальной проекции.
     /// Если <see cref="MapBase.ProjectionCenter"/> <c>is null</c>, то в качестве центра будет использоваться значение свойства <see cref="MapBase.Center"/>.
     /// </summary>
-    public Location ProjectionCenter
+    public Location? ProjectionCenter
     {
-        get => (Location)GetValue(ProjectionCenterProperty);
+        get => (Location?)GetValue(ProjectionCenterProperty);
         set => SetValue(ProjectionCenterProperty, value);
     }
 
@@ -347,6 +350,11 @@ public class MapBase : MapPanel
     /// <summary>Визуальное графическое преобразование поворотом и масштабированием элементов карты относительно центра</summary>
     public TransformGroup ScaleRotateTransform { get; } = new();
 
+
+    private ZoomToBoundsCommand? _ZoomToBoundsCommand;
+
+    public ZoomToBoundsCommand ZoomToBoundsCommand => _ZoomToBoundsCommand ??= new(this);
+
     public MapBase()
     {
         MapProjection = new WebMercatorProjection();
@@ -368,13 +376,13 @@ public class MapBase : MapPanel
         UpdateTransform();
     }
 
-    private PointAnimation _CenterAnimation;
+    private PointAnimation? _CenterAnimation;
 
-    private DoubleAnimation _ZoomLevelAnimation;
+    private DoubleAnimation? _ZoomLevelAnimation;
 
-    private DoubleAnimation _HeadingAnimation;
+    private DoubleAnimation? _HeadingAnimation;
 
-    private Location _TransformCenter;
+    private Location? _TransformCenter;
 
     private Point _ViewportCenter;
 
@@ -506,7 +514,7 @@ public class MapBase : MapPanel
         TargetHeading = 0d;
     }
 
-    private void MapLayerPropertyChanged(UIElement OldLayer, UIElement NewLayer)
+    private void MapLayerPropertyChanged(UIElement? OldLayer, UIElement? NewLayer)
     {
         if (OldLayer is not null)
         {
@@ -541,7 +549,11 @@ public class MapBase : MapPanel
         UpdateTransform();
     }
 
-    private void AdjustCenterProperty(DependencyProperty property, ref Location center)
+    private void AdjustCenterProperty(DependencyProperty property,
+#if NET5_0_OR_GREATER
+        [NotNullWhen(true)]
+#endif 
+        ref Location? center)
     {
         if (center is null)
         {
@@ -561,7 +573,7 @@ public class MapBase : MapPanel
         }
     }
 
-    private void CenterPropertyChanged(Location center)
+    private void CenterPropertyChanged(Location? center)
     {
         if (_InternalPropertyChange) return;
 
@@ -579,16 +591,16 @@ public class MapBase : MapPanel
         if (Width is double.NaN or <= 0) return;
         if (Height is double.NaN or <= 0) return;
 
-        var lu = ViewportPointToLocation(new());
-        var rd = ViewportPointToLocation(new(Width, Height));
+        _ = ViewportPointToLocation(new());
+        _ = ViewportPointToLocation(new(Width, Height));
     }
 
-    private void TargetCenterPropertyChanged(Location TargetCenter)
+    private void TargetCenterPropertyChanged(Location? TargetCenter)
     {
         if (_InternalPropertyChange) return;
         AdjustCenterProperty(TargetCenterProperty, ref TargetCenter);
 
-        if (TargetCenter.Equals(Center)) return;
+        if (TargetCenter!.Equals(Center)) return;
         if (_CenterAnimation is not null) _CenterAnimation.Completed -= CenterAnimationCompleted;
 
         // animate private CenterPoint property by PointAnimation
@@ -608,7 +620,7 @@ public class MapBase : MapPanel
         BeginAnimation(CenterPointProperty, _CenterAnimation);
     }
 
-    private void CenterAnimationCompleted(object sender, object e)
+    private void CenterAnimationCompleted(object? sender, object e)
     {
         if (_CenterAnimation is null) return;
         _CenterAnimation.Completed -= CenterAnimationCompleted;
@@ -690,7 +702,7 @@ public class MapBase : MapPanel
         BeginAnimation(ZoomLevelProperty, _ZoomLevelAnimation);
     }
 
-    private void ZoomLevelAnimationCompleted(object sender, object e)
+    private void ZoomLevelAnimationCompleted(object? sender, object e)
     {
         if (_ZoomLevelAnimation is null) return;
         _ZoomLevelAnimation.Completed -= ZoomLevelAnimationCompleted;
@@ -743,7 +755,7 @@ public class MapBase : MapPanel
         BeginAnimation(HeadingProperty, _HeadingAnimation);
     }
 
-    private void HeadingAnimationCompleted(object sender, object e)
+    private void HeadingAnimationCompleted(object? sender, object e)
     {
         if (_HeadingAnimation is null) return;
         _HeadingAnimation.Completed -= HeadingAnimationCompleted;
@@ -753,7 +765,7 @@ public class MapBase : MapPanel
         UpdateTransform();
     }
 
-    private void InternalSetValue(DependencyProperty property, object value)
+    private void InternalSetValue(DependencyProperty property, object? value)
     {
         _InternalPropertyChange = true;
         SetValue(property, value);

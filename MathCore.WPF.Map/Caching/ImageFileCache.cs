@@ -272,10 +272,17 @@ public class ImageFileCache : ObjectCache
     {
         try
         {
+#if NETCOREAPP3_0_OR_GREATER
             return _Paths.GetOrAdd(
-                            key: Key,
-                   valueFactory: static (key, v) => GetFilePath(key, v),
+                key: Key,
+                valueFactory: static (key, v) => GetFilePath(key, v),
                 factoryArgument: (Root: RootFolder, Searators: __Separators));
+#else
+             return _Paths.GetOrAdd(
+                            key: Key,
+                            valueFactory: key => GetFilePath(key, (Root: RootFolder, Searators: __Separators)));
+#endif
+
         }
         catch (Exception ex)
         {

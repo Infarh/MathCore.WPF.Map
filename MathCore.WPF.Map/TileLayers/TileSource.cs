@@ -60,7 +60,11 @@ public class TileSource
             Debug.WriteLine("TileSource: {0}: {1} {2}", uri, (int)response.StatusCode, response.ReasonPhrase);
         else if (TileAvailable(response.Headers))
         {
+#if NET5_0_OR_GREATER
             await using var stream = new MemoryStream();
+#else
+            using var stream = new MemoryStream();
+#endif
             await response.Content.CopyToAsync(stream);
             stream.Seek(0, SeekOrigin.Begin);
 

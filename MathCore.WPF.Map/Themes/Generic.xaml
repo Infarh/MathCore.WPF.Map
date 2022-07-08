@@ -55,17 +55,22 @@
                             <RowDefinition/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <Rectangle Fill="{TemplateBinding Background}" Stroke="{TemplateBinding Stroke}"/>
+                        <Border Grid.Row="0" 
+                                Background="{TemplateBinding Background}" 
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                CornerRadius="3,3,3,0"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
                         <Path Grid.Row="1" 
-                              Stroke="{TemplateBinding Stroke}"
+                              Stroke="{TemplateBinding BorderBrush}"
+                              StrokeThickness="{Binding BorderThickness.Left, RelativeSource={RelativeSource TemplatedParent}}"
                               Fill="{TemplateBinding Background}" 
-                              Data="M 0,-0.5 L 0,16 16,-0.5"/>
-                        <ContentPresenter Grid.Row="0" 
-                                          Content="{TemplateBinding Content}"
-                                          ContentTemplate="{TemplateBinding ContentTemplate}"
-                                          Margin="{TemplateBinding Padding}"
-                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                              Data="m1,-2 v16 l10,-16" StrokeEndLineCap="Round"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

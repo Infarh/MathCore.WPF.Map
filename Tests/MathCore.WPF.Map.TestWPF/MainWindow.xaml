@@ -35,8 +35,10 @@
             <m:MapItemsControl></m:MapItemsControl>
             <m:MapGraticule Opacity="0.3" Background="Transparent"/>
             <m:MapPath Location="55.65505,37.7578" StrokeThickness="2" Fill="Red" Stroke="Blue"/>
-            <m:Pushpin m:MapPanel.Location="55.75,37.62" Opacity="0.6">
-                <Border BorderBrush="Blue" BorderThickness="2" CornerRadius="3" Padding="4,2">
+            <m:Pushpin m:MapPanel.Location="55.75,37.62" Opacity="0.6" Background="Blue" Foreground="White"
+                       BorderBrush="DarkBlue" BorderThickness="2"
+                       Padding="5">
+                <Border>
                     <TextBlock Text="Москва 55.75,37.62"/>
                 </Border>
             </m:Pushpin>
@@ -74,6 +76,9 @@
                     <Separator/>
                     <MenuItem Header="Удалить" Command="{Binding RemoveLocationCommand}" 
                               CommandParameter="{Binding SelectedLocation}"/>
+                    <Separator/>
+                    <MenuItem Header="Приблизить" Command="{Binding ZoomToBoundsCommand, ElementName=MapControl}"
+                              CommandParameter="{Binding Locations}"/>
                 </ContextMenu>
             </StackPanel.ContextMenu>
             <StackPanel.Style>

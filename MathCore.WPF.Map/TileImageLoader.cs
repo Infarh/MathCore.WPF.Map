@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.Caching;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Windows.Media.Imaging;
 
@@ -136,7 +137,11 @@ public class TileImageLoader : ITileImageLoader
     {
         stream.Seek(0, SeekOrigin.End);
         await stream.WriteAsync(__ExpirationBytes, 0, 8, Cancel).ConfigureAwait(false);
+#if NET5_0_OR_GREATER
         await using var writer = new BinaryWriter(stream, Encoding.ASCII, true);
+#else
+        using var writer = new BinaryWriter(stream, Encoding.ASCII, true);
+#endif
         writer.Write(expiration.Ticks);
     }
 
@@ -190,7 +195,11 @@ public class TileImageLoader : ITileImageLoader
 
         if (TileSourceName == "*") TileSourceName = null;
         int length;
+#if NET5_0_OR_GREATER
         if (TileSourceName?.EndsWith('*') == true)
+#else
+        if (TileSourceName?.EndsWith("*") == true)
+#endif
         {
             TileSourceName = TileSourceName.TrimEnd('*');
             length = TileSourceName.Length;
@@ -203,6 +212,7 @@ public class TileImageLoader : ITileImageLoader
             length = TileSourceName.Length;
         }
 
+#if NET5_0_OR_GREATER
         if (length < 0)
             foreach (var (key, _) in Cache)
                 Cache.Remove(key);
@@ -210,6 +220,15 @@ public class TileImageLoader : ITileImageLoader
             foreach (var (key, _) in Cache)
                 if (key.Length > length && string.Compare(key, 0, TileSourceName, 0, length) == 0)
                     Cache.Remove(key);
+#else
+        if (length < 0)
+            foreach (var v in Cache)
+                Cache.Remove(v.Key);
+        else
+            foreach (var v in Cache)
+                if (v.Key.Length > length && string.Compare(v.Key, 0, TileSourceName, 0, length) == 0)
+                    Cache.Remove(v.Key);
+#endif
 
         Debug.WriteLine("Очистка кеша {0} выполнена", (object)TileSourceName);
     }
@@ -341,7 +360,11 @@ public class TileImageLoader : ITileImageLoader
                         }
 
                         using var stream = new MemoryStream();
-                        await response.Content.CopyToAsync(stream, Cancel);
+#if NET5_0_OR_GREATER
+                            await response.Content.CopyToAsync(stream, Cancel);
+#else
+                        await response.Content.CopyToAsync(stream);
+#endif
                         stream.Seek(0, SeekOrigin.Begin);
 
                         await SetExpirationAsync(stream, Expiration ?? GetExpiration(response), Cancel);
@@ -489,7 +512,11 @@ public class TileImageLoader : ITileImageLoader
                             }
 
                             using var stream = new MemoryStream();
+#if NET5_0_OR_GREATER
                             await response.Content.CopyToAsync(stream, Cancel);
+#else
+                            await response.Content.CopyToAsync(stream);
+#endif
                             stream.Seek(0, SeekOrigin.Begin);
 
                             await SetExpirationAsync(stream, Expiration ?? GetExpiration(response), Cancel);
@@ -533,8 +560,13 @@ public class TileImageLoader : ITileImageLoader
         {
             Data.Seek(0, SeekOrigin.Begin);
             Directory.CreateDirectory(Path.GetDirectoryName(FileName)!);
+#if NET5_0_OR_GREATER
             await using var file = File.Create(FileName);
-            await Data.CopyToAsync(file, Cancel).ConfigureAwait(false);
+            await Data.CopyToAsync(file, Cancel);
+#else
+            using var file = File.Create(FileName);
+            await Data.CopyToAsync(file);
+#endif
         }
         catch (OperationCanceledException)
         {

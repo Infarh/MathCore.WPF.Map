@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 
+using MathCore.WPF.Map.Commands;
 using MathCore.WPF.Map.Primitives.Base;
 
 namespace MathCore.WPF.Map;

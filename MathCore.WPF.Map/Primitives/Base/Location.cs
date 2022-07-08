@@ -71,7 +71,12 @@ public sealed class Location : IEquatable<Location>
 
     public static bool operator !=(Location a, Location b) => !(a == b);
 
-    public override int GetHashCode() => HashCode.Combine(_Latitude, _Longitude);
+    public override int GetHashCode() =>
+#if NET5_0_OR_GREATER
+        HashCode.Combine(_Latitude, _Longitude);
+#else
+        HashBuilder.Create().Append(_Latitude).Append(_Longitude);
+#endif
 
     private static readonly string __NumberFormat = "F5";
     public override string ToString()
@@ -79,8 +84,13 @@ public sealed class Location : IEquatable<Location>
         //return string.Format(CultureInfo.InvariantCulture, "{0:F5},{1:F5}", _Latitude, _Longitude);
         var invariant_culture = CultureInfo.InvariantCulture;
         return new StringBuilderValued(stackalloc char[20])
+#if NET5_0_OR_GREATER
            .Append(_Latitude, __NumberFormat, invariant_culture).Append(',')
            .Append(_Longitude, __NumberFormat, invariant_culture)
+#else
+           .Append(_Latitude, __NumberFormat.AsSpan(), invariant_culture).Append(',')
+           .Append(_Longitude, __NumberFormat.AsSpan(), invariant_culture)
+#endif
            .ToString();
     }
 
@@ -95,11 +105,19 @@ public sealed class Location : IEquatable<Location>
         using var token = tokens.GetEnumerator();
         if (!token.MoveNext())
             throw new FormatException("Location string must be a comma-separated pair of double values");
+#if NET5_0_OR_GREATER
         var latitude = double.Parse(token.Current, number_styles, invariant_culture);
+#else
+        var latitude = double.Parse(token.Current.ToString(), number_styles, invariant_culture);
+#endif
 
         if (!token.MoveNext())
             throw new FormatException("Location string must be a comma-separated pair of double values");
+#if NET5_0_OR_GREATER
         var longitude = double.Parse(token.Current, number_styles, invariant_culture);
+#else
+        var longitude = double.Parse(token.Current.ToString(), number_styles, invariant_culture);
+#endif
 
         return new(latitude, longitude);
     }
@@ -114,11 +132,19 @@ public sealed class Location : IEquatable<Location>
         using var token = tokens.GetEnumerator();
         if (!token.MoveNext())
             throw new FormatException("Location string must be a comma-separated pair of double values");
+#if NET5_0_OR_GREATER
         var latitude = double.Parse(token.Current, number_styles, invariant_culture);
+#else
+        var latitude = double.Parse(token.Current.ToString(), number_styles, invariant_culture);
+#endif
 
         if (!token.MoveNext())
             throw new FormatException("Location string must be a comma-separated pair of double values");
+#if NET5_0_OR_GREATER
         var longitude = double.Parse(token.Current, number_styles, invariant_culture);
+#else
+        var longitude = double.Parse(token.Current.ToString(), number_styles, invariant_culture);
+#endif
 
         return new(latitude, longitude);
     }

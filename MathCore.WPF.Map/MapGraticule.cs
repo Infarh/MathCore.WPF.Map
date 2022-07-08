@@ -45,14 +45,19 @@ public class MapGraticule : MapOverlay
         var foreground = Foreground;
         for (var lat = lat_label_start; lat <= bounds.North; lat += line_distance)
         {
-            lat_labels.Add((lat, new(
-                 textToFormat: GetLabelText(lat, label_format, "NS"),
-                      culture: CultureInfo.InvariantCulture,
-                flowDirection: FlowDirection.LeftToRight,
-                     typeface: typeface,
-                       emSize: font_size,
-                   foreground: foreground, 
-                 pixelsPerDip: 92)));
+            lat_labels.Add(
+                (lat, new(
+                    textToFormat: GetLabelText(lat, label_format, "NS"),
+                    culture: CultureInfo.InvariantCulture,
+                    flowDirection: FlowDirection.LeftToRight,
+                    typeface: typeface,
+                    emSize: font_size,
+                    foreground: foreground
+#if !NET461
+                 ,pixelsPerDip: 92)));
+#else
+                )));
+#endif
 
             DrawingContext.DrawLine(pen,
                 projection.LocationToViewportPoint(new(lat, bounds.West)),
@@ -70,8 +75,12 @@ public class MapGraticule : MapOverlay
                 flowDirection: FlowDirection.LeftToRight,
                      typeface: typeface,
                        emSize: font_size,
-                   foreground: foreground,
-                 pixelsPerDip: 92)));
+                   foreground: foreground
+#if !NET461
+               ,pixelsPerDip: 92)));
+#else
+            )));
+#endif
 
             DrawingContext.DrawLine(pen,
                 projection.LocationToViewportPoint(new(bounds.South, lon)),

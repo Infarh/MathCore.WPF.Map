@@ -1,5 +1,6 @@
 ﻿using System.Buffers;
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 
 namespace MathCore.WPF.Map.Infrastructure;
@@ -26,7 +27,11 @@ internal ref struct StringBuilderValued
         var capacity = str.Length;
         _ArrayToReturnToPool = ArrayPool<char>.Shared.Rent(capacity);
         _Chars = _ArrayToReturnToPool;
+#if NET5_0_OR_GREATER
         str.CopyTo(_Chars);
+#else
+        str.AsSpan().CopyTo(_Chars);
+#endif
         _Pos = capacity;
         ClearOnConsume = false;
     }
@@ -63,7 +68,11 @@ internal ref struct StringBuilderValued
 
     public override string ToString()
     {
+#if NET5_0_OR_GREATER
         var s = new string(_Chars[.._Pos]);
+#else
+        var s = new string(_Chars[.._Pos].ToArray());
+#endif
         if (ClearOnConsume) Clear();
         return s;
     }
@@ -125,10 +134,15 @@ internal ref struct StringBuilderValued
 
     public StringBuilderValued Append(byte value, IFormatProvider FormatProvider = null)
     {
+#if NET5_0_OR_GREATER
         const int double_chars_buffer_size = 3;
         Span<char> buffer = stackalloc char[double_chars_buffer_size];
         if(!value.TryFormat(buffer, out var write_chars_count, provider: FormatProvider))
             throw new InvalidOperationException("Не удалось выполнить преобразование целого числа в массив символов");
+#else
+        var buffer = value.ToString(FormatProvider).AsSpan();
+        var write_chars_count = buffer.Length;
+#endif
 
         var pos = _Pos;
         if (pos > _Chars.Length - write_chars_count)
@@ -142,10 +156,15 @@ internal ref struct StringBuilderValued
 
     public StringBuilderValued Append(sbyte value, IFormatProvider FormatProvider = null)
     {
+#if NET5_0_OR_GREATER
         const int double_chars_buffer_size = 4;
         Span<char> buffer = stackalloc char[double_chars_buffer_size];
         if(!value.TryFormat(buffer, out var write_chars_count, provider: FormatProvider))
             throw new InvalidOperationException("Не удалось выполнить преобразование целого числа в массив символов");
+#else
+        var buffer = value.ToString(FormatProvider).AsSpan();
+        var write_chars_count = buffer.Length;
+#endif
 
         var pos = _Pos;
         if (pos > _Chars.Length - write_chars_count)
@@ -159,10 +178,15 @@ internal ref struct StringBuilderValued
 
     public StringBuilderValued Append(int value, IFormatProvider FormatProvider = null)
     {
+#if NET5_0_OR_GREATER
         const int double_chars_buffer_size = 16;
         Span<char> buffer = stackalloc char[double_chars_buffer_size];
         if(!value.TryFormat(buffer, out var write_chars_count, provider: FormatProvider))
             throw new InvalidOperationException("Не удалось выполнить преобразование целого числа в массив символов");
+#else
+        var buffer = value.ToString(FormatProvider).AsSpan();
+        var write_chars_count = buffer.Length;
+#endif
 
         var pos = _Pos;
         if (pos > _Chars.Length - write_chars_count)
@@ -176,10 +200,15 @@ internal ref struct StringBuilderValued
 
     public StringBuilderValued Append(long value, IFormatProvider FormatProvider = null)
     {
+#if NET5_0_OR_GREATER
         const int double_chars_buffer_size = 27;
         Span<char> buffer = stackalloc char[double_chars_buffer_size];
         if(!value.TryFormat(buffer, out var write_chars_count, provider: FormatProvider))
             throw new InvalidOperationException("Не удалось выполнить преобразование целого числа в массив символов");
+#else
+        var buffer = value.ToString(FormatProvider).AsSpan();
+        var write_chars_count = buffer.Length;
+#endif
 
         var pos = _Pos;
         if (pos > _Chars.Length - write_chars_count)
@@ -193,10 +222,15 @@ internal ref struct StringBuilderValued
 
     public StringBuilderValued Append(uint value, IFormatProvider FormatProvider = null)
     {
+#if NET5_0_OR_GREATER
         const int double_chars_buffer_size = 16;
         Span<char> buffer = stackalloc char[double_chars_buffer_size];
         if(!value.TryFormat(buffer, out var write_chars_count, provider: FormatProvider))
             throw new InvalidOperationException("Не удалось выполнить преобразование целого числа в массив символов");
+#else
+        var buffer = value.ToString(FormatProvider).AsSpan();
+        var write_chars_count = buffer.Length;
+#endif
 
         var pos = _Pos;
         if (pos > _Chars.Length - write_chars_count)
@@ -210,10 +244,15 @@ internal ref struct StringBuilderValued
 
     public StringBuilderValued Append(ulong value, IFormatProvider FormatProvider = null)
     {
+#if NET5_0_OR_GREATER
         const int double_chars_buffer_size = 27;
         Span<char> buffer = stackalloc char[double_chars_buffer_size];
         if(!value.TryFormat(buffer, out var write_chars_count, provider: FormatProvider))
             throw new InvalidOperationException("Не удалось выполнить преобразование целого числа в массив символов");
+#else
+        var buffer = value.ToString(FormatProvider).AsSpan();
+        var write_chars_count = buffer.Length;
+#endif
 
         var pos = _Pos;
         if (pos > _Chars.Length - write_chars_count)
@@ -227,10 +266,15 @@ internal ref struct StringBuilderValued
 
     public StringBuilderValued Append(double value, IFormatProvider FormatProvider = null)
     {
+#if NET5_0_OR_GREATER
         const int double_chars_buffer_size = 32;
         Span<char> buffer = stackalloc char[double_chars_buffer_size];
         if(!value.TryFormat(buffer, out var write_chars_count, provider: FormatProvider))
             throw new InvalidOperationException("Не удалось выполнить преобразование вещественного числа в массив символов");
+#else
+        var buffer = value.ToString(FormatProvider).AsSpan();
+        var write_chars_count = buffer.Length;
+#endif
 
         var pos = _Pos;
         if (pos > _Chars.Length - write_chars_count)
@@ -244,10 +288,15 @@ internal ref struct StringBuilderValued
 
     public StringBuilderValued Append(double value, ReadOnlySpan<char> format, IFormatProvider FormatProvider = null)
     {
+#if NET5_0_OR_GREATER
         const int double_chars_buffer_size = 32;
         Span<char> buffer = stackalloc char[double_chars_buffer_size];
-        if(!value.TryFormat(buffer, out var write_chars_count, format, FormatProvider))
+        if(!value.TryFormat(buffer, out var write_chars_count, provider: FormatProvider))
             throw new InvalidOperationException("Не удалось выполнить преобразование вещественного числа в массив символов");
+#else
+        var buffer = value.ToString(FormatProvider).AsSpan();
+        var write_chars_count = buffer.Length;
+#endif
 
         var pos = _Pos;
         if (pos > _Chars.Length - write_chars_count)
@@ -261,10 +310,15 @@ internal ref struct StringBuilderValued
 
     public StringBuilderValued Append(float value, IFormatProvider FormatProvider = null)
     {
+#if NET5_0_OR_GREATER
         const int double_chars_buffer_size = 32;
         Span<char> buffer = stackalloc char[double_chars_buffer_size];
         if(!value.TryFormat(buffer, out var write_chars_count, provider: FormatProvider))
             throw new InvalidOperationException("Не удалось выполнить преобразование вещественного числа в массив символов");
+#else
+        var buffer = value.ToString(FormatProvider).AsSpan();
+        var write_chars_count = buffer.Length;
+#endif
 
         var pos = _Pos;
         if (pos > _Chars.Length - write_chars_count)
@@ -278,10 +332,15 @@ internal ref struct StringBuilderValued
 
     public StringBuilderValued Append(bool value)
     {
+#if NET5_0_OR_GREATER
         const int double_chars_buffer_size = 32;
         Span<char> buffer = stackalloc char[double_chars_buffer_size];
         if(!value.TryFormat(buffer, out var write_chars_count))
             throw new InvalidOperationException("Не удалось выполнить преобразование вещественного числа в массив символов");
+#else
+        var buffer = value.ToString().AsSpan();
+        var write_chars_count = buffer.Length;
+#endif
 
         var pos = _Pos;
         if (pos > _Chars.Length - write_chars_count)
@@ -338,7 +397,11 @@ internal ref struct StringBuilderValued
         if (pos > _Chars.Length - s.Length)
             Grow(s.Length);
 
+#if NET5_0_OR_GREATER
         s.CopyTo(_Chars[pos..]);
+#else
+        s.AsSpan().CopyTo(_Chars[pos..]);
+#endif
         _Pos += s.Length;
     }
 

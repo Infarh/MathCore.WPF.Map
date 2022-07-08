@@ -83,7 +83,7 @@ public class WorldMercatorProjection : MapProjection
         return lat * Consts.ToDeg;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static double ConformalFactor(double lat)
     {
         var sin_lat = Eccentricity * Math.Sin(lat);
