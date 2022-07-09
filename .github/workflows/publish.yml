@@ -34,7 +34,7 @@ jobs:
      
     - name: Build release
       id: build_step
-      run: dotnet build $env:Project_Path --no-restore -c Release
+      run: dotnet build $env:Project_Path -c Release
       
     - name: Packing
       id: pack_step
