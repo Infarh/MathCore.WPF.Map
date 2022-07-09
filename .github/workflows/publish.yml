@@ -1,9 +1,6 @@
 name: Build tag
 
-on:
-  push:
-    tags: 
-      - v0.**
+on: release
 
 jobs:
   build:
