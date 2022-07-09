@@ -11,7 +11,7 @@ namespace MathCore.WPF.Map.Primitives;
 /// <summary>Географическая прямоугольная область</summary>
 [Serializable]
 [TypeConverter(typeof(BoundingBoxConverter))]
-public class BoundingBox : IEquatable<BoundingBox>
+public class BoundingBox : IEquatable<BoundingBox?>
 {
     /// <summary>Северная граница</summary>
     private double _North;
@@ -185,7 +185,7 @@ public class BoundingBox : IEquatable<BoundingBox>
 
     public override int GetHashCode() => HashBuilder.Create().Append(_South).Append(_West).Append(_North).Append(_East);
 
-    public bool Equals(BoundingBox other)
+    public bool Equals(BoundingBox? other)
     {
         if (other is null) return false;
         if (ReferenceEquals(this, other)) return true;
@@ -195,7 +195,7 @@ public class BoundingBox : IEquatable<BoundingBox>
             && _East.Equals(other._East);
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (obj is null) return false;
         if (ReferenceEquals(this, obj)) return true;

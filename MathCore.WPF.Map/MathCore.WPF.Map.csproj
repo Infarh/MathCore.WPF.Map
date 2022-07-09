@@ -12,9 +12,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>0.0.0.0-alpha</Version>
+    <Version>0.0.1</Version>
     <PackageReleaseNotes>
-      Старт
+      Рефакторинг
     </PackageReleaseNotes>
   </PropertyGroup>
 
@@ -31,6 +31,17 @@
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <DocumentationFile>$(MSBuildProjectName).xml</DocumentationFile>
+    <NoWarn>
+      1701;1702;
+      1591;
+      8600;8602;8603;8604;8618;8625
+    </NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net4.6.1-windows'">

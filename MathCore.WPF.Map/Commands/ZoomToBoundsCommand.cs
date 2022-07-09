@@ -9,7 +9,7 @@ public class ZoomToBoundsCommand : Command
 
     public ZoomToBoundsCommand(MapBase Map) => _Map = Map;
 
-    protected override bool CanExecute(object p)
+    protected override bool CanExecute(object? p)
     {
         switch (p)
         {
@@ -72,7 +72,7 @@ public class ZoomToBoundsCommand : Command
         }
     }
 
-    protected override void Execute(object p)
+    protected override void Execute(object? p)
     {
         if(p is not IEnumerable<Location> locations) return;
 

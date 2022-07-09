@@ -4,7 +4,6 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.Caching;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Windows.Media.Imaging;
 
@@ -24,7 +23,7 @@ public class TileImageLoader : ITileImageLoader
 
     /// <summary>Кеш <see cref="ObjectCache"/> тайлов</summary>
     /// <remarks>По умолчанию <see cref="MemoryCache"/>.<see cref="MemoryCache.Default"/></remarks>
-    public static ObjectCache Cache { get; set; } = MemoryCache.Default;
+    public static ObjectCache? Cache { get; set; } = MemoryCache.Default;
 
     /// <summary>Количество соединений по умолчанию</summary>
     private static int DefaultConnectionLimit => ServicePointManager.DefaultConnectionLimit;
@@ -59,6 +58,7 @@ public class TileImageLoader : ITileImageLoader
             var timer = Stopwatch.StartNew();
             loaded = await DownloadTileImageAsync(tile, uri, CacheKey).ConfigureAwait(true);
             timer.Stop();
+#if DEBUG
             if (loaded)
                 Debug.WriteLine("Загрузка тайла[x:{0},y:{1},z:{2}] из {3} выполнена успешно за {4}мс",
                     tile.X, tile.Y, tile.ZoomLevel,
@@ -67,6 +67,7 @@ public class TileImageLoader : ITileImageLoader
                 Debug.WriteLine("Загрузка тайла[x:{0},y:{1},z:{2}] из {3} не выполнена",
                     tile.X, tile.Y, tile.ZoomLevel,
                     uri.Host);
+#endif
         }
 
         if (!loaded && buffer is not null) // оставляем кешированное изображение если загрузка не удалась
@@ -119,9 +120,9 @@ public class TileImageLoader : ITileImageLoader
 
     private const string __ExpiresStr = "EXPIRES:";
 
-    private static byte[] GetCachedImage(string CacheKey, out DateTime expiration)
+    private static byte[]? GetCachedImage(string CacheKey, out DateTime expiration)
     {
-        var buffer = Cache.Get(CacheKey) as byte[];
+        var buffer = Cache?.Get(CacheKey) as byte[];
 
         if (buffer is { Length: >= 16 } && Encoding.ASCII.GetString(buffer, buffer.Length - 16, 8) == __ExpiresStr)
             expiration = new DateTime(BitConverter.ToInt64(buffer, buffer.Length - 8), DateTimeKind.Utc);
@@ -151,7 +152,7 @@ public class TileImageLoader : ITileImageLoader
         stream.Write(__ExpirationBytes, 0, 8);
         stream.Write(BitConverter.GetBytes(expiration.Ticks), 0, 8);
 
-        Cache.Set(CacheKey, stream.ToArray(), new CacheItemPolicy { AbsoluteExpiration = expiration });
+        Cache?.Set(CacheKey, stream.ToArray(), new CacheItemPolicy { AbsoluteExpiration = expiration });
     }
 
     public async Task LoadTilesAsync(MapTileLayer TileLayer)
@@ -191,6 +192,8 @@ public class TileImageLoader : ITileImageLoader
 
     public static void ClearCache(string TileSourceName = null, CancellationToken Cancel = default)
     {
+        if (Cache is not { } cache) return;
+
         Debug.WriteLine("Очистка кеша {0}", (object)TileSourceName);
 
         if (TileSourceName == "*") TileSourceName = null;
@@ -214,18 +217,18 @@ public class TileImageLoader : ITileImageLoader
 
 #if NET5_0_OR_GREATER
         if (length < 0)
-            foreach (var (key, _) in Cache)
+            foreach (var (key, _) in cache)
                 Cache.Remove(key);
         else
-            foreach (var (key, _) in Cache)
+            foreach (var (key, _) in cache)
                 if (key.Length > length && string.Compare(key, 0, TileSourceName, 0, length) == 0)
                     Cache.Remove(key);
 #else
         if (length < 0)
-            foreach (var v in Cache)
+            foreach (var v in cache)
                 Cache.Remove(v.Key);
         else
-            foreach (var v in Cache)
+            foreach (var v in cache)
                 if (v.Key.Length > length && string.Compare(v.Key, 0, TileSourceName, 0, length) == 0)
                     Cache.Remove(v.Key);
 #endif
@@ -325,7 +328,7 @@ public class TileImageLoader : ITileImageLoader
                 for (var y = 0; y < line_count; y++)
                 {
                     Cancel.ThrowIfCancellationRequested();
-                    if (tile_source.GetUri(x, y, Level) is not { LocalPath: var path } uri)
+                    if (tile_source?.GetUri(x, y, Level) is not { LocalPath: var path } uri)
                         continue;
 
                     if (Path.GetExtension(path) is not { Length: > 0 } extension || extension.Equals(".jpeg", StringComparison.OrdinalIgnoreCase))
@@ -468,7 +471,7 @@ public class TileImageLoader : ITileImageLoader
                     {
                         count++;
                         Cancel.ThrowIfCancellationRequested();
-                        if (tile_source.GetUri(x, y, z) is not { LocalPath: var path } uri)
+                        if (tile_source?.GetUri(x, y, z) is not { LocalPath: var path } uri)
                             continue;
 
                         if (Path.GetExtension(path) is not { Length: > 0 } extension || extension.Equals(".jpeg", StringComparison.OrdinalIgnoreCase))

@@ -204,7 +204,7 @@ public class MapBase : MapPanel
     /// Если объект слоя карты реализует интерфейс <see cref="IMapLayer"/> (на пример <see cref="MapTileLayer"/>
     /// или <see cref="MapImageLayer"/>), обладающие значением <see cref="IMapLayer.MapBackground"/>
     /// и <see cref="IMapLayer.MapForeground"/>, то эти свойства используются в качестве
-    /// <see cref="MapBase.Background"/> and <see cref="MapBase.Foreground"/> значений свойств карты.
+    /// <see cref="Panel.Background"/> and <see cref="MapBase.Foreground"/> значений свойств карты.
     /// </summary>
     public UIElement MapLayer
     {

@@ -28,7 +28,7 @@ public sealed class Tile
         Image.Source = ImageSource;
     }
 
-    private void BitmapDownloadCompleted(object sender, EventArgs e)
+    private void BitmapDownloadCompleted(object? sender, EventArgs e)
     {
         var bitmap_source = (BitmapSource)sender;
 
@@ -38,7 +38,7 @@ public sealed class Tile
         Image.BeginAnimation(UIElement.OpacityProperty, __FadeAnimation);
     }
 
-    private void BitmapDownloadFailed(object sender, ExceptionEventArgs e)
+    private void BitmapDownloadFailed(object? sender, ExceptionEventArgs e)
     {
         var bitmap_source = (BitmapSource)sender;
 

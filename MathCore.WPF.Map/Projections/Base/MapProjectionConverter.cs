@@ -5,9 +5,9 @@ namespace MathCore.WPF.Map.Projections.Base;
 
 public class MapProjectionConverter : TypeConverter
 {
-    public override bool CanConvertFrom(ITypeDescriptorContext context, Type SourceType) => SourceType == typeof(string);
+    public override bool CanConvertFrom(ITypeDescriptorContext? context, Type SourceType) => SourceType == typeof(string);
 
-    public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+    public override object ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
     {
         if (value is not string str)
             throw new ArgumentException("Значение должно быть строкой", nameof(value));

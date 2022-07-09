@@ -51,7 +51,7 @@ public class TileSource
 
         using var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
         return (ImageSource)BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-    }, Uri);
+    }, Uri)!;
 
     protected static async Task<ImageSource> LoadHttpImageAsync(Uri uri)
     {
@@ -82,12 +82,12 @@ public class TileSource
 
     private int _SubdomainIndex = -1;
 
-    public SubdomainsCollection Subdomains { get; set; }
+    public SubdomainsCollection? Subdomains { get; set; }
 
-    private string _URIFormat;
+    private string? _URIFormat;
 
     /// <summary>Формат адреса данных тайлового сервера</summary>
-    public string UriFormat
+    public string? UriFormat
     {
         get => _URIFormat;
         set
@@ -97,23 +97,25 @@ public class TileSource
 
             _URIFormat = value;
 
-            if (_URIFormat.Contains("{x}") && _URIFormat.Contains("{z}"))
-                if (_URIFormat.Contains("yandex"))
+            if (value is null) return;
+
+            if (value.Contains("{x}") && value.Contains("{z}"))
+                if (value.Contains("yandex"))
                     _GetUri = GetYandexUri;
-                else if (_URIFormat.Contains("{i}"))
+                else if (value.Contains("{i}"))
                     _GetUri = GetIndexedUri;
-                else if (_URIFormat.Contains("{y}"))
+                else if (value.Contains("{y}"))
                     _GetUri = GetDefaultUri;
-                else if (_URIFormat.Contains("{v}"))
+                else if (value.Contains("{v}"))
                     _GetUri = GetTmsUri;
-                else if (_URIFormat.Contains("{q}")) // {i} is optional
+                else if (value.Contains("{q}")) // {i} is optional
                     _GetUri = GetQuadKeyUri;
-                else if (_URIFormat.Contains("{W}") && _URIFormat.Contains("{S}") && _URIFormat.Contains("{E}") && _URIFormat.Contains("{N}"))
+                else if (value.Contains("{W}") && value.Contains("{S}") && value.Contains("{E}") && value.Contains("{N}"))
                     _GetUri = GetBoundingBoxUri;
-                else if (_URIFormat.Contains("{w}") && _URIFormat.Contains("{s}") && _URIFormat.Contains("{e}") && _URIFormat.Contains("{n}"))
+                else if (value.Contains("{w}") && value.Contains("{s}") && value.Contains("{e}") && value.Contains("{n}"))
                     _GetUri = GetLatLonBoundingBoxUri;
 
-            if (Subdomains is null && _URIFormat.Contains("{c}"))
+            if (Subdomains is null && value.Contains("{c}"))
                 Subdomains = new[] { "a", "b", "c" };
         }
     }
@@ -157,23 +159,23 @@ public class TileSource
         }
     }
 
-    private string GetYandexUri(int x, int y, int ZoomLevel) => _URIFormat
+    private string GetYandexUri(int x, int y, int ZoomLevel) => _URIFormat!
        .Replace("{x}", x.ToString())
        .Replace("{y}", y.ToString())
        .Replace("{z}", ZoomLevel.ToString());
 
-    private string GetDefaultUri(int x, int y, int ZoomLevel) => _URIFormat
+    private string GetDefaultUri(int x, int y, int ZoomLevel) => _URIFormat!
        .Replace("{x}", x.ToString())
        .Replace("{y}", y.ToString())
        .Replace("{z}", ZoomLevel.ToString());
 
-    private string GetIndexedUri(int x, int y, int ZoomLevel) => _URIFormat
+    private string GetIndexedUri(int x, int y, int ZoomLevel) => _URIFormat!
        .Replace("{i}", "1")
        .Replace("{x}", x.ToString())
        .Replace("{y}", y.ToString())
        .Replace("{z}", ZoomLevel.ToString());
 
-    private string GetTmsUri(int x, int y, int ZoomLevel) => _URIFormat
+    private string GetTmsUri(int x, int y, int ZoomLevel) => _URIFormat!
        .Replace("{x}", x.ToString())
        .Replace("{v}", ((1 << ZoomLevel) - 1 - y).ToString())
        .Replace("{z}", ZoomLevel.ToString());
@@ -188,7 +190,7 @@ public class TileSource
         for (var z = ZoomLevel - 1; z >= 0; z--, x >>= 1, y >>= 1)
             quad_key[z] = (char)('0' + 2 * (y % 2) + x % 2);
 
-        return _URIFormat
+        return _URIFormat!
            .Replace("{i}", new(quad_key, ZoomLevel - 1, 1))
            .Replace("{q}", new(quad_key));
     }
@@ -201,7 +203,7 @@ public class TileSource
         var south = MapProjection.MetersPerDegree * (180d - (y + 1) * tile_size);
         var north = MapProjection.MetersPerDegree * (180d - y * tile_size);
 
-        return _URIFormat
+        return _URIFormat!
            .Replace("{W}", west.ToString(CultureInfo.InvariantCulture))
            .Replace("{S}", south.ToString(CultureInfo.InvariantCulture))
            .Replace("{E}", east.ToString(CultureInfo.InvariantCulture))
@@ -218,7 +220,7 @@ public class TileSource
         var south = WebMercatorProjection.YToLatitude(180d - (y + 1) * tile_size);
         var north = WebMercatorProjection.YToLatitude(180d - y * tile_size);
 
-        return _URIFormat
+        return _URIFormat!
            .Replace("{w}", west.ToString(CultureInfo.InvariantCulture))
            .Replace("{s}", south.ToString(CultureInfo.InvariantCulture))
            .Replace("{e}", east.ToString(CultureInfo.InvariantCulture))

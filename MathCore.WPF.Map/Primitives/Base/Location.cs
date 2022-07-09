@@ -13,7 +13,7 @@ namespace MathCore.WPF.Map.Primitives.Base;
 [Serializable]
 [TypeConverter(typeof(LocationConverter))]
 [DebuggerDisplay("lat:{_Latitude}, lon:{_Longitude}")]
-public sealed class Location : IEquatable<Location>
+public sealed class Location : IEquatable<Location?>
 {
     /// <summary>Широта</summary>
     private double _Latitude;
@@ -59,13 +59,13 @@ public sealed class Location : IEquatable<Location>
         return lat_delta < 2e-9 && lon_delta < 2e-9;
     }
 #else
-    public bool Equals(Location location) =>
+    public bool Equals(Location? location) =>
         location is { _Latitude: var latitude, _Longitude: var longitude }
         && Math.Abs(latitude - _Latitude) < 1e-9
         && Math.Abs(longitude - _Longitude) < 1e-9;
 #endif
 
-    public override bool Equals(object obj) => Equals(obj as Location);
+    public override bool Equals(object? obj) => Equals(obj as Location);
 
     public static bool operator ==(Location a, Location b) => Equals(a, b);
 

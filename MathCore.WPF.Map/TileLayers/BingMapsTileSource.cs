@@ -17,7 +17,7 @@ public class BingMapsTileSource : TileSource
         for (var z = ZoomLevel - 1; z >= 0; z--, x /= 2, y /= 2)
             quad_key[z] = (char)('0' + 2 * (y % 2) + x % 2);
 
-        return new Uri(UriFormat
+        return new Uri(UriFormat!
            .Replace("{subdomain}", subdomain)
            .Replace("{quadkey}", new string(quad_key)));
     }

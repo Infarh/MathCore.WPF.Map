@@ -52,9 +52,9 @@ public class MapTileLayer : Panel, IMapLayer
     #region TileSource : TileSource - Источник данных слоя
 
     /// <summary>Источник данных слоя</summary>
-    public TileSource TileSource
+    public TileSource? TileSource
     {
-        get => (TileSource)GetValue(TileSourceProperty);
+        get => (TileSource?)GetValue(TileSourceProperty);
         set => SetValue(TileSourceProperty, value);
     }
 
@@ -251,7 +251,7 @@ public class MapTileLayer : Panel, IMapLayer
     private readonly DispatcherTimer _UpdateTimer;
 
     /// <summary>Карта, которой принадлежит слой</summary>
-    private MapBase _ParentMap;
+    private MapBase? _ParentMap;
 
     /// <summary>Объект, выполняющий загрузку изображений слоя</summary>
     public ITileImageLoader TileImageLoader { get; }
@@ -260,10 +260,10 @@ public class MapTileLayer : Panel, IMapLayer
     public TilesCollection Tiles { get; private set; } = new();
 
     /// <summary>Сетка размещения тайлов слоя</summary>
-    public TileGrid TileGrid { get; private set; }
+    public TileGrid? TileGrid { get; private set; }
 
     /// <summary>Карта, которой принадлежит слой</summary>
-    public MapBase ParentMap
+    public MapBase? ParentMap
     {
         get => _ParentMap;
         set
@@ -353,7 +353,7 @@ public class MapTileLayer : Panel, IMapLayer
         UpdateTiles();
     }
 
-    private void OnViewportChanged(object sender, ViewportChangedEventArgs e)
+    private void OnViewportChanged(object? sender, ViewportChangedEventArgs e)
     {
         if (TileGrid is null || e.ProjectionChanged || Math.Abs(e.LongitudeOffset) > 180d)
             UpdateTileGrid();

@@ -65,13 +65,13 @@ public class MapPath : Shape, IMapElement
 
     #endregion
 
-    private MapBase _ParentMap;
+    private MapBase? _ParentMap;
 
     private readonly TransformGroup _ViewportTransform = new();
 
     protected override Geometry DefiningGeometry => Data;
 
-    public MapBase ParentMap
+    public MapBase? ParentMap
     {
         get => _ParentMap;
         set
@@ -141,7 +141,7 @@ public class MapPath : Shape, IMapElement
         ((TranslateTransform)_ViewportTransform.Children[0]).X = longitude_offset;
     }
 
-    private void OnViewportChanged(object sender, ViewportChangedEventArgs e) => OnViewportChanged(e);
+    private void OnViewportChanged(object? sender, ViewportChangedEventArgs e) => OnViewportChanged(e);
 
     private void LocationPropertyChanged()
     {

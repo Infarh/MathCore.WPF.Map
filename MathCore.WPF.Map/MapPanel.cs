@@ -49,7 +49,7 @@ public class MapPanel : Panel, IMapElement
 
     #endregion
 
-    private MapBase _ParentMap;
+    private MapBase? _ParentMap;
 
     public MapPanel() => InitMapElement(this);
 
@@ -61,7 +61,7 @@ public class MapPanel : Panel, IMapElement
 
     public static void SetBoundingBox(UIElement element, BoundingBox value) => element.SetValue(BoundingBoxProperty, value);
 
-    public MapBase ParentMap
+    public MapBase? ParentMap
     {
         get => _ParentMap;
         set => SetParentMap(value);
@@ -74,7 +74,7 @@ public class MapPanel : Panel, IMapElement
         foreach (UIElement element in Children) 
             element.Measure(AvailableSize);
 
-        return new Size();
+        return new();
     }
 
     protected override Size ArrangeOverride(Size FinalSize)
@@ -96,7 +96,7 @@ public class MapPanel : Panel, IMapElement
         return FinalSize;
     }
 
-    protected virtual void SetParentMap(MapBase ParentMap)
+    protected virtual void SetParentMap(MapBase? ParentMap)
     {
         if (_ParentMap is not null && _ParentMap != this) 
             _ParentMap.ViewportChanged -= OnViewportChanged;
@@ -123,7 +123,7 @@ public class MapPanel : Panel, IMapElement
         }
     }
 
-    private void OnViewportChanged(object sender, ViewportChangedEventArgs e) => OnViewportChanged(e);
+    private void OnViewportChanged(object? sender, ViewportChangedEventArgs e) => OnViewportChanged(e);
 
     private static void ParentMapPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
     {

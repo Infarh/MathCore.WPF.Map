@@ -121,7 +121,7 @@ public abstract class MapProjection
             Translation2Y: ViewportCenter.Y);
     }
 
-    /// <summary>Формирование параметров запроса WMS 1.3.0 таких как "CRS=...&BBOX=...&WIDTH=...&HEIGHT=..."</summary>
+    /// <summary>Формирование параметров запроса WMS 1.3.0 таких как "CRS=...&amp;BBOX=...&amp;WIDTH=...&amp;HEIGHT=..."</summary>
     public virtual string WmsQueryParameters(BoundingBox BoundingBox, string Version = "1.3.0")
     {
         if (CrsId is not { Length: > 0 } crs_id)

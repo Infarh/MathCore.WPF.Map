@@ -2,7 +2,7 @@
 
 namespace MathCore.WPF.Map;
 
-public sealed class TileGrid : IEquatable<TileGrid>
+public sealed class TileGrid : IEquatable<TileGrid?>
 {
     public int ZoomLevel { get; }
 
@@ -23,7 +23,7 @@ public sealed class TileGrid : IEquatable<TileGrid>
         this.YMax = YMax;
     }
 
-    public bool Equals(TileGrid TileGrid) =>
+    public bool Equals(TileGrid? TileGrid) =>
         TileGrid is not null && 
         TileGrid.ZoomLevel == ZoomLevel &&
         TileGrid.XMin == XMin && 
@@ -31,7 +31,7 @@ public sealed class TileGrid : IEquatable<TileGrid>
         TileGrid.XMax == XMax && 
         TileGrid.YMax == YMax;
 
-    public override bool Equals(object obj) => Equals(obj as TileGrid);
+    public override bool Equals(object? obj) => Equals(obj as TileGrid);
 
     public override int GetHashCode() =>
 #if NET5_0_OR_GREATER

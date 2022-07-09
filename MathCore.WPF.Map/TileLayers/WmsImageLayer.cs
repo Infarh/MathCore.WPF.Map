@@ -23,9 +23,9 @@ public class WmsImageLayer : MapImageLayer
             typeof(WmsImageLayer),
             new PropertyMetadata(null, (o, _) => ((WmsImageLayer)o).UpdateImage()));
 
-    public Uri ServerUri
+    public Uri? ServerUri
     {
-        get => (Uri)GetValue(ServerUriProperty);
+        get => (Uri?)GetValue(ServerUriProperty);
         set => SetValue(ServerUriProperty, value);
     }
 
@@ -123,7 +123,7 @@ public class WmsImageLayer : MapImageLayer
         if (ServerUri is null)
             return null;
 
-        var projection_parameters = ParentMap.LayerMapProjection.WmsQueryParameters(BoundingBox, Version);
+        var projection_parameters = ParentMap?.LayerMapProjection.WmsQueryParameters(BoundingBox, Version);
 
         if (string.IsNullOrEmpty(projection_parameters))
             return null;

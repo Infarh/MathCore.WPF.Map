@@ -99,5 +99,5 @@ public class MapPolyline : MapPath
         UpdateData();
     }
 
-    private void LocationCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => UpdateData();
+    private void LocationCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) => UpdateData();
 }

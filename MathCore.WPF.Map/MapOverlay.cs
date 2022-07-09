@@ -86,9 +86,9 @@ public class MapOverlay : MapPanel
         typeof(MapOverlay), 
         new FrameworkPropertyMetadata { AffectsRender = true });
 
-    public Brush Stroke
+    public Brush? Stroke
     {
-        get => (Brush)GetValue(StrokeProperty);
+        get => (Brush?)GetValue(StrokeProperty);
         set => SetValue(StrokeProperty, value);
     }
     #endregion
@@ -205,7 +205,7 @@ public class MapOverlay : MapPanel
 
     #endregion
 
-    protected override void SetParentMap(MapBase ParentMap)
+    protected override void SetParentMap(MapBase? ParentMap)
     {
         if (GetBindingExpression(StrokeProperty) is not null) 
             ClearValue(StrokeProperty);

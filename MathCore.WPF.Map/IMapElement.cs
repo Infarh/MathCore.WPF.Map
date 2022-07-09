@@ -4,5 +4,5 @@
 public interface IMapElement
 {
     /// <summary>Карта, которой принадлежит элемент</summary>
-    MapBase ParentMap { get; set; }
+    MapBase? ParentMap { get; set; }
 }
