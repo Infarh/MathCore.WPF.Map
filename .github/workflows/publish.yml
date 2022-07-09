@@ -1,0 +1,52 @@
+name: Build release
+
+on: 
+  push:
+    tags: 
+      - v0.**
+
+jobs:
+  build:
+    name: Building sources
+
+    runs-on: windows-latest
+    env:
+      Solution_Name: MathCore.WPF.Map.sln
+      Project_Path: MathCore.WPF.Map
+      
+#    outputs: 
+#      build_id: ${{ steps.build_step.outputs.build_id }}      
+#      pack_id: ${{ steps.pack_step.outputs.pack_step }}
+      
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+#      with:
+#        fetch-depth: 0
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+        
+#    - name: Test debug
+#      run: dotnet test
+     
+    - name: Build release
+      id: build_step
+      run: dotnet build $env:Project_Path -c Release
+      
+    - name: Packing
+      id: pack_step
+      run: dotnet pack $env:Project_Path --no-build -c Release -v q
+     
+    - name: Publishing
+      id: publish_step
+      run: dotnet nuget push "**/*.nupkg" -k ${{ secrets.NuGetApiKey }} --skip-duplicate -s https://api.nuget.org/v3/index.json
+      
+    - name: Upload logs on fail
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: Build failure logs
+        path: ${{ runner.temp }}/build_logs

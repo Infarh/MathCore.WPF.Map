@@ -1,0 +1,59 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:m="http://mathcore.com/wpf/map"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <CompositeCollection x:Key="MapSources">
+
+        <m:MapTileLayer SourceName="Google" MaxParallelDownloads="10"
+                        TileSource="http://mt1.google.com/maps/vt/lyrs=m@333000000&amp;hl=ru&amp;x={x}&amp;y={y}&amp;z={z}"
+                        Description="Google Maps © [Google](http://www.google.com/), Data © [GoogleMaps Contributors](https://www.google.com/intl/ru_ru/help/terms_maps.html)"/>
+        <m:MapTileLayer SourceName="Google гибрид" 
+                        MaxParallelDownloads="10"
+                        TileSource="http://mt{i}.google.com/maps/vt/lyrs=s,h@333000000&amp;hl=ru&amp;x={x}&amp;y={y}&amp;z={z}"
+                        Description="Google Maps © [Google](http://www.google.com/), Data © [GoogleMaps Contributors](https://www.google.com/intl/ru_ru/help/terms_maps.html)"/>
+        <m:MapTileLayer SourceName="Google спутник" 
+                        MaxParallelDownloads="10"
+                        TileSource="http://mt{i}.google.com/maps/vt/lyrs=s@333000000&amp;hl=ru&amp;x={x}&amp;y={y}&amp;z={z}"
+                        Description="Google Maps © [Google](http://www.google.com/), Data © [GoogleMaps Contributors](https://www.google.com/intl/ru_ru/help/terms_maps.html)"/>
+        <m:MapTileLayer SourceName="Google ланшафт" 
+                        MaxParallelDownloads="10"
+                        TileSource="http://mt{i}.google.com/maps/vt/lyrs=p@333000000&amp;hl=ru&amp;x={x}&amp;y={y}&amp;z={z}"
+                        Description="Google Maps © [Google](http://www.google.com/), Data © [GoogleMaps Contributors](https://www.google.com/intl/ru_ru/help/terms_maps.html)"/>
+
+        <m:MapTileLayer SourceName="Open street maps" 
+                        TileSource="http://a.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        Description="Maps © [OpenStreetMap Contributors](http://www.openstreetmap.org/copyright)"/>
+        <!--<m:MapTileLayer SourceName="Ланшафт">
+            <m:MapTileLayer.TileSource>
+                http://{c}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png
+            </m:MapTileLayer.TileSource>
+            <m:MapTileLayer.Description>
+                Maps © [Thunderforest](http://www.thunderforest.com/), Data © [OpenStreetMap Contributors](http://www.openstreetmap.org/copyright)
+            </m:MapTileLayer.Description>
+        </m:MapTileLayer>-->
+        <!--<m:MapTileLayer SourceName="Улицы">
+            <m:MapTileLayer.TileSource>
+                http://{c}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png
+            </m:MapTileLayer.TileSource>
+            <m:MapTileLayer.Description>
+                Maps © [Thunderforest](http://www.thunderforest.com/), Data © [OpenStreetMap Contributors](http://www.openstreetmap.org/copyright)
+            </m:MapTileLayer.Description>
+        </m:MapTileLayer>-->
+
+        <m:MapTileLayer SourceName="Яндекс"
+                        TileSource="https://core-renderer-tiles.maps.yandex.net/tiles?l=map&amp;v=22.06.25-0-b220606200930&amp;x={x}&amp;y={y}&amp;z={z}&amp;scale=1&amp;lang=ru_RU&amp;projection=web_mercator"
+                        Description="YandexMaps © [Яндекс](http://www.yandex.ru/), Data © [Yandex Contributors](http://legal.yandex.ru/maps_termsofuse/)"/>
+
+        <m:MapTileLayer SourceName="Яндекс спутник"
+                        TileSource="https://core-sat.maps.yandex.net/tiles?l=sat&amp;v=3.1021.0&amp;x={x}&amp;y={y}&amp;z={z}&amp;scale=1&amp;lang=ru_RU&amp;projection=web_mercator"
+                        Description="YandexMaps © [Яндекс](http://www.yandex.ru/), Data © [Yandex Contributors](http://legal.yandex.ru/maps_termsofuse/)"/>
+
+        <m:MapTileLayer SourceName="2GIS" 
+                        Description="2GIS © [2GIS](https://info.2gis.ru), Data © [2GIS License](http://law.2gis.ru/licensing-agreement)">
+            <m:MapTileLayer.TileSource>
+                <m:TileSource Subdomains="tile0, tile1, tile2, tile3" 
+                              UriFormat="https://{c}.maps.2gis.com/tiles?x={x}&amp;y={y}&amp;z={z}&amp;v=1"/>
+            </m:MapTileLayer.TileSource>
+        </m:MapTileLayer>
+
+    </CompositeCollection>
+</ResourceDictionary>

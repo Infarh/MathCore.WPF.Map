@@ -1,0 +1,15 @@
+﻿<ApplicationHosting x:Class="MathCore.WPF.Map.TestWPF.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:testWpf="clr-namespace:MathCore.WPF.Map.TestWPF"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+         <ResourceDictionary>
+             <ResourceDictionary.MergedDictionaries>
+                 <ResourceDictionary Source="Commands/AppCommands.xaml"/>
+             </ResourceDictionary.MergedDictionaries>
+
+             <testWpf:ServiceLocator x:Key="Locator"/>
+        </ResourceDictionary>
+    </Application.Resources>
+</ApplicationHosting>
