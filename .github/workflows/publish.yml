@@ -1,52 +1,32 @@
-name: Build release
+name: Publish NuGet.org
 
-on: 
+on:
   push:
-    tags: 
-      - v0.**
+    branches: 
+      - master
 
 jobs:
   build:
-    name: Building sources
-
     runs-on: windows-latest
-    env:
-      Solution_Name: MathCore.WPF.Map.sln
-      Project_Path: MathCore.WPF.Map
-      
-#    outputs: 
-#      build_id: ${{ steps.build_step.outputs.build_id }}      
-#      pack_id: ${{ steps.pack_step.outputs.pack_step }}
-      
+    name: Update package
+
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-#      with:
-#        fetch-depth: 0
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 7.0.x
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Use .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.0.x
         
-#    - name: Test debug
-#      run: dotnet test
-     
-    - name: Build release
-      id: build_step
-      run: dotnet build $env:Project_Path -c Release --nologo
-      
-    - name: Packing
-      id: pack_step
-      run: dotnet pack $env:Project_Path --no-build -c Release -v q --nologo
-     
-    - name: Publishing
-      id: publish_step
-      run: dotnet nuget push "**/*.nupkg" -k ${{ secrets.NuGetApiKey }} --skip-duplicate -s https://api.nuget.org/v3/index.json
-      
-    - name: Upload logs on fail
-      if: ${{ failure() }}
-      uses: actions/upload-artifact@v3
-      with:
-        name: Build failure logs
-        path: ${{ runner.temp }}/build_logs
+      - name: Building
+        run: dotnet build MathCore.WPF.MAP -c Release --nologo
+        
+      - name: Packing
+        run: dotnet pack MathCore.WPF.MAP --no-build -c Release -v q --nologo
+        
+      - name: Publishing NuGet
+        run: dotnet nuget push "**/*.nupkg" --skip-duplicate -s https://api.nuget.org/v3/index.json -k ${{ secrets.NuGetApiKey }}
+        
+      - name: Publishing GitHub
+        run: dotnet nuget push "**/*.nupkg" --skip-duplicate -s https://nuget.pkg.github.com/Infarh/index.json -k ${{secrets.GITHUB_TOKEN}}
