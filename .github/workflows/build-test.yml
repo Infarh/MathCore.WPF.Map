@@ -22,4 +22,4 @@ jobs:
       run: dotnet build --no-restore --nologo
       
     - name: Test
-      run: dotnet test --no-build --v normal --nologo
+      run: dotnet test --no-build -v n --nologo
