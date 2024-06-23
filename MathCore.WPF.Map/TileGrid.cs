@@ -2,26 +2,17 @@
 
 namespace MathCore.WPF.Map;
 
-public sealed class TileGrid : IEquatable<TileGrid?>
+public sealed class TileGrid(int ZoomLevel, int XMin, int YMin, int XMax, int YMax) : IEquatable<TileGrid?>
 {
-    public int ZoomLevel { get; }
+    public int ZoomLevel { get; } = ZoomLevel;
 
-    public int XMin { get; }
+    public int XMin { get; } = XMin;
 
-    public int YMin { get; }
+    public int YMin { get; } = YMin;
 
-    public int XMax { get; }
+    public int XMax { get; } = XMax;
 
-    public int YMax { get; }
-
-    public TileGrid(int ZoomLevel, int XMin, int YMin, int XMax, int YMax)
-    {
-        this.ZoomLevel = ZoomLevel;
-        this.XMin = XMin;
-        this.YMin = YMin;
-        this.XMax = XMax;
-        this.YMax = YMax;
-    }
+    public int YMax { get; } = YMax;
 
     public bool Equals(TileGrid? TileGrid) =>
         TileGrid is not null && 

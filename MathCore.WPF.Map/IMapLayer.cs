@@ -6,8 +6,8 @@ namespace MathCore.WPF.Map;
 public interface IMapLayer : IMapElement
 {
     /// <summary>Задний фон слоя</summary>
-    Brush MapBackground { get; }
+    Brush? MapBackground { get; }
 
     /// <summary>Основная кисть слоя для рисования визуальных элементов</summary>
-    Brush MapForeground { get; }
+    Brush? MapForeground { get; }
 }

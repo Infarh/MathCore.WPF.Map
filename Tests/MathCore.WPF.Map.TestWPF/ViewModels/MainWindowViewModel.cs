@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 using System.Text.Json;
 using System.Windows.Input;
 
@@ -16,13 +14,8 @@ using Microsoft.Win32;
 namespace MathCore.WPF.Map.TestWPF.ViewModels;
 
 [Service]
-public class MainWindowViewModel : TitledViewModel
+public class MainWindowViewModel() : TitledViewModel("Главное окно")
 {
-    public MainWindowViewModel()
-    {
-        Title = "Главное окно";
-    }
-
     #region MapCenter : Location? - Центр карты
 
     /// <summary>Центр карты</summary>
@@ -43,7 +36,7 @@ public class MainWindowViewModel : TitledViewModel
 
     #endregion
 
-    public ObservableCollection<Location> Locations { get; } = new();
+    public ObservableCollection<Location> Locations { get; } = [];
 
     #region SelectedLocation : Location? - Выбранное из списка положение
 
@@ -126,7 +119,7 @@ public class MainWindowViewModel : TitledViewModel
         {
             var point = locations[i];
             length += GPS.LengthBetween(
-                new GeoLocation { Latitude = start.Latitude, Longitude = start.Longitude },
+                new() { Latitude = start.Latitude, Longitude = start.Longitude },
                 new GeoLocation { Latitude = point.Latitude, Longitude = point.Longitude });
             start = point;
         }
@@ -189,7 +182,7 @@ public class MainWindowViewModel : TitledViewModel
 
     /// <summary>Summary</summary>
     public ICommand LoadPathCommand => _LoadPathCommand ??= Command.New(
-        p =>
+        _ =>
         {
             var dialog = new OpenFileDialog { Title = "Выбор файла", Filter = "json (*.json)|*.json|Все файлы (*.*)|*.*" };
             if (dialog.ShowDialog() != true) return;

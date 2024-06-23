@@ -24,7 +24,7 @@ public class MapTileLayer : Panel, IMapLayer
         {
             SourceName = "OpenStreetMap",
             Description = "© [OpenStreetMap Contributors](http://www.openstreetmap.org/copyright)",
-            TileSource = new TileSource { UriFormat = "http://{c}.tile.openstreetmap.org/{z}/{x}/{y}.png" },
+            TileSource = new() { UriFormat = "http://{c}.tile.openstreetmap.org/{z}/{x}/{y}.png" },
             MaxZoomLevel = 19
         };
 
@@ -45,7 +45,7 @@ public class MapTileLayer : Panel, IMapLayer
             nameof(Projection),
             typeof(MapProjection),
             typeof(MapTileLayer),
-            new PropertyMetadata(default(MapProjection)));
+            new(default(MapProjection)));
 
     #endregion
 
@@ -63,7 +63,7 @@ public class MapTileLayer : Panel, IMapLayer
             nameof(TileSource),
             typeof(TileSource),
             typeof(MapTileLayer),
-            new PropertyMetadata(null, (o, _) => ((MapTileLayer)o).TileSourcePropertyChanged()));
+            new(null, (o, _) => ((MapTileLayer)o).TileSourcePropertyChanged()));
 
     #endregion
 
@@ -81,7 +81,7 @@ public class MapTileLayer : Panel, IMapLayer
             nameof(SourceName),
             typeof(string),
             typeof(MapTileLayer),
-            new PropertyMetadata(null));
+            new(null));
 
     #endregion
 
@@ -99,7 +99,7 @@ public class MapTileLayer : Panel, IMapLayer
             nameof(Description),
             typeof(string),
             typeof(MapTileLayer),
-            new PropertyMetadata(null));
+            new(null));
 
     #endregion
 
@@ -117,7 +117,7 @@ public class MapTileLayer : Panel, IMapLayer
             nameof(ZoomLevelOffset),
             typeof(double),
             typeof(MapTileLayer),
-            new PropertyMetadata(0d, (o, _) => ((MapTileLayer)o).UpdateTileGrid()));
+            new(0d, (o, _) => ((MapTileLayer)o).UpdateTileGrid()));
 
     #endregion
 
@@ -135,7 +135,7 @@ public class MapTileLayer : Panel, IMapLayer
             nameof(MinZoomLevel),
             typeof(int),
             typeof(MapTileLayer),
-            new PropertyMetadata(0));
+            new(0));
 
     #endregion
 
@@ -153,7 +153,7 @@ public class MapTileLayer : Panel, IMapLayer
             nameof(MaxZoomLevel),
             typeof(int),
             typeof(MapTileLayer),
-            new PropertyMetadata(18));
+            new(18));
 
     #endregion
 
@@ -171,7 +171,7 @@ public class MapTileLayer : Panel, IMapLayer
             nameof(MaxParallelDownloads),
             typeof(int),
             typeof(MapTileLayer),
-            new PropertyMetadata(4));
+            new(4));
 
     #endregion
 
@@ -189,7 +189,7 @@ public class MapTileLayer : Panel, IMapLayer
             nameof(UpdateInterval),
             typeof(TimeSpan),
             typeof(MapTileLayer),
-            new PropertyMetadata(TimeSpan.FromSeconds(0.2), (o, e) => ((MapTileLayer)o)._UpdateTimer.Interval = (TimeSpan)e.NewValue));
+            new(TimeSpan.FromSeconds(0.2), (o, e) => ((MapTileLayer)o)._UpdateTimer.Interval = (TimeSpan)e.NewValue));
 
     #endregion
 
@@ -207,7 +207,7 @@ public class MapTileLayer : Panel, IMapLayer
             nameof(UpdateWhileViewportChanging),
             typeof(bool),
             typeof(MapTileLayer),
-            new PropertyMetadata(true));
+            new(true));
 
     #endregion
 
@@ -225,7 +225,7 @@ public class MapTileLayer : Panel, IMapLayer
             nameof(MapBackground),
             typeof(Brush),
             typeof(MapTileLayer),
-            new PropertyMetadata(null));
+            new(null));
 
     #endregion
 
@@ -243,7 +243,7 @@ public class MapTileLayer : Panel, IMapLayer
             nameof(MapForeground),
             typeof(Brush),
             typeof(MapTileLayer),
-            new PropertyMetadata(null));
+            new(null));
 
     #endregion
 
@@ -257,7 +257,7 @@ public class MapTileLayer : Panel, IMapLayer
     public ITileImageLoader TileImageLoader { get; }
 
     /// <summary>Коллекция тайлов соля</summary>
-    public TilesCollection Tiles { get; private set; } = new();
+    public TilesCollection Tiles { get; private set; } = [];
 
     /// <summary>Сетка размещения тайлов слоя</summary>
     public TileGrid? TileGrid { get; private set; }
@@ -288,7 +288,7 @@ public class MapTileLayer : Panel, IMapLayer
         RenderTransform = new MatrixTransform();
         this.TileImageLoader = TileImageLoader;
 
-        _UpdateTimer = new DispatcherTimer { Interval = UpdateInterval };
+        _UpdateTimer = new() { Interval = UpdateInterval };
         _UpdateTimer.Tick += (_, _) => UpdateTileGrid();
 
         MapPanel.InitMapElement(this);
@@ -320,7 +320,7 @@ public class MapTileLayer : Panel, IMapLayer
 
             tile.Image.Width = tile_size;
             tile.Image.Height = tile_size;
-            tile.Image.Arrange(new Rect(x, y, tile_size, tile_size));
+            tile.Image.Arrange(new(x, y, tile_size, tile_size));
         }
 
         return FinalSize;
@@ -371,7 +371,7 @@ public class MapTileLayer : Panel, IMapLayer
 
     private TileGrid GetTileGrid()
     {
-        var tile_zoom_level = Math.Max(0, (int)Math.Round(_ParentMap.ZoomLevel + ZoomLevelOffset));
+        var tile_zoom_level = Math.Max(0, (int)Math.Round(_ParentMap!.ZoomLevel + ZoomLevelOffset));
         var tile_scale = (double)(1 << tile_zoom_level);
         var scale = tile_scale / (Math.Pow(2d, _ParentMap.ZoomLevel) * MapProjection.TileSize);
         var tile_center_x = tile_scale * (0.5 + _ParentMap.Center.Longitude / 360d);
@@ -391,7 +391,7 @@ public class MapTileLayer : Panel, IMapLayer
                 Translation2Y: tile_center_y)
         };
 
-        var bounds = transform.TransformBounds(new Rect(0d, 0d, _ParentMap.RenderSize.Width, _ParentMap.RenderSize.Height));
+        var bounds = transform.TransformBounds(new(0d, 0d, _ParentMap.RenderSize.Width, _ParentMap.RenderSize.Height));
 
         return new(
             ZoomLevel: tile_zoom_level,
@@ -403,8 +403,8 @@ public class MapTileLayer : Panel, IMapLayer
 
     private void SetRenderTransform()
     {
-        var tile_scale = (double)(1 << TileGrid.ZoomLevel);
-        var scale = Math.Pow(2d, _ParentMap.ZoomLevel) / tile_scale;
+        var tile_scale = (double)(1 << TileGrid!.ZoomLevel);
+        var scale = Math.Pow(2d, _ParentMap!.ZoomLevel) / tile_scale;
         var tile_center_x = tile_scale * (0.5 + _ParentMap.Center.Longitude / 360d);
         var tile_center_y = tile_scale * (0.5 - WebMercatorProjection.LatitudeToY(_ParentMap.Center.Latitude) / 360d);
         var tile_origin_x = MapProjection.TileSize * (tile_center_x - TileGrid.XMin);

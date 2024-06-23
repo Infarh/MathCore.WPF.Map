@@ -9,7 +9,7 @@ public abstract class Command : ICommand, INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected virtual void OnPropertyChanged([CallerMemberName] string PropertyName = null!) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
+    protected virtual void OnPropertyChanged([CallerMemberName] string PropertyName = null!) => PropertyChanged?.Invoke(this, new(PropertyName));
 
     protected virtual bool Set<T>(ref T field, T value, [CallerMemberName] string PropertyName = null!)
     {
@@ -19,7 +19,7 @@ public abstract class Command : ICommand, INotifyPropertyChanged
         return true;
     }
 
-    private readonly List<WeakReference<EventHandler>> _EventHandlers = new();
+    private readonly List<WeakReference<EventHandler>> _EventHandlers = [];
     event EventHandler? ICommand.CanExecuteChanged
     {
         add

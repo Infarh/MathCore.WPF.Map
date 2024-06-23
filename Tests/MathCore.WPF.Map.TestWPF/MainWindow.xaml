@@ -21,11 +21,10 @@
         <!-- 55.65505,37.7578 -->
         <m:Map ZoomLevel="10" Name="MapControl" 
                Center="{Binding MapCenter}" Heading="0"
-               
                DoubleLeftMouseCommand="{Binding AddLocationCommand}">
-            <m:MapPolyline Stroke="Red" StrokeThickness="1" Fill="Blue" 
+            <!--<m:MapPolyline Stroke="Red" StrokeThickness="1" Fill="Blue" 
                            Location="55.75,37.62" 
-                           Locations="55.75,37.62 55.63405,37.7868 55.61805,37.5538 55.81805,37.5538"/>
+                           Locations="55.75,37.62 55.63405,37.7868 55.61805,37.5538 55.81805,37.5538"/>-->
             <m:MapPolyline Stroke="Red" StrokeThickness="3"
                            Location="0,10" 
                            StrokeLineJoin="Round"
@@ -53,7 +52,7 @@
                     </Style>
                 </m:Pushpin.Style>
                 <Border>
-                    <TextBlock Text="{Binding SelectedLocation}"/>
+                    <TextBlock Text="{Binding SelectedLocation, StringFormat=f3}"/>
                 </Border>
             </m:Pushpin>
             <m:MapScale Margin="4" Opacity="0.5" Background="Transparent" HorizontalAlignment="Left"/>
@@ -98,6 +97,20 @@
                      MaxHeight="200"
                      ItemsSource="{Binding Locations}"
                      SelectedItem="{Binding SelectedLocation}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock>
+                            <TextBlock.ToolTip>
+                                <TextBlock>
+                                    <Run Text="{Binding Latitude, Mode=OneWay, StringFormat=f5}"/>
+                                    <Run Text="{Binding Longitude, Mode=OneWay, StringFormat=f5}"/>
+                                </TextBlock>
+                            </TextBlock.ToolTip>
+                            <Run Text="{Binding Latitude, Mode=OneWay, StringFormat={}{0:\\N 00.000°;\\S 00.000°}}"/>
+                            <Run Text="{Binding Longitude, Mode=OneWay, StringFormat={}{0:\\E 00.000°;\\W 00.000°}}"/>
+                        </TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseDoubleClick">
                         <i:InvokeCommandAction Command="{Binding SelectMapCenterCommand}" CommandParameter="{Binding SelectedLocation}"/>

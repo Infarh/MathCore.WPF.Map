@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
-using System.Xml;
 using System.Xml.Linq;
 
 using MathCore.WPF.Map.Infrastructure;
@@ -26,14 +25,14 @@ public class BingMapsTileLayer : MapTileLayer
         Loaded += OnLoaded;
     }
 
-    /// <summary>api-ключ доступа к сервису карты</summary>
-    public static string ApiKey { get; set; }
+    /// <summary>Api-ключ доступа к сервису карты</summary>
+    public static string? ApiKey { get; set; }
 
     public MapMode Mode { get; set; }
 
-    public string Culture { get; set; }
+    public string? Culture { get; set; }
 
-    public Uri LogoImageUri { get; private set; }
+    public Uri? LogoImageUri { get; private set; }
 
     private async void OnLoaded(object? sender, RoutedEventArgs e)
     {
@@ -58,7 +57,7 @@ public class BingMapsTileLayer : MapTileLayer
 
         try
         {
-            var xml = await Task.Factory.StartNew(v => XDocument.Load((string)v), imagery_metadata_url_sb);
+            var xml = await Task.Factory.StartNew(v => XDocument.Load((string)v!), imagery_metadata_url_sb);
             if (xml.Element("ImageryMetadata") is { } imagery_metadata2)
                 ReadImageryMetadata(imagery_metadata2);
 
@@ -91,52 +90,52 @@ public class BingMapsTileLayer : MapTileLayer
         }
     }
 
-    private void ReadImageryMetadata(XmlElement ImageryMetadata)
-    {
-        string image_url = null;
-        string[] image_url_subdomains = null;
-        int? zoom_min = null;
-        int? zoom_max = null;
+    //private void ReadImageryMetadata(XmlElement ImageryMetadata)
+    //{
+    //    string? image_url = null;
+    //    string[]? image_url_subdomains = null;
+    //    int? zoom_min = null;
+    //    int? zoom_max = null;
 
-        foreach (var element in ImageryMetadata.ChildNodes.OfType<XmlElement>())
-            switch (element.LocalName)
-            {
-                case "ImageUrl":
-                    image_url = element.InnerText;
-                    break;
-                case "ImageUrlSubdomains":
-                    image_url_subdomains = element.ChildNodes
-                       .OfType<XmlElement>()
-                       .Where(e => e.LocalName == "string")
-                       .Select(e => e.InnerText)
-                       .ToArray();
-                    break;
-                case "ZoomMin":
-                    zoom_min = int.Parse(element.InnerText);
-                    break;
-                case "ZoomMax":
-                    zoom_max = int.Parse(element.InnerText);
-                    break;
-            }
+    //    foreach (var element in ImageryMetadata.ChildNodes.OfType<XmlElement>())
+    //        switch (element.LocalName)
+    //        {
+    //            case "ImageUrl":
+    //                image_url = element.InnerText;
+    //                break;
+    //            case "ImageUrlSubdomains":
+    //                image_url_subdomains = element.ChildNodes
+    //                   .OfType<XmlElement>()
+    //                   .Where(e => e.LocalName == "string")
+    //                   .Select(e => e.InnerText)
+    //                   .ToArray();
+    //                break;
+    //            case "ZoomMin":
+    //                zoom_min = int.Parse(element.InnerText);
+    //                break;
+    //            case "ZoomMax":
+    //                zoom_max = int.Parse(element.InnerText);
+    //                break;
+    //        }
 
-        if (image_url is not { Length: > 0 } || image_url_subdomains is not { Length: > 0 }) return;
+    //    if (image_url is not { Length: > 0 } || image_url_subdomains is not { Length: > 0 }) return;
 
-        if (zoom_min.HasValue && zoom_min.Value > MinZoomLevel)
-            MinZoomLevel = zoom_min.Value;
+    //    if (zoom_min.HasValue && zoom_min.Value > MinZoomLevel)
+    //        MinZoomLevel = zoom_min.Value;
 
-        if (zoom_max.HasValue && zoom_max.Value < MaxZoomLevel)
-            MaxZoomLevel = zoom_max.Value;
+    //    if (zoom_max.HasValue && zoom_max.Value < MaxZoomLevel)
+    //        MaxZoomLevel = zoom_max.Value;
 
-        if (string.IsNullOrEmpty(Culture))
-            Culture = CultureInfo.CurrentUICulture.Name;
+    //    if (string.IsNullOrEmpty(Culture))
+    //        Culture = CultureInfo.CurrentUICulture.Name;
 
-        TileSource = new BingMapsTileSource(image_url.Replace("{culture}", Culture), image_url_subdomains);
-    }
+    //    TileSource = new BingMapsTileSource(image_url.Replace("{culture}", Culture), image_url_subdomains);
+    //}
 
     private void ReadImageryMetadata(XElement ImageryMetadata)
     {
-        string image_url = null;
-        string[] image_url_subdomains = null;
+        string? image_url = null;
+        string[]? image_url_subdomains = null;
         int? zoom_min = null;
         int? zoom_max = null;
 

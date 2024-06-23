@@ -21,7 +21,7 @@ public class WmsImageLayer : MapImageLayer
             nameof(ServerUri),
             typeof(Uri),
             typeof(WmsImageLayer),
-            new PropertyMetadata(null, (o, _) => ((WmsImageLayer)o).UpdateImage()));
+            new(null, (o, _) => ((WmsImageLayer)o).UpdateImage()));
 
     public Uri? ServerUri
     {
@@ -38,7 +38,7 @@ public class WmsImageLayer : MapImageLayer
            nameof(Version),
            typeof(string),
            typeof(WmsImageLayer),
-           new PropertyMetadata("1.3.0", (o, _) => ((WmsImageLayer)o).UpdateImage()));
+           new("1.3.0", (o, _) => ((WmsImageLayer)o).UpdateImage()));
 
     public string Version
     {
@@ -55,7 +55,7 @@ public class WmsImageLayer : MapImageLayer
             nameof(Layers),
             typeof(string),
             typeof(WmsImageLayer),
-            new PropertyMetadata(string.Empty, (o, _) => ((WmsImageLayer)o).UpdateImage()));
+            new(string.Empty, (o, _) => ((WmsImageLayer)o).UpdateImage()));
 
     public string Layers
     {
@@ -72,7 +72,7 @@ public class WmsImageLayer : MapImageLayer
             nameof(Styles),
             typeof(string),
             typeof(WmsImageLayer),
-            new PropertyMetadata(string.Empty, (o, _) => ((WmsImageLayer)o).UpdateImage()));
+            new(string.Empty, (o, _) => ((WmsImageLayer)o).UpdateImage()));
 
     public string Styles
     {
@@ -89,7 +89,7 @@ public class WmsImageLayer : MapImageLayer
             nameof(Format),
             typeof(string),
             typeof(WmsImageLayer),
-            new PropertyMetadata("image/png", (o, _) => ((WmsImageLayer)o).UpdateImage()));
+            new("image/png", (o, _) => ((WmsImageLayer)o).UpdateImage()));
 
     public string Format
     {
@@ -106,7 +106,7 @@ public class WmsImageLayer : MapImageLayer
             nameof(Transparent),
             typeof(bool),
             typeof(WmsImageLayer),
-            new PropertyMetadata(false, (o, _) => ((WmsImageLayer)o).UpdateImage()));
+            new(false, (o, _) => ((WmsImageLayer)o).UpdateImage()));
 
     public bool Transparent
     {
@@ -118,7 +118,7 @@ public class WmsImageLayer : MapImageLayer
 
     private string _Layers = string.Empty;
 
-    protected override ImageSource GetImage(BoundingBox BoundingBox)
+    protected override ImageSource? GetImage(BoundingBox BoundingBox)
     {
         if (ServerUri is null)
             return null;
@@ -144,7 +144,7 @@ public class WmsImageLayer : MapImageLayer
         return new BitmapImage(uri);
     }
 
-    public async Task<IList<string>> GetLayerNamesAsync()
+    public async Task<IList<string>?> GetLayerNamesAsync()
     {
         if (ServerUri is null)
             return null;
@@ -153,7 +153,7 @@ public class WmsImageLayer : MapImageLayer
 
         try
         {
-            var xml = await Task.Factory.StartNew(v => XDocument.Load((string)v), GetRequestUri("GetCapabilities").ToString());
+            var xml = await Task.Factory.StartNew(v => XDocument.Load((string)v!), GetRequestUri("GetCapabilities").ToString());
             layer_names.AddRange(xml.XPathSelectElements("//Name").Select(node => node.Value));
 
             //var document = await XmlDocument.LoadFromUriAsync(GetRequestUri("GetCapabilities"));
@@ -173,7 +173,7 @@ public class WmsImageLayer : MapImageLayer
 
     private Uri GetRequestUri(string query)
     {
-        var address = ServerUri.ToString();
+        var address = ServerUri!.ToString();
         var uri = new StringBuilder(512).Append(address);
 
         if (uri[^1] is not ('?' or '&'))
@@ -184,7 +184,7 @@ public class WmsImageLayer : MapImageLayer
            .Append("REQUEST=").Append(query)
            .Replace(" ", "%20");
 
-        return new Uri(uri.ToString());
+        return new(uri.ToString());
     }
 
     private static IEnumerable<XmlElement> ChildElements(XmlElement element, string name) => element.ChildNodes.OfType<XmlElement>().Where(e => e.LocalName == name);

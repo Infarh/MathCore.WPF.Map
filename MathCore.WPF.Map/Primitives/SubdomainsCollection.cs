@@ -6,17 +6,15 @@ namespace MathCore.WPF.Map.Primitives;
 
 [Serializable]
 [TypeConverter(typeof(SubdomainsCollectionConverter))]
-public class SubdomainsCollection
+public class SubdomainsCollection(string[] Subdomains)
 {
-    private readonly string[] _Subdomains;
+    private readonly string[] _Subdomains = Subdomains;
 
     public int Length => _Subdomains.Length;
 
     public string this[int Index] => _Subdomains[Index];
 
-    public SubdomainsCollection(string[] Subdomains) => _Subdomains = Subdomains;
-
-    private static readonly char[] __Separator = { ',', ';', ' ' };
+    private static readonly char[] __Separator = [',', ';', ' '];
 
     public static SubdomainsCollection Parse(string Str)
     {
@@ -27,7 +25,7 @@ public class SubdomainsCollection
             if (value is { HasValue: true, Length: > 0, Value: var v })
                 domains.Add(v);
 
-        return new(domains.ToArray());
+        return new([.. domains]);
     }
 
     public static implicit operator SubdomainsCollection(string[] Subdomains) => new(Subdomains);

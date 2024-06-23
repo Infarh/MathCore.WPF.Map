@@ -29,7 +29,7 @@ public class BoundingBox : IEquatable<BoundingBox?>
     public double North
     {
         get => _North;
-        set => _North = Math.Min(Math.Max(value, -90d), 90d);
+        set => _North = Math.Min(Math.Max(value, -90), 90);
     }
 
     /// <summary>Восточная (правая) граница</summary>
@@ -43,7 +43,7 @@ public class BoundingBox : IEquatable<BoundingBox?>
     public double South
     {
         get => _South;
-        set => _South = Math.Min(Math.Max(value, -90d), 90d);
+        set => _South = Math.Min(Math.Max(value, -90), 90);
     }
 
     /// <summary>Западная (левая) граница</summary>
@@ -96,7 +96,7 @@ public class BoundingBox : IEquatable<BoundingBox?>
     public Location GetCenter() => new((_North + _South) / 2, (_East + _West) / 2);
 
     /// <summary>Разделители строки</summary>
-    private static readonly char[] __Separators = { ' ', ',', ';', ':' };
+    private static readonly char[] __Separators = [' ', ',', ';', ':'];
 
     /// <summary>Формирование области из строки</summary>
     /// <param name="s">Строка с информацией об области</param>

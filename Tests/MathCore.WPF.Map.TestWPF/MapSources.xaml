@@ -42,9 +42,9 @@
         <m:MapTileLayer SourceName="Яндекс"
                         TileSource="https://core-renderer-tiles.maps.yandex.net/tiles?l=map&amp;v=22.06.25-0-b220606200930&amp;x={x}&amp;y={y}&amp;z={z}&amp;scale=1&amp;lang=ru_RU&amp;projection=web_mercator"
                         Description="YandexMaps © [Яндекс](http://www.yandex.ru/), Data © [Yandex Contributors](http://legal.yandex.ru/maps_termsofuse/)"/>
-
+        
         <m:MapTileLayer SourceName="Яндекс спутник"
-                        TileSource="https://core-sat.maps.yandex.net/tiles?l=sat&amp;v=3.1021.0&amp;x={x}&amp;y={y}&amp;z={z}&amp;scale=1&amp;lang=ru_RU&amp;projection=web_mercator"
+                        TileSource="https://core-sat.maps.yandex.net/tiles?l=sat&amp;v=22.06.25-0-b220606200930&amp;x={x}&amp;y={y}&amp;z={z}&amp;scale=1&amp;lang=ru_RU&amp;projection=web_mercator"
                         Description="YandexMaps © [Яндекс](http://www.yandex.ru/), Data © [Yandex Contributors](http://legal.yandex.ru/maps_termsofuse/)"/>
 
         <m:MapTileLayer SourceName="2GIS" 

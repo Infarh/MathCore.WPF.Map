@@ -3,12 +3,8 @@ using MathCore.WPF.Map.Primitives.Base;
 
 namespace MathCore.WPF.Map.Commands;
 
-public class ZoomToBoundsCommand : Command
+public class ZoomToBoundsCommand(MapBase Map) : Command
 {
-    private readonly MapBase _Map;
-
-    public ZoomToBoundsCommand(MapBase Map) => _Map = Map;
-
     protected override bool CanExecute(object? p)
     {
         switch (p)
@@ -93,6 +89,6 @@ public class ZoomToBoundsCommand : Command
 
         if(double.IsInfinity(lat_min)) return;
 
-        _Map.ZoomToBounds(new(lat_max, lat_min, lon_min, lon_max));
+        Map.ZoomToBounds(new(lat_max, lat_min, lon_min, lon_max));
     }
 }

@@ -30,7 +30,7 @@ public class ImageFileCache : ObjectCache
     /// <inheritdoc />
     public override DefaultCacheCapabilities DefaultCacheCapabilities => DefaultCacheCapabilities.None;
 
-    public override object this[string key]
+    public override object? this[string key]
     {
         get => Get(key);
         set => Set(key, value, DateTimeOffset.Now.AddDays(30));
@@ -50,7 +50,7 @@ public class ImageFileCache : ObjectCache
     }
 
     /// <summary>Перечисление содержимого кеша (возвращает объекты с указанием ключа и пустым значением</summary>
-    protected override IEnumerator<KeyValuePair<string, object>> GetEnumerator()
+    protected override IEnumerator<KeyValuePair<string, object?>> GetEnumerator()
     {
         var root = new DirectoryInfo(RootFolder);
         if (!root.Exists)
@@ -67,14 +67,14 @@ public class ImageFileCache : ObjectCache
     }
 
     /// <inheritdoc />
-    public override CacheEntryChangeMonitor CreateCacheEntryChangeMonitor(IEnumerable<string> keys, string RegionName = null) =>
+    public override CacheEntryChangeMonitor CreateCacheEntryChangeMonitor(IEnumerable<string> keys, string? RegionName = null) =>
         throw new NotSupportedException("Мониторы не поддерживаются");
 
     /// <inheritdoc />
-    public override long GetCount(string RegionName = null) => Directory.EnumerateFiles(Path.GetFullPath(RootFolder), "*.*", SearchOption.AllDirectories).Count();
+    public override long GetCount(string? RegionName = null) => Directory.EnumerateFiles(Path.GetFullPath(RootFolder), "*.*", SearchOption.AllDirectories).Count();
 
     /// <inheritdoc />
-    public override bool Contains(string key, string RegionName = null)
+    public override bool Contains(string key, string? RegionName = null)
     {
         if (key is null)
             throw new ArgumentNullException(nameof(key));
@@ -86,7 +86,7 @@ public class ImageFileCache : ObjectCache
     }
 
     /// <inheritdoc />
-    public override object Get(string key, string RegionName = null)
+    public override object? Get(string key, string? RegionName = null)
     {
         if (key is null)
             throw new ArgumentNullException(nameof(key));
@@ -115,17 +115,17 @@ public class ImageFileCache : ObjectCache
     }
 
     /// <inheritdoc />
-    public override CacheItem GetCacheItem(string key, string RegionName = null) =>
+    public override CacheItem? GetCacheItem(string key, string? RegionName = null) =>
         Get(key, RegionName) is { } value
             ? new CacheItem(key, value)
             : null;
 
     /// <inheritdoc />
-    public override IDictionary<string, object> GetValues(IEnumerable<string> keys, string RegionName = null) => keys
+    public override IDictionary<string, object?> GetValues(IEnumerable<string> keys, string? RegionName = null) => keys
        .ToDictionary(key => key, key => Get(key, RegionName));
 
     /// <inheritdoc />
-    public override void Set(string key, object value, CacheItemPolicy policy, string RegionName = null)
+    public override void Set(string key, object? value, CacheItemPolicy policy, string? RegionName = null)
     {
         if (key is null)
             throw new ArgumentNullException(nameof(key));
@@ -139,7 +139,7 @@ public class ImageFileCache : ObjectCache
         if (StoreInMemory)
         {
             if ((policy.AbsoluteExpiration - DateTimeOffset.Now).TotalHours > 1)
-                policy = new CacheItemPolicy { AbsoluteExpiration = DateTimeOffset.Now.AddHours(1) };
+                policy = new() { AbsoluteExpiration = DateTimeOffset.Now.AddHours(1) };
             _MemoryCache.Set(key, buffer, policy);
         }
 
@@ -164,14 +164,14 @@ public class ImageFileCache : ObjectCache
     }
 
     /// <inheritdoc />
-    public override void Set(string key, object value, DateTimeOffset AbsoluteExpiration, string RegionName = null) =>
+    public override void Set(string key, object? value, DateTimeOffset AbsoluteExpiration, string? RegionName = null) =>
         Set(key, value, new CacheItemPolicy { AbsoluteExpiration = AbsoluteExpiration }, RegionName);
 
     /// <inheritdoc />
     public override void Set(CacheItem item, CacheItemPolicy policy) => Set(item.Key, item.Value, policy, item.RegionName);
 
     /// <inheritdoc />
-    public override object AddOrGetExisting(string key, object value, CacheItemPolicy policy, string RegionName = null)
+    public override object? AddOrGetExisting(string key, object value, CacheItemPolicy policy, string? RegionName = null)
     {
         var old_value = Get(key, RegionName);
 
@@ -181,7 +181,7 @@ public class ImageFileCache : ObjectCache
     }
 
     /// <inheritdoc />
-    public override object AddOrGetExisting(string key, object value, DateTimeOffset AbsoluteExpiration, string RegionName = null) =>
+    public override object? AddOrGetExisting(string key, object value, DateTimeOffset AbsoluteExpiration, string? RegionName = null) =>
         AddOrGetExisting(key, value, new CacheItemPolicy { AbsoluteExpiration = AbsoluteExpiration }, RegionName);
 
     public override CacheItem AddOrGetExisting(CacheItem item, CacheItemPolicy policy)
@@ -194,7 +194,7 @@ public class ImageFileCache : ObjectCache
     }
 
     /// <inheritdoc />
-    public override object Remove(string key, string RegionName = null)
+    public override object? Remove(string key, string? RegionName = null)
     {
         if (key is null)
             throw new ArgumentNullException(nameof(key));
@@ -212,7 +212,7 @@ public class ImageFileCache : ObjectCache
         try
         {
             File.Delete(path);
-            RemoveEmptyDirectory(Path.GetDirectoryName(path));
+            RemoveEmptyDirectory(Path.GetDirectoryName(path)!);
         }
         catch (Exception ex)
         {
@@ -235,14 +235,14 @@ public class ImageFileCache : ObjectCache
             }
 
             Directory.Delete(path, true);
-            path = Path.GetDirectoryName(path);
+            path = Path.GetDirectoryName(path)!;
         }
     }
 
     /// <summary>Определить путь к файлу по его ключу</summary>
     /// <param name="key">Ключ файла</param>
     /// <returns>Путь к файлу, соответствующему заданному ключу</returns>
-    private string FindFile(string key)
+    private string? FindFile(string key)
     {
         var path = GetFilePath(key);
 
@@ -260,7 +260,7 @@ public class ImageFileCache : ObjectCache
     }
 
     /// <summary>Разделители элементов ключа</summary>
-    private static readonly char[] __Separators = { '\\', '/', ':', ';' };
+    private static readonly char[] __Separators = ['\\', '/', ':', ';'];
 
     /// <summary>Пул путей к файлам</summary>
     private readonly ConcurrentDictionary<string, string> _Paths = new();
@@ -268,7 +268,7 @@ public class ImageFileCache : ObjectCache
     /// <summary>Сформировать путь к файлу на основе ключа</summary>
     /// <param name="Key">Ключ файла</param>
     /// <returns>ПУть к файлу</returns>
-    private string GetFilePath(string Key)
+    private string? GetFilePath(string Key)
     {
         try
         {

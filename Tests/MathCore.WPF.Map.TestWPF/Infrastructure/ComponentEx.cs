@@ -21,7 +21,7 @@ public static class ComponentEx
             "DoubleClickCommand",
             typeof(ICommand),
             typeof(ComponentEx),
-            new PropertyMetadata(default(ICommand), OnCommandChanged));
+            new(default(ICommand), OnCommandChanged));
 
     private static void OnCommandChanged(DependencyObject D, DependencyPropertyChangedEventArgs E)
     {
@@ -31,25 +31,25 @@ public static class ComponentEx
             element.MouseUp += OnMouseUp;
     }
 
-    private static readonly DependencyProperty LastClickTimeProperty =
+    private static readonly DependencyProperty __LastClickTimeProperty =
         DependencyProperty.RegisterAttached(
-            "LastClickTime",
+            "__LastClickTime",
             typeof(DateTime?),
             typeof(ComponentEx),
-            new PropertyMetadata(default(DateTime?)));
+            new(default(DateTime?)));
 
     private static void OnMouseUp(object Sender, MouseButtonEventArgs E)
     {
         if (Sender is not UIElement element || E.LeftButton != MouseButtonState.Released) return;
 
         var now = DateTime.Now;
-        if (element.GetValue(LastClickTimeProperty) is not DateTime last_click_time)
+        if (element.GetValue(__LastClickTimeProperty) is not DateTime last_click_time)
         {
-            element.SetValue(LastClickTimeProperty, now);
+            element.SetValue(__LastClickTimeProperty, now);
             return;
         }
 
-        element.SetValue(LastClickTimeProperty, now);
+        element.SetValue(__LastClickTimeProperty, now);
 
         if ((now - last_click_time).TotalSeconds > 1)
             return;
@@ -70,7 +70,7 @@ public static class ComponentEx
     public static void SetDoubleClickCommandParameter(DependencyObject d, object value) => d.SetValue(DoubleClickCommandParameterProperty, value);
 
     /// <summary>Параметр команды двойного нажатия мышки</summary>
-    public static object GetDoubleClickCommandParameter(DependencyObject d) => (object)d.GetValue(DoubleClickCommandParameterProperty);
+    public static object GetDoubleClickCommandParameter(DependencyObject d) => d.GetValue(DoubleClickCommandParameterProperty);
 
     /// <summary>Параметр команды двойного нажатия мышки</summary>
     public static readonly DependencyProperty DoubleClickCommandParameterProperty =
@@ -78,7 +78,7 @@ public static class ComponentEx
             "DoubleClickCommandParameter",
             typeof(object),
             typeof(ComponentEx),
-            new PropertyMetadata(default(object)));
+            new(default(object)));
 
     #endregion
 
@@ -97,7 +97,7 @@ public static class ComponentEx
             "DoubleClickCommandPassEventArg",
             typeof(bool),
             typeof(ComponentEx),
-            new PropertyMetadata(default(bool)));
+            new(default(bool)));
 
     #endregion
 }

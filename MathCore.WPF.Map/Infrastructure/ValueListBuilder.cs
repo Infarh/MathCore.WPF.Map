@@ -7,18 +7,11 @@ namespace MathCore.WPF.Map.Infrastructure;
 
 /// <summary>Построитель списка в стеке</summary>
 /// <typeparam name="T">Тип элемента списка</typeparam>
-internal ref struct ValueListBuilder<T>
+internal ref struct ValueListBuilder<T>(Span<T> InitialSpan)
 {
-    private Span<T> _Span;
-    private T[]? _ArrayFromPool;
-    private int _Pos;
-
-    public ValueListBuilder(Span<T> InitialSpan)
-    {
-        _Span = InitialSpan;
-        _ArrayFromPool = null;
-        _Pos = 0;
-    }
+    private Span<T> _Span = InitialSpan;
+    private T[]? _ArrayFromPool = null;
+    private int _Pos = 0;
 
     public int Length
     {
@@ -75,18 +68,11 @@ internal ref struct ValueListBuilder<T>
     }
 }
 
-internal ref partial struct ValueListBuilder2<T>
+internal ref partial struct ValueListBuilder2<T>(Span<T> InitialSpan)
 {
-    private Span<T> _Span;
-    private T[]? _ArrayFromPool;
-    private int _Pos;
-
-    public ValueListBuilder2(Span<T> InitialSpan)
-    {
-        _Span = InitialSpan;
-        _ArrayFromPool = null;
-        _Pos = 0;
-    }
+    private Span<T> _Span = InitialSpan;
+    private T[]? _ArrayFromPool = null;
+    private int _Pos = 0;
 
     public int Length
     {

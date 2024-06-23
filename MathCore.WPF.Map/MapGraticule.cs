@@ -110,9 +110,9 @@ public class MapGraticule : MapOverlay
             nameof(MinLineDistance),
             typeof(double),
             typeof(MapGraticule),
-            new PropertyMetadata(150d));
+            new(150d));
 
-    private static readonly double[] __LineDistances = { 1, 2, 5, 10, 15, 30, 60 };
+    private static readonly double[] __LineDistances = [1, 2, 5, 10, 15, 30, 60];
 
     /// <summary>Минимальный шаг сетки в пикселях. По умолчанию имеет значение 150.</summary>
     [Description("Минимальный шаг сетки в пикселях")]
@@ -124,7 +124,7 @@ public class MapGraticule : MapOverlay
 
     private double GetLineDistance()
     {
-        var min_distance = MinLineDistance / MapProjection.DegreesToViewportScale(ParentMap.ZoomLevel);
+        var min_distance = MinLineDistance / MapProjection.DegreesToViewportScale(ParentMap!.ZoomLevel);
         var scale = 1d;
 
         if (min_distance < 1d)
@@ -161,7 +161,7 @@ public class MapGraticule : MapOverlay
             hemisphere = hemispheres[1];
         }
 
-        var seconds = (int)Math.Round(value * 3600d);
+        var seconds = (int)Math.Round(value * 3600);
 
         return string.Format(format, hemisphere, seconds / 3600, seconds / 60 % 60, seconds % 60);
     }

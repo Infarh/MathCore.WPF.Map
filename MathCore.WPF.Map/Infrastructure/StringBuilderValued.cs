@@ -7,7 +7,7 @@ namespace MathCore.WPF.Map.Infrastructure;
 /// <summary>Построитель строк на основе структуры в стеке</summary>
 internal ref struct StringBuilderValued
 {
-    private char[] _ArrayToReturnToPool;
+    private char[]? _ArrayToReturnToPool;
     private Span<char> _Chars;
     private int _Pos;
 
@@ -118,12 +118,13 @@ internal ref struct StringBuilderValued
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public StringBuilderValued Append(string str)
+    public StringBuilderValued Append(string? str)
     {
+        if (str is not { Length: > 0 }) return this;
         var pos = _Pos;
         if (str.Length == 1 && pos < _Chars.Length)
             // очень распространенный случай, например, добавление строк из
-            // NumberFormatInfo, таких как разделители, символы процента и т.д.
+            // NumberFormatInfo, таких, как разделители, символы процента и т.д.
             return Append(str[0]);
 
         AppendSlow(str);
@@ -131,7 +132,7 @@ internal ref struct StringBuilderValued
         return this;
     }
 
-    public StringBuilderValued Append(byte value, IFormatProvider FormatProvider = null)
+    public StringBuilderValued Append(byte value, IFormatProvider? FormatProvider = null)
     {
 #if NET5_0_OR_GREATER
         const int double_chars_buffer_size = 3;
@@ -153,7 +154,7 @@ internal ref struct StringBuilderValued
         return this;
     }
 
-    public StringBuilderValued Append(sbyte value, IFormatProvider FormatProvider = null)
+    public StringBuilderValued Append(sbyte value, IFormatProvider? FormatProvider = null)
     {
 #if NET5_0_OR_GREATER
         const int double_chars_buffer_size = 4;
@@ -175,7 +176,7 @@ internal ref struct StringBuilderValued
         return this;
     }
 
-    public StringBuilderValued Append(int value, IFormatProvider FormatProvider = null)
+    public StringBuilderValued Append(int value, IFormatProvider? FormatProvider = null)
     {
 #if NET5_0_OR_GREATER
         const int double_chars_buffer_size = 16;
@@ -197,7 +198,7 @@ internal ref struct StringBuilderValued
         return this;
     }
 
-    public StringBuilderValued Append(long value, IFormatProvider FormatProvider = null)
+    public StringBuilderValued Append(long value, IFormatProvider? FormatProvider = null)
     {
 #if NET5_0_OR_GREATER
         const int double_chars_buffer_size = 27;
@@ -219,7 +220,7 @@ internal ref struct StringBuilderValued
         return this;
     }
 
-    public StringBuilderValued Append(uint value, IFormatProvider FormatProvider = null)
+    public StringBuilderValued Append(uint value, IFormatProvider? FormatProvider = null)
     {
 #if NET5_0_OR_GREATER
         const int double_chars_buffer_size = 16;
@@ -241,7 +242,7 @@ internal ref struct StringBuilderValued
         return this;
     }
 
-    public StringBuilderValued Append(ulong value, IFormatProvider FormatProvider = null)
+    public StringBuilderValued Append(ulong value, IFormatProvider? FormatProvider = null)
     {
 #if NET5_0_OR_GREATER
         const int double_chars_buffer_size = 27;
@@ -263,7 +264,7 @@ internal ref struct StringBuilderValued
         return this;
     }
 
-    public StringBuilderValued Append(double value, IFormatProvider FormatProvider = null)
+    public StringBuilderValued Append(double value, IFormatProvider? FormatProvider = null)
     {
 #if NET5_0_OR_GREATER
         const int double_chars_buffer_size = 32;
@@ -285,12 +286,12 @@ internal ref struct StringBuilderValued
         return this;
     }
 
-    public StringBuilderValued Append(double value, ReadOnlySpan<char> format, IFormatProvider FormatProvider = null)
+    public StringBuilderValued Append(double value, ReadOnlySpan<char> format, IFormatProvider? FormatProvider = null)
     {
 #if NET5_0_OR_GREATER
         const int double_chars_buffer_size = 32;
         Span<char> buffer = stackalloc char[double_chars_buffer_size];
-        if(!value.TryFormat(buffer, out var write_chars_count, provider: FormatProvider))
+        if(!value.TryFormat(buffer, out var write_chars_count, provider: FormatProvider, format: format))
             throw new InvalidOperationException("Не удалось выполнить преобразование вещественного числа в массив символов");
 #else
         var buffer = value.ToString(FormatProvider).AsSpan();
@@ -307,7 +308,7 @@ internal ref struct StringBuilderValued
         return this;
     }
 
-    public StringBuilderValued Append(float value, IFormatProvider FormatProvider = null)
+    public StringBuilderValued Append(float value, IFormatProvider? FormatProvider = null)
     {
 #if NET5_0_OR_GREATER
         const int double_chars_buffer_size = 32;
@@ -352,7 +353,7 @@ internal ref struct StringBuilderValued
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public StringBuilderValued Append(object obj) => Append(obj.ToString());
+    public StringBuilderValued Append(object? obj) => Append(obj?.ToString());
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public StringBuilderValued Append(ReadOnlySpan<char> str)
@@ -372,6 +373,7 @@ internal ref struct StringBuilderValued
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public StringBuilderValued Append(Span<char> str)
     {
+        if (str.Length == 0) return this;
         var pos = _Pos;
         if (str.Length == 1 && pos < _Chars.Length)
         {

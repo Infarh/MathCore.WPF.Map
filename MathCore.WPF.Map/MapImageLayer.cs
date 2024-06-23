@@ -21,7 +21,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
             nameof(MinLatitude),
             typeof(double),
             typeof(MapImageLayer),
-            new PropertyMetadata(double.NaN));
+            new(double.NaN));
 
     /// <summary>Минимальное значение широты. По умолчанию NaN.</summary>
     public double MinLatitude
@@ -39,7 +39,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
             nameof(MaxLatitude),
             typeof(double),
             typeof(MapImageLayer),
-            new PropertyMetadata(double.NaN));
+            new(double.NaN));
 
     /// <summary>Максимальное значение широты. По умолчанию NaN.</summary>
     public double MaxLatitude
@@ -57,7 +57,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
             nameof(MinLongitude),
             typeof(double),
             typeof(MapImageLayer),
-            new PropertyMetadata(double.NaN));
+            new(double.NaN));
 
     /// <summary>Минимальное значение долготы. По умолчанию NaN.</summary>
     public double MinLongitude
@@ -75,7 +75,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
             nameof(MaxLongitude),
             typeof(double),
             typeof(MapImageLayer),
-            new PropertyMetadata(double.NaN));
+            new(double.NaN));
 
     /// <summary>Минимальное значение долготы. По умолчанию NaN.</summary>
     public double MaxLongitude
@@ -93,7 +93,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
            nameof(MaxBoundingBoxWidth),
            typeof(double),
            typeof(MapImageLayer),
-           new PropertyMetadata(double.NaN));
+           new(double.NaN));
 
     /// <summary>Максимальная ширина области изображения карты. По умолчанию NaN.</summary>
     public double MaxBoundingBoxWidth
@@ -111,7 +111,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
            nameof(RelativeImageSize),
            typeof(double),
            typeof(MapImageLayer),
-           new PropertyMetadata(1d));
+           new(1d));
 
     /// <summary>Относительный размер изображения карты в соотношении с текущим размером визуальной части</summary>
     /// <remarks>
@@ -133,7 +133,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
             nameof(UpdateInterval),
             typeof(TimeSpan),
             typeof(MapImageLayer),
-            new PropertyMetadata(
+            new(
                 TimeSpan.FromSeconds(0.2),
                 (o, e) => ((MapImageLayer)o)._UpdateTimer.Interval = (TimeSpan)e.NewValue));
 
@@ -153,7 +153,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
             nameof(UpdateWhileViewportChanging),
             typeof(bool),
             typeof(MapImageLayer),
-            new PropertyMetadata(false));
+            new(false));
 
     /// <summary>Обновлять изображения при изменении элемента управления</summary>
     public bool UpdateWhileViewportChanging
@@ -171,7 +171,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
             nameof(Description),
             typeof(string),
             typeof(MapImageLayer),
-            new PropertyMetadata(null));
+            new(null));
 
     /// <summary>Описание</summary>
     public string Description
@@ -189,7 +189,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
             nameof(MapBackground),
             typeof(Brush),
             typeof(MapImageLayer),
-            new PropertyMetadata(null));
+            new(null));
 
     /// <summary>Подложка карты</summary>
     public Brush MapBackground
@@ -207,7 +207,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
            nameof(MapForeground),
            typeof(Brush),
            typeof(MapImageLayer),
-           new PropertyMetadata(null));
+           new(null));
 
     /// <summary>Основная кисть слоя</summary>
     public Brush MapForeground
@@ -220,7 +220,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
 
     private readonly DispatcherTimer _UpdateTimer;
 
-    private BoundingBox _BoundingBox;
+    private BoundingBox _BoundingBox = null!;
 
     private int _TopImageIndex;
 
@@ -228,13 +228,13 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
 
     protected MapImageLayer()
     {
-        Children.Add(new Image { Opacity = 0d, Stretch = Stretch.Fill });
-        Children.Add(new Image { Opacity = 0d, Stretch = Stretch.Fill });
+        Children.Add(new Image { Opacity = 0, Stretch = Stretch.Fill });
+        Children.Add(new Image { Opacity = 0, Stretch = Stretch.Fill });
 
         _UpdateTimer = new DispatcherTimer().WithTick(UpdateInterval, UpdateImage);
     }
 
-    protected void UpdateImage(ImageSource ImageSource)
+    protected void UpdateImage(ImageSource? ImageSource)
     {
         SetTopImage(ImageSource);
 
@@ -249,7 +249,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
 
     private void BitmapDownloadCompleted(object? sender, EventArgs e)
     {
-        var bitmap_source = (BitmapSource)sender;
+        var bitmap_source = (BitmapSource)sender!;
 
         bitmap_source.DownloadCompleted -= BitmapDownloadCompleted;
         bitmap_source.DownloadFailed -= BitmapDownloadFailed;
@@ -259,7 +259,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
 
     private void BitmapDownloadFailed(object? sender, ExceptionEventArgs e)
     {
-        var bitmap_source = (BitmapSource)sender;
+        var bitmap_source = (BitmapSource)sender!;
 
         bitmap_source.DownloadCompleted -= BitmapDownloadCompleted;
         bitmap_source.DownloadFailed -= BitmapDownloadFailed;
@@ -279,16 +279,16 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
         }
         else
         {
-            if (Math.Abs(e.LongitudeOffset) > 180d && _BoundingBox is { HasValidBounds: true })
+            if (Math.Abs(e.LongitudeOffset) > 180 && _BoundingBox is { HasValidBounds: true })
             {
-                var offset = 360d * Math.Sign(e.LongitudeOffset);
+                var offset = 360 * Math.Sign(e.LongitudeOffset);
 
                 _BoundingBox.West += offset;
                 _BoundingBox.East += offset;
 
                 foreach (UIElement element in Children)
                     if (GetBoundingBox(element) is { HasValidBounds: true, South: var south, West: var west, North: var north, East: var east })
-                        SetBoundingBox(element, new BoundingBox(north, east + offset, south, west + offset));
+                        SetBoundingBox(element, new(north, east + offset, south, west + offset));
             }
 
             if (_UpdateTimer.IsEnabled && !UpdateWhileViewportChanging)
@@ -319,8 +319,8 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
 
             var width = map_width * RelativeImageSize;
             var height = map_height * RelativeImageSize;
-            var x = (map_width - width) / 2d;
-            var y = (map_height - height) / 2d;
+            var x = (map_width - width) / 2;
+            var y = (map_height - height) / 2;
             var rect = new Rect(x, y, width, height);
 
             _BoundingBox = projection.ViewportRectToBoundingBox(rect);
@@ -349,13 +349,13 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
 
                 if (!double.IsNaN(MaxBoundingBoxWidth) && bounding_box_width > MaxBoundingBoxWidth)
                 {
-                    var d = (bounding_box_width - MaxBoundingBoxWidth) / 2d;
+                    var d = (bounding_box_width - MaxBoundingBoxWidth) / 2;
                     _BoundingBox.West += d;
                     _BoundingBox.East -= d;
                 }
             }
 
-            ImageSource image_source = null;
+            ImageSource? image_source = null;
 
             try
             {
@@ -363,7 +363,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"MapImageLayer: {0}", (object)ex.Message);
+                Debug.WriteLine("MapImageLayer: {0}", (object)ex.Message);
             }
 
             UpdateImage(image_source);
@@ -371,9 +371,9 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
     }
 
     /// <summary>Изображение для заданной области карты</summary>
-    protected abstract ImageSource GetImage(BoundingBox BoundingBox);
+    protected abstract ImageSource? GetImage(BoundingBox BoundingBox);
 
-    private void SetTopImage(ImageSource ImageSource)
+    private void SetTopImage(ImageSource? ImageSource)
     {
         _TopImageIndex = (_TopImageIndex + 1) % 2;
         var top_image = (Image)Children[_TopImageIndex];
@@ -394,7 +394,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
         {
             top_image.BeginAnimation(OpacityProperty, new DoubleAnimation
             {
-                To = 1d,
+                To = 1,
                 Duration = Tile.FadeDuration
             });
 
@@ -407,8 +407,8 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
         }
         else
         {
-            top_image.Opacity = 0d;
-            bottom_image.Opacity = 0d;
+            top_image.Opacity = 0;
+            bottom_image.Opacity = 0;
             bottom_image.Source = null;
         }
 
