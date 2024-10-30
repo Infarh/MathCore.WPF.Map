@@ -14,14 +14,14 @@ public class LocationCollection : ObservableCollection<Location>
 
     public LocationCollection(List<Location> locations) : base(locations) { }
 
-    private static readonly char[] __Separators = { ' ', ';' };
+    private static readonly char[] __Separators = [' ', ';'];
 
     public static LocationCollection Parse(string Str) => new(ParseLocations(Str));
 
     private static IEnumerable<Location> ParseLocations(string Str)
     {
         foreach (var token in new StringSegment(Str).Split(__Separators))
-            if (token.HasValue && token.Length > 0)
+            if (token is { HasValue: true, Length: > 0 })
                 yield return Location.Parse(token);
     }
 }

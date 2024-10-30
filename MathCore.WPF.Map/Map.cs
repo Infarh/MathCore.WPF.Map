@@ -19,7 +19,7 @@ public class Map : MapBase
             nameof(ManipulationMode),
             typeof(ManipulationModes),
             typeof(Map),
-            new PropertyMetadata(ManipulationModes.All));
+            new(ManipulationModes.All));
 
     /// <summary>Способы взаимодействия пользователя с картой</summary>
     public ManipulationModes ManipulationMode
@@ -37,7 +37,7 @@ public class Map : MapBase
             nameof(MouseWheelZoomDelta),
             typeof(double),
             typeof(Map),
-            new PropertyMetadata(1d));
+            new(1d));
 
     /// <summary>Коэффициент приближения/удаления колёсиком мышки</summary>
     public double MouseWheelZoomDelta
@@ -83,7 +83,7 @@ public class Map : MapBase
             nameof(CanMouseMove),
             typeof(bool),
             typeof(Map),
-            new PropertyMetadata(true));
+            new(true));
 
     #endregion
 
@@ -100,7 +100,7 @@ public class Map : MapBase
             nameof(DoubleLeftMouseCommand),
             typeof(ICommand),
             typeof(Map),
-            new PropertyMetadata(default(ICommand)));
+            new(default(ICommand)));
 
     #endregion
 
@@ -113,7 +113,7 @@ public class Map : MapBase
 
         if(!CanMouseMove) return;
 
-        var zoom_delta = MouseWheelZoomDelta * e.Delta / 120d;
+        var zoom_delta = MouseWheelZoomDelta * e.Delta / 120;
         ZoomMap(e.GetPosition(this), TargetZoomLevel + zoom_delta);
     }
 
@@ -126,7 +126,7 @@ public class Map : MapBase
 
         if (e.ClickCount == 2 && 
             DoubleLeftMouseCommand is { } left_double_click_command && 
-            left_double_click_command?.CanExecute(location) == true)
+            left_double_click_command.CanExecute(location))
         {
             left_double_click_command.Execute(location);
             return;

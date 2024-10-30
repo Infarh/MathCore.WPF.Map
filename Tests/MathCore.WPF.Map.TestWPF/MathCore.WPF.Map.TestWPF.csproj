@@ -2,14 +2,15 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <LangVersion>preview</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MathCore.Hosting.WPF" Version="0.0.8.1" />
+    <PackageReference Include="MathCore.Hosting.WPF" Version="0.0.13.1" />
   </ItemGroup>
 
   <ItemGroup>

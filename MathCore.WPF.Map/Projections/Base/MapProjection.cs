@@ -24,7 +24,7 @@ public abstract class MapProjection
     /// <summary>Экваториальный радиус Земли</summary>
     public const double Wgs84EquatorialRadius = 6378137d;
 
-    /// <summary>Метров на градус замной поверхности</summary>
+    /// <summary>Метров на градус земной поверхности</summary>
     public const double MetersPerDegree = Wgs84EquatorialRadius * Consts.ToRad;
 
     public const double Flattening = 1d / 298.257223563;
@@ -48,7 +48,7 @@ public abstract class MapProjection
     public bool IsAzimuthal { get; protected set; }
 
     /// <summary>
-    /// Возвращает масштабный коэффициент из долготы в значение x нормальной цилиндрической проекции карты.
+    /// Возвращает масштабный коэффициент из долготы в значение x нормальной цилиндрической проекции карты.<br/>
     /// Возвращает <c>NaN</c>, если это не обычная цилиндрическая проекция.
     /// </summary>
     public double LongitudeScale { get; protected set; } = 1d;
@@ -122,7 +122,7 @@ public abstract class MapProjection
     }
 
     /// <summary>Формирование параметров запроса WMS 1.3.0 таких как "CRS=...&amp;BBOX=...&amp;WIDTH=...&amp;HEIGHT=..."</summary>
-    public virtual string WmsQueryParameters(BoundingBox BoundingBox, string Version = "1.3.0")
+    public virtual string? WmsQueryParameters(BoundingBox BoundingBox, string Version = "1.3.0")
     {
         if (CrsId is not { Length: > 0 } crs_id)
             return null;

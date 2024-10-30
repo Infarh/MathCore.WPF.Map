@@ -55,7 +55,7 @@ public class MapPath : Shape, IMapElement
             nameof(Location),
             typeof(Location),
             typeof(MapPath),
-            new PropertyMetadata(null, (o, _) => ((MapPath)o).LocationPropertyChanged()));
+            new(null, (o, _) => ((MapPath)o).LocationPropertyChanged()));
 
     public Location Location
     {

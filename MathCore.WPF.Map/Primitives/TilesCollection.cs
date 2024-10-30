@@ -4,7 +4,7 @@ namespace MathCore.WPF.Map.Primitives;
 
 public sealed class TilesCollection : IEnumerable<Tile>
 {
-    private readonly Dictionary<(int Zoom, int X, int Y), Tile> _Tiles = new();
+    private readonly Dictionary<(int Zoom, int X, int Y), Tile> _Tiles = [];
 
     public Tile? this[int Zoom, int X, int Y] => _Tiles.TryGetValue((Zoom, X, Y), out var tile) ? tile : null;
 

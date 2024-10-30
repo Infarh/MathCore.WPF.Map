@@ -15,7 +15,7 @@ using File = System.IO.File;
 
 namespace MathCore.WPF.Map;
 
-/// <summary>Загрузка и кеширвоание изображений тайлов карты для <see cref="MapTileLayer"/></summary>
+/// <summary>Загрузка и кеширование изображений тайлов карты для <see cref="MapTileLayer"/></summary>
 public class TileImageLoader : ITileImageLoader
 {
     /// <summary>По умолчанию путь к директории кеша тайлов C:\ProgramData\Map\TileCache</summary>
@@ -125,7 +125,7 @@ public class TileImageLoader : ITileImageLoader
         var buffer = Cache?.Get(CacheKey) as byte[];
 
         if (buffer is { Length: >= 16 } && Encoding.ASCII.GetString(buffer, buffer.Length - 16, 8) == __ExpiresStr)
-            expiration = new DateTime(BitConverter.ToInt64(buffer, buffer.Length - 8), DateTimeKind.Utc);
+            expiration = new(BitConverter.ToInt64(buffer, buffer.Length - 8), DateTimeKind.Utc);
         else
             expiration = DateTime.MinValue;
 
@@ -190,11 +190,11 @@ public class TileImageLoader : ITileImageLoader
         }
     }
 
-    public static void ClearCache(string TileSourceName = null, CancellationToken Cancel = default)
+    public static void ClearCache(string? TileSourceName = null, CancellationToken Cancel = default)
     {
         if (Cache is not { } cache) return;
 
-        Debug.WriteLine("Очистка кеша {0}", (object)TileSourceName);
+        Debug.WriteLine("Очистка кеша {0}", (object?)TileSourceName);
 
         if (TileSourceName == "*") TileSourceName = null;
         int length;
@@ -233,7 +233,7 @@ public class TileImageLoader : ITileImageLoader
                     Cache.Remove(v.Key);
 #endif
 
-        Debug.WriteLine("Очистка кеша {0} выполнена", (object)TileSourceName);
+        Debug.WriteLine("Очистка кеша {0} выполнена", (object?)TileSourceName);
     }
 
     private static async Task LoadTileImageAsync(TileSource TileSource, Tile tile)
@@ -267,11 +267,7 @@ public class TileImageLoader : ITileImageLoader
                     if (Path.GetExtension(path) is not { Length: > 0 } extension || extension.Equals(".jpeg", StringComparison.OrdinalIgnoreCase))
                         extension = ".jpg";
 
-                    var source_name = SourceName.Contains(';')
-                        ? SourceName.Replace(';', '_')
-                        : SourceName;
-
-                    var cache_key = MakeCacheKey(source_name, tile.ZoomLevel, tile.XIndex, tile.Y, extension);
+                    var cache_key = MakeCacheKey(SourceName.Replace(';', '_'), tile.ZoomLevel, tile.XIndex, tile.Y, extension);
 
                     await LoadTileImageAsync(tile, uri, cache_key, check_cache_expiration).ConfigureAwait(false);
                 }
@@ -293,8 +289,8 @@ public class TileImageLoader : ITileImageLoader
         bool CheckCache,
         DateTime? Expiration = null,
         int ParallelLevel = __DefaultParallelLevel,
-        IProgress<double> Progress = null,
-        IProgress<string> Status = null,
+        IProgress<double>? Progress = null,
+        IProgress<string>? Status = null,
         CancellationToken Cancel = default)
     {
         var line_count = 1 << Level;
@@ -304,9 +300,7 @@ public class TileImageLoader : ITileImageLoader
             ? (TileLayer.SourceName, TileLayer.TileSource)
             : TileLayer.Dispatcher.Invoke(() => (TileLayer.SourceName, TileLayer.TileSource));
 
-        var source_name = SourceName.Contains(';')
-            ? SourceName.Replace(';', '_')
-            : SourceName;
+        var source_name = SourceName.Replace(';', '_');
 
         Debug.WriteLine("Загрузка тайлов для слоя {0}, уровня {1}", SourceName, Level);
 
@@ -416,17 +410,15 @@ public class TileImageLoader : ITileImageLoader
         bool CheckCache,
         DateTime? Expiration = null,
         int ParallelLevel = 32,
-        IProgress<double> Progress = null,
-        IProgress<string> Status = null,
+        IProgress<double>? Progress = null,
+        IProgress<string>? Status = null,
         CancellationToken Cancel = default)
     {
         var (SourceName, tile_source) = TileLayer.CheckAccess()
             ? (TileLayer.SourceName, TileLayer.TileSource)
             : TileLayer.Dispatcher.Invoke(() => (TileLayer.SourceName, TileLayer.TileSource));
 
-        var source_name = SourceName.Contains(';')
-            ? SourceName.Replace(';', '_')
-            : SourceName;
+        var source_name = SourceName.Replace(';', '_');
 
         Debug.WriteLine("Загрузка тайлов для слоя {0}, уровня {1} | {2}", SourceName, LevelMin, Environment.CurrentManagedThreadId);
 
@@ -545,7 +537,10 @@ public class TileImageLoader : ITileImageLoader
 
                         elapsed_s = operation_timer.Elapsed.TotalSeconds * (total_tiles_count - count) / count;
                         elapsed = TimeSpan.FromSeconds(elapsed_s);
-                        Status?.Report($"Загрузка x:{x}, y:{y}, z:{z}\r\nПрошло {operation_timer.Elapsed:h\\:mm\\:ss\\.f} осталось {elapsed:h\\:mm\\:ss\\.f}");
+                        Status?.Report($"""
+                            Загрузка x:{x}, y:{y}, z:{z}
+                            Прошло {operation_timer.Elapsed:h\:mm\:ss\.f} осталось {elapsed:h\:mm\:ss\.f}
+                            """);
                     }
                 }
             }

@@ -23,14 +23,14 @@ public class MapPanel : Panel, IMapElement
             "Location", 
             typeof(Location), 
             typeof(MapPanel), 
-            new PropertyMetadata(null, LocationPropertyChanged));
+            new(null, LocationPropertyChanged));
 
     public static readonly DependencyProperty BoundingBoxProperty = DependencyProperty
        .RegisterAttached(
             "BoundingBox", 
             typeof(BoundingBox), 
             typeof(MapPanel), 
-            new PropertyMetadata(null, BoundingBoxPropertyChanged));
+            new(null, BoundingBoxPropertyChanged));
 
     #region Attached property ParentMap : MapBase
 
@@ -43,7 +43,7 @@ public class MapPanel : Panel, IMapElement
 
     public static readonly DependencyProperty ParentMapProperty = __ParentMapPropertyKey.DependencyProperty;
 
-    public static MapBase GetParentMap(UIElement element) => (MapBase)element.GetValue(ParentMapProperty);
+    public static MapBase? GetParentMap(UIElement element) => (MapBase?)element.GetValue(ParentMapProperty);
 
     public static void InitMapElement(FrameworkElement element) => (element as MapBase)?.SetValue(__ParentMapPropertyKey, element); 
 
@@ -57,9 +57,9 @@ public class MapPanel : Panel, IMapElement
 
     public static void SetLocation(UIElement element, Location value) => element.SetValue(LocationProperty, value);
 
-    public static BoundingBox GetBoundingBox(UIElement element) => (BoundingBox)element.GetValue(BoundingBoxProperty);
+    public static BoundingBox? GetBoundingBox(UIElement element) => (BoundingBox?)element.GetValue(BoundingBoxProperty);
 
-    public static void SetBoundingBox(UIElement element, BoundingBox value) => element.SetValue(BoundingBoxProperty, value);
+    public static void SetBoundingBox(UIElement element, BoundingBox? value) => element.SetValue(BoundingBoxProperty, value);
 
     public MapBase? ParentMap
     {
@@ -69,7 +69,7 @@ public class MapPanel : Panel, IMapElement
 
     protected override Size MeasureOverride(Size AvailableSize)
     {
-        AvailableSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
+        AvailableSize = new(double.PositiveInfinity, double.PositiveInfinity);
 
         foreach (UIElement element in Children) 
             element.Measure(AvailableSize);
@@ -106,14 +106,14 @@ public class MapPanel : Panel, IMapElement
         if (_ParentMap is null || ReferenceEquals(_ParentMap, this)) return;
 
         _ParentMap.ViewportChanged += OnViewportChanged;
-        OnViewportChanged(new ViewportChangedEventArgs());
+        OnViewportChanged(new());
     }
 
     protected virtual void OnViewportChanged(ViewportChangedEventArgs e)
     {
         foreach (UIElement element in Children)
         {
-            BoundingBox bounding_box;
+            BoundingBox? bounding_box;
             Location location;
 
             if ((bounding_box = GetBoundingBox(element)) is not null)
@@ -159,7 +159,7 @@ public class MapPanel : Panel, IMapElement
         SetBoundingBoxRect(element, map, bounding_box);
     }
 
-    private static void SetViewportPosition(UIElement element, MapBase ParentMap, Location location)
+    private static void SetViewportPosition(UIElement element, MapBase? ParentMap, Location? location)
     {
         var viewport_position = new Point();
 
@@ -216,7 +216,7 @@ public class MapPanel : Panel, IMapElement
         translate_transform.Y = viewport_position.Y;
     }
 
-    private static void SetBoundingBoxRect(UIElement element, MapBase ParentMap, BoundingBox BoundingBox)
+    private static void SetBoundingBoxRect(UIElement element, MapBase? ParentMap, BoundingBox? BoundingBox)
     {
         var rotation = 0d;
         var viewport_position = new Point();
@@ -256,7 +256,7 @@ public class MapPanel : Panel, IMapElement
             var height = rect.Height * view_port_scale;
 
             if (element is not FrameworkElement framework_element)
-                element.Arrange(new Rect(-width / 2d, -height / 2d, width, height));
+                element.Arrange(new(-width / 2, -height / 2, width, height));
             else
             {
                 framework_element.Width = width;
@@ -289,7 +289,7 @@ public class MapPanel : Panel, IMapElement
     {
         var size = element.DesiredSize;
 
-        element.Arrange(new(-size.Width / 2d, -size.Height / 2d, size.Width, size.Height));
+        element.Arrange(new(-size.Width / 2, -size.Height / 2, size.Width, size.Height));
     }
 
     private static void ArrangeElementWithLocation(UIElement element)
@@ -303,14 +303,14 @@ public class MapPanel : Panel, IMapElement
         var rect = new Rect(element.DesiredSize);
         rect.X = horizontal_alignment switch
         {
-            HorizontalAlignment.Center => -rect.Width / 2d,
+            HorizontalAlignment.Center => -rect.Width / 2,
             HorizontalAlignment.Right => -rect.Width,
             _ => rect.X
         };
 
         rect.Y = vertical_alignment switch
         {
-            VerticalAlignment.Center => -rect.Height / 2d,
+            VerticalAlignment.Center => -rect.Height / 2,
             VerticalAlignment.Bottom => -rect.Height,
             _ => rect.Y
         };
@@ -322,7 +322,7 @@ public class MapPanel : Panel, IMapElement
     {
         if (element is not FrameworkElement { HorizontalAlignment: var horizontal_alignment, VerticalAlignment: var vertical_alignment })
         {
-            element.Arrange(new Rect(element.DesiredSize));
+            element.Arrange(new(element.DesiredSize));
             return;
         }
 
@@ -333,7 +333,7 @@ public class MapPanel : Panel, IMapElement
         switch (horizontal_alignment)
         {
             case HorizontalAlignment.Center:
-                rect.X = (parent_width - width) / 2d;
+                rect.X = (parent_width - width) / 2;
                 break;
 
             case HorizontalAlignment.Right:
@@ -348,7 +348,7 @@ public class MapPanel : Panel, IMapElement
         switch (vertical_alignment)
         {
             case VerticalAlignment.Center:
-                rect.Y = (parent_height - height) / 2d;
+                rect.Y = (parent_height - height) / 2;
                 break;
 
             case VerticalAlignment.Bottom:

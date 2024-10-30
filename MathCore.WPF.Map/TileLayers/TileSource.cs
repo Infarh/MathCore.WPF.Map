@@ -22,15 +22,21 @@ public class TileSource
         var client = new HttpClient();
 
         var rnd = new Random();
-        var today = DateTime.Today;
-        var user_agent = string.Format("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:{0}.0) Gecko/{2}{3:00}{4:00} Firefox/{0}.0.{1}",
-            rnd.Next(3, 14),
-            rnd.Next(1, 10),
-            rnd.Next(today.Year - 4, today.Year),
-            rnd.Next(12),
-            rnd.Next(30));
+        var user_agent = 
+            $"Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
+            $"AppleWebKit/537.36 (KHTML, like Gecko) " +
+            $"Chrome/124.0.0.0 " +
+            $"YaBrowser/{rnd.Next(22, 26)}.{rnd.Next(0, 11)}.0.0 " +
+            $"Safari/537.36";
 
-        client.DefaultRequestHeaders.Add("User-Agent", user_agent);
+        var headers = client.DefaultRequestHeaders;
+        headers.Add("User-Agent", user_agent);
+        headers.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7");
+        headers.Add("Accept-Encoding", "gzip, deflate, br, zstd");
+        headers.Add("Accept-Language", "ru,en;q=0.9");
+        headers.Add("Sec-Ch-Ua-Platform", "Windows");
+        headers.Add("Sec-Gpc", "1");
+        headers.Add("Upgrade-Insecure-Requests", "1");
 
         return client;
     }
@@ -44,7 +50,7 @@ public class TileSource
 
     protected static Task<ImageSource> LoadLocalImageAsync(Uri Uri) => Task.Factory.StartNew(o =>
     {
-        var uri = (Uri)o;
+        var uri = (Uri)o!;
         var path = uri.IsAbsoluteUri ? uri.LocalPath : uri.OriginalString;
 
         if (!File.Exists(path)) return null;
@@ -53,7 +59,7 @@ public class TileSource
         return (ImageSource)BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
     }, Uri)!;
 
-    protected static async Task<ImageSource> LoadHttpImageAsync(Uri uri)
+    protected static async Task<ImageSource?> LoadHttpImageAsync(Uri uri)
     {
         using var response = await HttpClient.GetAsync(uri).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode)
@@ -78,7 +84,7 @@ public class TileSource
 
     protected TileSource(string URIFormat) => _URIFormat = URIFormat;
 
-    private Func<int, int, int, string> _GetUri;
+    private Func<int, int, int, string?>? _GetUri;
 
     private int _SubdomainIndex = -1;
 
@@ -96,8 +102,6 @@ public class TileSource
                 throw new ArgumentException("The value of the UriFormat property must not be null or empty.");
 
             _URIFormat = value;
-
-            if (value is null) return;
 
             if (value.Contains("{x}") && value.Contains("{z}"))
                 if (value.Contains("yandex"))
@@ -121,23 +125,21 @@ public class TileSource
     }
 
     /// <summary>Формирование адреса тайла на основе его координат</summary>
-    public virtual Uri GetUri(int x, int y, int ZoomLevel)
+    public virtual Uri? GetUri(int x, int y, int ZoomLevel)
     {
-        if (_GetUri is not { } get_uri)
+        if (_GetUri is not { } get_uri || get_uri(x, y, ZoomLevel) is not { } uri)
             return null;
 
-        var uri = get_uri(x, y, ZoomLevel);
-
         if (Subdomains is not { Length: > 0 } || !uri.Contains("{c}"))
-            return new Uri(uri, UriKind.RelativeOrAbsolute);
+            return new(uri, UriKind.RelativeOrAbsolute);
 
         _SubdomainIndex = (_SubdomainIndex + 1) % Subdomains.Length;
 
-        return new Uri(uri.Replace("{c}", Subdomains[_SubdomainIndex]), UriKind.RelativeOrAbsolute);
+        return new(uri.Replace("{c}", Subdomains[_SubdomainIndex]), UriKind.RelativeOrAbsolute);
     }
 
     /// <summary>Асинхронная загрузка изображения тайла по адресу, генерируемому GetUri(x, y, ZoomLevel)</summary>
-    public virtual async Task<ImageSource> LoadImageAsync(int x, int y, int ZoomLevel)
+    public virtual async Task<ImageSource?> LoadImageAsync(int x, int y, int ZoomLevel)
     {
         if (GetUri(x, y, ZoomLevel) is not { } uri)
             return null;
@@ -180,7 +182,7 @@ public class TileSource
        .Replace("{v}", ((1 << ZoomLevel) - 1 - y).ToString())
        .Replace("{z}", ZoomLevel.ToString());
 
-    private string GetQuadKeyUri(int x, int y, int ZoomLevel)
+    private string? GetQuadKeyUri(int x, int y, int ZoomLevel)
     {
         if (ZoomLevel < 1)
             return null;
@@ -198,10 +200,10 @@ public class TileSource
     private string GetBoundingBoxUri(int x, int y, int ZoomLevel)
     {
         var tile_size = 360d / (1 << ZoomLevel); // ширина тайла в градусах
-        var west = MapProjection.MetersPerDegree * (x * tile_size - 180d);
-        var east = MapProjection.MetersPerDegree * ((x + 1) * tile_size - 180d);
-        var south = MapProjection.MetersPerDegree * (180d - (y + 1) * tile_size);
-        var north = MapProjection.MetersPerDegree * (180d - y * tile_size);
+        var west = MapProjection.MetersPerDegree * (x * tile_size - 180);
+        var east = MapProjection.MetersPerDegree * ((x + 1) * tile_size - 180);
+        var south = MapProjection.MetersPerDegree * (180 - (y + 1) * tile_size);
+        var north = MapProjection.MetersPerDegree * (180 - y * tile_size);
 
         return _URIFormat!
            .Replace("{W}", west.ToString(CultureInfo.InvariantCulture))
@@ -215,10 +217,10 @@ public class TileSource
     private string GetLatLonBoundingBoxUri(int x, int y, int ZoomLevel)
     {
         var tile_size = 360d / (1 << ZoomLevel); // ширина тайла в градусах
-        var west = x * tile_size - 180d;
-        var east = (x + 1) * tile_size - 180d;
-        var south = WebMercatorProjection.YToLatitude(180d - (y + 1) * tile_size);
-        var north = WebMercatorProjection.YToLatitude(180d - y * tile_size);
+        var west = x * tile_size - 180;
+        var east = (x + 1) * tile_size - 180;
+        var south = WebMercatorProjection.YToLatitude(180 - (y + 1) * tile_size);
+        var north = WebMercatorProjection.YToLatitude(180 - y * tile_size);
 
         return _URIFormat!
            .Replace("{w}", west.ToString(CultureInfo.InvariantCulture))

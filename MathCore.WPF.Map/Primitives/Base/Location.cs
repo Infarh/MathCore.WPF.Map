@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.Text;
 using System.Text.Json.Serialization;
 
 using MathCore.WPF.Map.Infrastructure;
@@ -13,7 +14,7 @@ namespace MathCore.WPF.Map.Primitives.Base;
 [Serializable]
 [TypeConverter(typeof(LocationConverter))]
 [DebuggerDisplay("lat:{_Latitude}, lon:{_Longitude}")]
-public sealed class Location : IEquatable<Location?>
+public sealed class Location : IEquatable<Location?>, IFormattable
 {
     /// <summary>Широта</summary>
     private double _Latitude;
@@ -50,10 +51,11 @@ public sealed class Location : IEquatable<Location?>
     }
 
 #if DEBUG
-    public bool Equals(Location location)
+    public bool Equals(Location? location)
     {
         if (location is not { _Latitude: var latitude, _Longitude: var longitude })
             return false;
+
         var lat_delta = Math.Abs(latitude - _Latitude);
         var lon_delta = Math.Abs(longitude - _Longitude);
         return lat_delta < 2e-9 && lon_delta < 2e-9;
@@ -67,9 +69,9 @@ public sealed class Location : IEquatable<Location?>
 
     public override bool Equals(object? obj) => Equals(obj as Location);
 
-    public static bool operator ==(Location a, Location b) => Equals(a, b);
+    public static bool operator ==(Location? a, Location? b) => Equals(a, b);
 
-    public static bool operator !=(Location a, Location b) => !(a == b);
+    public static bool operator !=(Location? a, Location? b) => !(a == b);
 
     public override int GetHashCode() =>
 #if NET5_0_OR_GREATER
@@ -78,23 +80,23 @@ public sealed class Location : IEquatable<Location?>
         HashBuilder.Create().Append(_Latitude).Append(_Longitude);
 #endif
 
-    private static readonly string __NumberFormat = "F5";
+    //private static readonly string __NumberFormat = "F5";
+
     public override string ToString()
     {
-        //return string.Format(CultureInfo.InvariantCulture, "{0:F5},{1:F5}", _Latitude, _Longitude);
-        var invariant_culture = CultureInfo.InvariantCulture;
-        return new StringBuilderValued(stackalloc char[20])
-#if NET5_0_OR_GREATER
-           .Append(_Latitude, __NumberFormat, invariant_culture).Append(',')
-           .Append(_Longitude, __NumberFormat, invariant_culture)
-#else
-           .Append(_Latitude, __NumberFormat.AsSpan(), invariant_culture).Append(',')
-           .Append(_Longitude, __NumberFormat.AsSpan(), invariant_culture)
-#endif
-           .ToString();
+        var result = new StringBuilder();
+
+        result.Append(_Latitude >= 0 ? 'N' : 'S');
+        result.Append(_Latitude).Append('\u00b0');
+        result.Append(", ");
+
+        result.Append(_Longitude >= 0 ? 'E' : 'W');
+        result.Append(_Longitude).Append('\u00b0');
+
+        return result.ToString();
     }
 
-    private static readonly char[] __Separators = { ',' };
+    private static readonly char[] __Separators = [','];
     public static Location Parse(string s)
     {
         const NumberStyles number_styles = NumberStyles.Float;
@@ -175,4 +177,32 @@ public sealed class Location : IEquatable<Location?>
     }
 
     public void Deconstruct(out double Latitude, out double Longitude) => (Latitude, Longitude) = (_Latitude, _Longitude);
+
+    public string ToString(string? format)
+    {
+        var result = new StringBuilder();
+
+        result.Append(_Latitude >= 0 ? 'N' : 'S');
+        result.Append(_Latitude.ToString(format)).Append('\u00b0');
+        result.Append(", ");
+
+        result.Append(_Longitude >= 0 ? 'E' : 'W');
+        result.Append(_Longitude.ToString(format)).Append('\u00b0');
+
+        return result.ToString();
+    }
+
+    public string ToString(string? format, IFormatProvider? provider)
+    {
+        var result = new StringBuilder();
+
+        result.Append(_Latitude >= 0 ? 'N' : 'S');
+        result.Append(_Latitude.ToString(format, provider)).Append('\u00b0');
+        result.Append(", ");
+
+        result.Append(_Longitude >= 0 ? 'E' : 'W');
+        result.Append(_Longitude.ToString(format, provider)).Append('\u00b0');
+
+        return result.ToString();
+    }
 }

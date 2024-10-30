@@ -34,7 +34,7 @@ public class MapScale : MapOverlay
     {
         IsHitTestVisible = false;
         MinWidth = 100d;
-        Padding = new Thickness(4d);
+        Padding = new(4d);
         HorizontalAlignment = HorizontalAlignment.Left;
         VerticalAlignment = VerticalAlignment.Bottom;
 
@@ -47,7 +47,7 @@ public class MapScale : MapOverlay
             new Binding
             {
                 Source = this,
-                Path = new PropertyPath(nameof(Foreground))
+                Path = new(nameof(Foreground))
             });
 
         _Line.SetBinding(Shape.StrokeProperty,
@@ -55,7 +55,7 @@ public class MapScale : MapOverlay
             new Binding
             {
                 Source = this,
-                Path = new PropertyPath(nameof(Stroke))
+                Path = new(nameof(Stroke))
             });
 
         _Line.SetBinding(Shape.StrokeThicknessProperty,
@@ -63,7 +63,7 @@ public class MapScale : MapOverlay
             new Binding
             {
                 Source = this,
-                Path = new PropertyPath(nameof(StrokeThickness))
+                Path = new(nameof(StrokeThickness))
             });
 
         Children.Add(_Line);
@@ -94,11 +94,13 @@ public class MapScale : MapOverlay
         var x2 = size.Width - Padding.Right - StrokeThickness / 2d;
         var y1 = size.Height / 2d;
         var y2 = size.Height - Padding.Bottom - StrokeThickness / 2d;
-        var points = new PointCollection();
-        points.Add(new Point(x1, y1));
-        points.Add(new Point(x1, y2));
-        points.Add(new Point(x2, y2));
-        points.Add(new Point(x2, y1));
+        var points = new PointCollection
+        {
+            new(x1, y1),
+            new(x1, y2),
+            new(x2, y2),
+            new(x2, y1)
+        };
 
         _Line.Points = points;
         _Line.Measure(size);

@@ -1,7 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net7.0-windows;net6.0-windows;net4.8-windows;net4.7-windows;net4.6.1-windows</TargetFrameworks>
+    <TargetFrameworks>
+      net8.0-windows;
+      net7.0-windows;
+      net6.0-windows;
+      net4.8-windows;
+      net4.7-windows;
+      net4.6.1-windows;
+    </TargetFrameworks>
     <!--<TargetFramework>net6.0-windows</TargetFramework>-->
     <!--<TargetFramework>net4.8-windows</TargetFramework>-->
     <!--<TargetFramework>net4.7-windows</TargetFramework>-->
@@ -9,10 +16,11 @@
     <UseWPF>true</UseWPF>
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>preview</LangVersion>
+    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>0.0.1.2</Version>
+    <Version>0.0.2</Version>
     <PackageReleaseNotes>
       Рефакторинг
     </PackageReleaseNotes>
@@ -49,24 +57,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Primitives" Version="7.0.0" />
-    <PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
-    <PackageReference Include="System.Text.Json" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Primitives" Version="8.0.0" />
+    <PackageReference Include="System.Runtime.Caching" Version="8.0.1" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net4.6.1-windows'">
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
-    <PackageReference Include="System.Text.Json" Version="6.0.5" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net4.7-windows'">
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
-    <PackageReference Include="System.Text.Json" Version="6.0.5" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net4.8-windows'">
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
-    <PackageReference Include="System.Text.Json" Version="6.0.5" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
 
   <ItemGroup>

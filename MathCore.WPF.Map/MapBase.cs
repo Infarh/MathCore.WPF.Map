@@ -18,7 +18,7 @@ namespace MathCore.WPF.Map;
 /// <summary>Базовая логика компонента карты</summary>
 public class MapBase : MapPanel
 {
-    private const double __MaximumZoomLevel = 22d;
+    private const double __MaximumZoomLevel = 22;
 
     static MapBase()
     {
@@ -179,7 +179,7 @@ public class MapBase : MapPanel
             nameof(MapProjection),
             typeof(MapProjection),
             typeof(MapBase),
-            new PropertyMetadata(null, (o, _) => ((MapBase)o).MapProjectionPropertyChanged()));
+            new(null, (o, _) => ((MapBase)o).MapProjectionPropertyChanged()));
 
     /// <summary>Проекция координат карты</summary>
     public MapProjection MapProjection
@@ -197,7 +197,7 @@ public class MapBase : MapPanel
            nameof(MapLayer),
            typeof(UIElement),
            typeof(MapBase),
-           new PropertyMetadata(null, (o, e) => ((MapBase)o).MapLayerPropertyChanged((UIElement)e.OldValue, (UIElement)e.NewValue)));
+           new(null, (o, e) => ((MapBase)o).MapLayerPropertyChanged((UIElement)e.OldValue, (UIElement)e.NewValue)));
 
     /// <summary>
     /// Базовый слой карты, который добавляется первым элементов в коллекцию <c>Children</c>.<br/>
@@ -221,7 +221,7 @@ public class MapBase : MapPanel
             nameof(ProjectionCenter),
             typeof(Location),
             typeof(MapBase),
-            new PropertyMetadata(null, (o, _) => ((MapBase)o).ProjectionCenterPropertyChanged()));
+            new(null, (o, _) => ((MapBase)o).ProjectionCenterPropertyChanged()));
 
     /// <summary>
     /// Опциональный центр азимутальной проекции.
@@ -242,7 +242,7 @@ public class MapBase : MapPanel
             nameof(MinZoomLevel),
             typeof(double),
             typeof(MapBase),
-            new PropertyMetadata(
+            new(
                 1d,
                 (o, e) => ((MapBase)o).MinZoomLevelPropertyChanged((double)e.NewValue),
                 (o, e) => Math.Max(0, Math.Min((double)e, ((MapBase)o).MaxZoomLevel))),
@@ -264,7 +264,7 @@ public class MapBase : MapPanel
             nameof(MaxZoomLevel),
             typeof(double),
             typeof(MapBase),
-            new PropertyMetadata(
+            new(
                 19d,
                 (o, e) => ((MapBase)o).MaxZoomLevelPropertyChanged((double)e.NewValue),
                 (o, e) => Math.Min(20, Math.Max((double)e, ((MapBase)o).MinZoomLevel))),
@@ -286,7 +286,7 @@ public class MapBase : MapPanel
             nameof(AnimationDuration),
             typeof(TimeSpan),
             typeof(MapBase),
-            new PropertyMetadata(TimeSpan.FromSeconds(0.3)));
+            new(TimeSpan.FromSeconds(0.3)));
 
     /// <summary>Длительность анимации карты. По умолчанию 0.3 с.</summary>
     public TimeSpan AnimationDuration
@@ -304,7 +304,7 @@ public class MapBase : MapPanel
             nameof(AnimationEasingFunction),
             typeof(EasingFunctionBase),
             typeof(MapBase),
-            new PropertyMetadata(new QuadraticEase { EasingMode = EasingMode.EaseOut }));
+            new(new QuadraticEase { EasingMode = EasingMode.EaseOut }));
 
     /// <summary>Функция гладкости анимации. По умолчанию <see cref="QuadraticEase"/> со значением <see cref="EasingMode.EaseOut"/>.</summary>
     public EasingFunctionBase AnimationEasingFunction
@@ -322,7 +322,7 @@ public class MapBase : MapPanel
             nameof(TileFadeDuration),
             typeof(TimeSpan),
             typeof(MapBase),
-            new PropertyMetadata(Tile.FadeDuration, (_, e) => Tile.FadeDuration = (TimeSpan)e.NewValue));
+            new(Tile.FadeDuration, (_, e) => Tile.FadeDuration = (TimeSpan)e.NewValue));
 
     /// <summary>Длительность анимации проявления тайла на карте после его загрузки. По умолчанию 0.2 с.</summary>
     public TimeSpan TileFadeDuration
@@ -337,7 +337,7 @@ public class MapBase : MapPanel
        .Register(
             "CenterPoint", typeof(Point),
             typeof(MapBase),
-            new PropertyMetadata(new Point(), (o, e) => ((MapBase)o).CenterPointPropertyChanged((Point)e.NewValue)));
+            new(new Point(), (o, e) => ((MapBase)o).CenterPointPropertyChanged((Point)e.NewValue)));
 
     public MapProjection LayerMapProjection => (MapLayer as MapTileLayer)?.Projection ?? MapProjection;
 
@@ -398,7 +398,7 @@ public class MapBase : MapPanel
 
     /// <summary>
     /// Установка точки временного центра карты в экранных координатах для масштабирования и поворота.<br/>
-    /// Данная точка будет автоматически сброшена при при установке свойства <see cref="Center"/> в коде.
+    /// Данная точка будет автоматически сброшена при установке свойства <see cref="Center"/> в коде.
     /// </summary>
     public void SetTransformCenter(Point center)
     {
@@ -410,7 +410,7 @@ public class MapBase : MapPanel
     public void ResetTransformCenter()
     {
         _TransformCenter = null;
-        _ViewportCenter = new Point(RenderSize.Width / 2d, RenderSize.Height / 2d);
+        _ViewportCenter = new(RenderSize.Width / 2, RenderSize.Height / 2);
     }
 
     /// <summary>Изменение положения <see cref="Center"/> в соответствии с установленным преобразованием в экранных координатах</summary>
@@ -427,8 +427,12 @@ public class MapBase : MapPanel
         if (Heading != 0d)
         {
             var heading = Heading * Consts.ToRad;
+#if NET8_0_OR_GREATER
+            var (sin, cos) = Math.SinCos(heading);
+#else
             var cos = Math.Cos(heading);
-            var sin = Math.Sin(heading);
+            var sin = Math.Sin(heading); 
+#endif
 
             translation = new(
                 x: translation.X * cos + translation.Y * sin,
@@ -447,25 +451,25 @@ public class MapBase : MapPanel
     /// </summary>
     public void TransformMap(Point center, Point translation, double rotation, double scale)
     {
-        if (rotation == 0d && scale == 1d)
+        if (rotation == 0 && scale == 1)
         {
             TranslateMap(translation);// more precise
             return;
         }
 
         _TransformCenter = LayerMapProjection.ViewportPointToLocation(center);
-        _ViewportCenter = new Point(center.X + translation.X, center.Y + translation.Y);
+        _ViewportCenter = new(center.X + translation.X, center.Y + translation.Y);
 
         if (rotation != 0d)
         {
-            var heading = ((Heading + rotation) % 360d + 360d) % 360d;
+            var heading = ((Heading + rotation) % 360 + 360) % 360;
             InternalSetValue(HeadingProperty, heading);
             InternalSetValue(TargetHeadingProperty, heading);
         }
 
-        if (scale != 1d)
+        if (scale != 1)
         {
-            var zoom_level = Math.Min(Math.Max(ZoomLevel + Math.Log(scale, 2d), MinZoomLevel), MaxZoomLevel);
+            var zoom_level = Math.Min(Math.Max(ZoomLevel + Math.Log(scale, 2), MinZoomLevel), MaxZoomLevel);
             InternalSetValue(ZoomLevelProperty, zoom_level);
             InternalSetValue(TargetZoomLevelProperty, zoom_level);
         }
@@ -498,7 +502,7 @@ public class MapBase : MapPanel
 
         var projection = LayerMapProjection;
         var rect = projection.BoundingBoxToRect(BoundingBox);
-        var center = new Point(rect.X + rect.Width / 2d, rect.Y + rect.Height / 2d);
+        var center = new Point(rect.X + rect.Width / 2, rect.Y + rect.Height / 2);
 
         var scale0 = 1d / projection.GetViewportScale(0d);
 
@@ -506,8 +510,8 @@ public class MapBase : MapPanel
         var lon_scale = scale0 * render_width / rect.Width;
         var lat_scale = scale0 * render_height / rect.Height;
 
-        var lon_zoom = Math.Log(lon_scale, 2d);
-        var lat_zoom = Math.Log(lat_scale, 2d);
+        var lon_zoom = Math.Log(lon_scale, 2);
+        var lat_zoom = Math.Log(lat_scale, 2);
 
         TargetZoomLevel = Math.Min(lon_zoom, lat_zoom);
         TargetCenter = projection.PointToLocation(center);
@@ -563,7 +567,7 @@ public class MapBase : MapPanel
         else
         {
             var projection = LayerMapProjection;
-            if (center.Longitude is >= -180d and <= 180d && center.Latitude >= -projection.MaxLatitude && center.Latitude <= projection.MaxLatitude)
+            if (center.Longitude is >= -180 and <= 180 && center.Latitude >= -projection.MaxLatitude && center.Latitude <= projection.MaxLatitude)
                 return;
 
             center = new(
@@ -582,35 +586,35 @@ public class MapBase : MapPanel
 
         if (_CenterAnimation is not null) return;
         InternalSetValue(TargetCenterProperty, center);
-        InternalSetValue(CenterPointProperty, LayerMapProjection.LocationToPoint(center));
+        InternalSetValue(CenterPointProperty, LayerMapProjection.LocationToPoint(center!));
         UpdateBounds(ActualWidth, ActualHeight);
     }
 
-    private void UpdateBounds(double Width, double Height)
+    private void UpdateBounds(double width, double height)
     {
-        if (Width is double.NaN or <= 0) return;
-        if (Height is double.NaN or <= 0) return;
+        if (width is double.NaN or <= 0) return;
+        if (height is double.NaN or <= 0) return;
 
         _ = ViewportPointToLocation(new());
-        _ = ViewportPointToLocation(new(Width, Height));
+        _ = ViewportPointToLocation(new(width, height));
     }
 
-    private void TargetCenterPropertyChanged(Location? TargetCenter)
+    private void TargetCenterPropertyChanged(Location? Center)
     {
         if (_InternalPropertyChange) return;
-        AdjustCenterProperty(TargetCenterProperty, ref TargetCenter);
+        AdjustCenterProperty(TargetCenterProperty, ref Center);
 
-        if (TargetCenter!.Equals(Center)) return;
+        if (Center!.Equals(this.Center)) return;
         if (_CenterAnimation is not null) _CenterAnimation.Completed -= CenterAnimationCompleted;
 
         // animate private CenterPoint property by PointAnimation
         var projection = LayerMapProjection;
-        _CenterAnimation = new PointAnimation
+        _CenterAnimation = new()
         {
-            From = projection.LocationToPoint(Center),
-            To = projection.LocationToPoint(new Location(
-                latitude: TargetCenter.Latitude,
-                longitude: Location.NearestLongitude(TargetCenter.Longitude, Center.Longitude))),
+            From = projection.LocationToPoint(this.Center),
+            To = projection.LocationToPoint(new(
+                latitude: Center.Latitude,
+                longitude: Location.NearestLongitude(Center.Longitude, this.Center.Longitude))),
             Duration = AnimationDuration,
             EasingFunction = AnimationEasingFunction,
             FillBehavior = __AnimationFillBehavior
@@ -690,7 +694,7 @@ public class MapBase : MapPanel
         if (TargetZoomLevel == ZoomLevel) return;
         if (_ZoomLevelAnimation is not null) _ZoomLevelAnimation.Completed -= ZoomLevelAnimationCompleted;
 
-        _ZoomLevelAnimation = new DoubleAnimation
+        _ZoomLevelAnimation = new()
         {
             To = TargetZoomLevel,
             Duration = AnimationDuration,
@@ -714,8 +718,8 @@ public class MapBase : MapPanel
 
     private void AdjustHeadingProperty(DependencyProperty property, ref double heading)
     {
-        if (heading is >= 0d and <= 360d) return;
-        heading = (heading % 360d + 360d) % 360d;
+        if (heading is >= 0d and <= 360) return;
+        heading = (heading % 360 + 360) % 360;
         InternalSetValue(property, heading);
     }
 
@@ -738,12 +742,12 @@ public class MapBase : MapPanel
 
         if (_HeadingAnimation is not null) _HeadingAnimation.Completed -= HeadingAnimationCompleted;
 
-        _HeadingAnimation = new DoubleAnimation
+        _HeadingAnimation = new()
         {
             By = delta switch
             {
-                > 180d => delta - 360d,
-                < -180d => delta + 360d,
+                > 180 => delta - 360,
+                < -180 => delta + 360,
                 _ => delta
             },
             Duration = AnimationDuration,
@@ -781,7 +785,7 @@ public class MapBase : MapPanel
 
         if (_TransformCenter is not null)
         {
-            center = projection.ViewportPointToLocation(new Point(RenderSize.Width / 2d, RenderSize.Height / 2d));
+            center = projection.ViewportPointToLocation(new(RenderSize.Width / 2, RenderSize.Height / 2));
             center.Longitude = Location.NormalizeLongitude(center.Longitude);
 
             if (center.Latitude < -projection.MaxLatitude || center.Latitude > projection.MaxLatitude)
@@ -810,7 +814,7 @@ public class MapBase : MapPanel
         ScaleTransform.ScaleY = scale.Y;
         RotateTransform.Angle = Heading;
 
-        OnViewportChanged(new ViewportChangedEventArgs(ProjectionChanged, Center.Longitude - _CenterLongitude));
+        OnViewportChanged(new(ProjectionChanged, Center.Longitude - _CenterLongitude));
 
         _CenterLongitude = Center.Longitude;
     }

@@ -8,7 +8,7 @@ using System.Windows.Media.Imaging;
 namespace MathCore.WPF.Map;
 
 [DebuggerDisplay("Tile[x:{X}y:{Y}z:{ZoomLevel}]")]
-public sealed class Tile
+public sealed class Tile(int ZoomLevel, int X, int Y)
 {
     public void SetImage(ImageSource ImageSource, bool FadeIn = true)
     {
@@ -30,7 +30,7 @@ public sealed class Tile
 
     private void BitmapDownloadCompleted(object? sender, EventArgs e)
     {
-        var bitmap_source = (BitmapSource)sender;
+        var bitmap_source = (BitmapSource)sender!;
 
         bitmap_source.DownloadCompleted -= BitmapDownloadCompleted;
         bitmap_source.DownloadFailed -= BitmapDownloadFailed;
@@ -40,7 +40,7 @@ public sealed class Tile
 
     private void BitmapDownloadFailed(object? sender, ExceptionEventArgs e)
     {
-        var bitmap_source = (BitmapSource)sender;
+        var bitmap_source = (BitmapSource)sender!;
 
         bitmap_source.DownloadCompleted -= BitmapDownloadCompleted;
         bitmap_source.DownloadFailed -= BitmapDownloadFailed;
@@ -63,20 +63,13 @@ public sealed class Tile
         }
     }
 
-    public int ZoomLevel { get; }
+    public int ZoomLevel { get; } = ZoomLevel;
 
-    public int X { get; }
+    public int X { get; } = X;
 
-    public int Y { get; }
+    public int Y { get; } = Y;
 
     public Image Image { get; } = new() { Opacity = 0d };
-
-    public Tile(int ZoomLevel, int X, int Y)
-    {
-        this.ZoomLevel = ZoomLevel;
-        this.X = X;
-        this.Y = Y;
-    }
 
     public bool Pending { get; set; } = true;
 

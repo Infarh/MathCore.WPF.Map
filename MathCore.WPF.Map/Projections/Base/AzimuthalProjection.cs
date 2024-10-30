@@ -37,17 +37,17 @@ public abstract class AzimuthalProjection : MapProjection
         var center = LocationToPoint(BoundingBox.GetCenter());
 
         return new(
-            x: center.X - BoundingBox.Width / 2d,
-            y: center.Y - BoundingBox.Height / 2d,
+            x: center.X - BoundingBox.Width / 2,
+            y: center.Y - BoundingBox.Height / 2,
             width: BoundingBox.Width,
             height: BoundingBox.Height);
     }
 
     public override BoundingBox RectToBoundingBox(Rect rect)
     {
-        var center = PointToLocation(new Point(rect.X + rect.Width / 2d, rect.Y + rect.Height / 2d));
+        var center = PointToLocation(new(rect.X + rect.Width / 2, rect.Y + rect.Height / 2));
 
-        return new BoundingBox(center, rect.Width, rect.Height); // width и height в метрах
+        return new(center, rect.Width, rect.Height); // width и height в метрах
     }
 
     public override void SetViewportTransform(Location Center, Location MapCenter, Point ViewportCenter, double ZoomLevel, double Heading)
@@ -57,7 +57,7 @@ public abstract class AzimuthalProjection : MapProjection
         base.SetViewportTransform(Center, MapCenter, ViewportCenter, ZoomLevel, Heading);
     }
 
-    public override string WmsQueryParameters(BoundingBox BoundingBox, string Version = "1.3.0")
+    public override string? WmsQueryParameters(BoundingBox BoundingBox, string Version = "1.3.0")
     {
         if (string.IsNullOrEmpty(CrsId))
             return null;
@@ -88,16 +88,22 @@ public abstract class AzimuthalProjection : MapProjection
         var lon1 = location1.Longitude * Consts.ToRad;
         var lat2 = location2.Latitude * Consts.ToRad;
         var lon2 = location2.Longitude * Consts.ToRad;
+#if NET8_0_OR_GREATER
+        var (sin_lat1, cos_lat1) = Math.SinCos(lat1);
+        var (sin_lat2, cos_lat2) = Math.SinCos(lat2);
+        var (sin_lon12, cos_lon12) = Math.SinCos(lon2 - lon1);
+#else
         var cos_lat1 = Math.Cos(lat1);
         var sin_lat1 = Math.Sin(lat1);
         var cos_lat2 = Math.Cos(lat2);
         var sin_lat2 = Math.Sin(lat2);
-        var cos_lon12 = Math.Cos(lon2 - lon1);
         var sin_lon12 = Math.Sin(lon2 - lon1);
+        var cos_lon12 = Math.Cos(lon2 - lon1);
+#endif
         var cos_distance = sin_lat1 * sin_lat2 + cos_lat1 * cos_lat2 * cos_lon12;
 
         var azimuth = Math.Atan2(sin_lon12, cos_lat1 * sin_lat2 / cos_lat2 - sin_lat1 * cos_lon12);
-        var distance = Math.Acos(Math.Max(Math.Min(cos_distance, 1d), -1d));
+        var distance = Math.Acos(Math.Max(Math.Min(cos_distance, 1), -1));
 
         return (azimuth, distance);
     }
@@ -106,14 +112,20 @@ public abstract class AzimuthalProjection : MapProjection
     public static Location GetLocation(Location location, double azimuth, double distance)
     {
         var lat1 = location.Latitude * Consts.ToRad;
+#if NET8_0_OR_GREATER
+        var (sin_distance, cos_distance) = Math.SinCos(distance);
+        var (sin_azimuth, cos_azimuth) = Math.SinCos(azimuth);
+        var (sin_lat1, cos_lat1) = Math.SinCos(lat1);
+#else
         var sin_distance = Math.Sin(distance);
         var cos_distance = Math.Cos(distance);
         var cos_azimuth = Math.Cos(azimuth);
         var sin_azimuth = Math.Sin(azimuth);
         var cos_lat1 = Math.Cos(lat1);
-        var sin_lat1 = Math.Sin(lat1);
+        var sin_lat1 = Math.Sin(lat1); 
+#endif
         var sin_lat2 = sin_lat1 * cos_distance + cos_lat1 * sin_distance * cos_azimuth;
-        var lat2 = Math.Asin(Math.Max(Math.Min(sin_lat2, 1d), -1d));
+        var lat2 = Math.Asin(Math.Max(Math.Min(sin_lat2, 1), -1));
         var d_lon = Math.Atan2(sin_distance * sin_azimuth, cos_lat1 * cos_distance - sin_lat1 * sin_distance * cos_azimuth);
 
         return new(lat2 * Consts.ToDeg, location.Longitude + d_lon * Consts.ToDeg);

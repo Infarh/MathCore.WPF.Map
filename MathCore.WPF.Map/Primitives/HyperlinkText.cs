@@ -6,13 +6,21 @@ using System.Windows.Documents;
 namespace MathCore.WPF.Map.Primitives;
 
 /// <summary>Инструменты для работы с текстом гиперссылки</summary>
-public static class HyperlinkText
+public static partial class HyperlinkText
 {
+#if NET8_0_OR_GREATER
+    /// <summary>Регулярное выражение для разбора элементов гиперссылки</summary>
+    private static readonly Regex __Regex = GetHyperlinkRegex();
+
+    [GeneratedRegex(@"\[([^\]]+)\]\(([^\)]+)\)", RegexOptions.Compiled)]
+    private static partial Regex GetHyperlinkRegex();
+#else
     /// <summary>Регулярное выражение для разбора элементов гиперссылки</summary>
     private static readonly Regex __Regex = new(@"\[([^\]]+)\]\(([^\)]+)\)", RegexOptions.Compiled);
+#endif
 
     /// <summary>Извлечение параметров ссылки из элементов Markdown [text](url)</summary>
-    public static IEnumerable<Inline> TextToInlines(this string text)
+    public static IEnumerable<Inline> TextToInlines(this string? text)
     {
         while (text is { Length: > 0 })
             if (__Regex.Match(text) is { Success: true, Groups: { Count: 3 } groups } match &&
@@ -40,7 +48,7 @@ public static class HyperlinkText
             "InlinesSource",
             typeof(string),
             typeof(HyperlinkText),
-            new PropertyMetadata(null, InlinesSourcePropertyChanged));
+            new(null, InlinesSourcePropertyChanged));
 
     private static void InlinesSourcePropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
     {

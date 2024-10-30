@@ -38,13 +38,13 @@ public class MapPolyline : MapPath
              nameof(Locations),
              typeof(IEnumerable<Location>),
              typeof(MapPolyline),
-             new PropertyMetadata(null, (o, e) => ((MapPolyline)o).LocationsPropertyChanged(e)));
+             new(null, (o, e) => ((MapPolyline)o).LocationsPropertyChanged(e)));
 
     /// <summary>Набор точек полигона</summary>
     [TypeConverter(typeof(LocationCollectionConverter))]
-    public IEnumerable<Location> Locations
+    public IEnumerable<Location>? Locations
     {
-        get => (IEnumerable<Location>)GetValue(LocationsProperty);
+        get => (IEnumerable<Location>?)GetValue(LocationsProperty);
         set => SetValue(LocationsProperty, value);
     }
 
@@ -57,7 +57,7 @@ public class MapPolyline : MapPath
              nameof(IsClosed),
              typeof(bool),
              typeof(MapPolyline),
-             new PropertyMetadata(false, (o, _) => ((MapPolyline)o).UpdateData()));
+             new(false, (o, _) => ((MapPolyline)o).UpdateData()));
 
     /// <summary>Является ли периметр полигона замкнутым</summary>
     public bool IsClosed
@@ -74,16 +74,25 @@ public class MapPolyline : MapPath
     {
         var geometry = (StreamGeometry)Data;
 
-        if (ParentMap is not null && Locations is { } locations && locations.Any())
+        var locations = Locations;
+        if (ParentMap is null || locations is null)
         {
-            using var context = geometry.Open();
-            var points = Locations.Select(l => ParentMap.LayerMapProjection.LocationToPoint(l));
-
-            context.BeginFigure(points.First(), IsClosed, IsClosed);
-            context.PolyLineTo(points.Skip(1).ToList(), true, false);
-        }
-        else
             geometry.Clear();
+            return;
+        }
+
+        var points = locations.Select(ParentMap.LayerMapProjection.LocationToPoint).ToList();
+        if (points.Count < 2)
+        {
+            geometry.Clear();
+            return;
+        }
+
+        using var context = geometry.Open();
+
+        context.BeginFigure(points[0], IsClosed, IsClosed);
+        points.RemoveAt(0);
+        context.PolyLineTo(points, true, false);
     }
 
     private void LocationsPropertyChanged(DependencyPropertyChangedEventArgs e)
