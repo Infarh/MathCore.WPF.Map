@@ -5,6 +5,7 @@ using System.Windows.Media;
 using MathCore.WPF.Map.Infrastructure;
 using MathCore.WPF.Map.Primitives;
 using MathCore.WPF.Map.Primitives.Base;
+using MathCore.WPF.Map.TileLayers;
 
 namespace MathCore.WPF.Map;
 
@@ -21,14 +22,14 @@ public class MapPanel : Panel, IMapElement
     public static readonly DependencyProperty LocationProperty = DependencyProperty
        .RegisterAttached(
             "Location", 
-            typeof(Location), 
+            typeof(Location?), 
             typeof(MapPanel), 
             new(null, LocationPropertyChanged));
 
     public static readonly DependencyProperty BoundingBoxProperty = DependencyProperty
        .RegisterAttached(
             "BoundingBox", 
-            typeof(BoundingBox), 
+            typeof(BoundingBox?), 
             typeof(MapPanel), 
             new(null, BoundingBoxPropertyChanged));
 
@@ -53,9 +54,9 @@ public class MapPanel : Panel, IMapElement
 
     public MapPanel() => InitMapElement(this);
 
-    public static Location GetLocation(UIElement element) => (Location)element.GetValue(LocationProperty);
+    public static Location? GetLocation(UIElement element) => (Location?)element.GetValue(LocationProperty);
 
-    public static void SetLocation(UIElement element, Location value) => element.SetValue(LocationProperty, value);
+    public static void SetLocation(UIElement element, Location? value) => element.SetValue(LocationProperty, value);
 
     public static BoundingBox? GetBoundingBox(UIElement element) => (BoundingBox?)element.GetValue(BoundingBoxProperty);
 
@@ -112,15 +113,10 @@ public class MapPanel : Panel, IMapElement
     protected virtual void OnViewportChanged(ViewportChangedEventArgs e)
     {
         foreach (UIElement element in Children)
-        {
-            BoundingBox? bounding_box;
-            Location location;
-
-            if ((bounding_box = GetBoundingBox(element)) is not null)
+            if (GetBoundingBox(element) is { } bounding_box)
                 SetBoundingBoxRect(element, _ParentMap, bounding_box);
-            else if ((location = GetLocation(element)) is not null) 
+            else if(GetLocation(element) is { } location)
                 SetViewportPosition(element, _ParentMap, location);
-        }
     }
 
     private void OnViewportChanged(object? sender, ViewportChangedEventArgs e) => OnViewportChanged(e);
@@ -135,7 +131,7 @@ public class MapPanel : Panel, IMapElement
     {
         var element = (UIElement)obj;
         var map = GetParentMap(element);
-        var location = (Location)e.NewValue;
+        var location = (Location?)e.NewValue;
 
         if (location is null)
             ArrangeElement(element, map?.RenderSize ?? new());
@@ -149,7 +145,7 @@ public class MapPanel : Panel, IMapElement
     {
         var element = (FrameworkElement)obj;
         var map = GetParentMap(element);
-        var bounding_box = (BoundingBox)e.NewValue;
+        var bounding_box = (BoundingBox?)e.NewValue;
 
         if (bounding_box is null)
             ArrangeElement(element, map?.RenderSize ?? new());
@@ -161,6 +157,8 @@ public class MapPanel : Panel, IMapElement
 
     private static void SetViewportPosition(UIElement element, MapBase? ParentMap, Location? location)
     {
+        if(element is MapTileLayer) return;
+
         var viewport_position = new Point();
 
         if (ParentMap is
@@ -175,7 +173,7 @@ public class MapPanel : Panel, IMapElement
             } 
             && location is { Latitude: var latitude, Longitude: var longitude })
         {
-            viewport_position = projection.LocationToViewportPoint(location);
+            viewport_position = projection.LocationToViewportPoint((Location)location);
 
             if (viewport_position.X < 0d || viewport_position.X > width ||
                 viewport_position.Y < 0d || viewport_position.Y > height)
@@ -235,9 +233,9 @@ public class MapPanel : Panel, IMapElement
                     Height: var render_size_height
                 }
             } 
-            && BoundingBox is not null)
+            && BoundingBox is { } box)
         {
-            var rect = projection.BoundingBoxToRect(BoundingBox);
+            var rect = projection.BoundingBoxToRect(box);
             var center = new Point(rect.X + rect.Width / 2d, rect.Y + rect.Height / 2d);
             
             rotation = heading;
@@ -247,7 +245,11 @@ public class MapPanel : Panel, IMapElement
                 viewport_position.Y < 0d || viewport_position.Y > render_size_height)
             {
                 var location = projection.PointToLocation(center);
-                location.Longitude = Location.NearestLongitude(location.Longitude, ParentMap.Center.Longitude);
+                //location.Longitude = Location.NearestLongitude(location.Longitude, ParentMap.Center.Longitude);
+                location = location with
+                {
+                    Longitude = Location.NearestLongitude(location.Longitude, ParentMap.Center.Longitude)
+                };
 
                 viewport_position = projection.LocationToViewportPoint(location);
             }

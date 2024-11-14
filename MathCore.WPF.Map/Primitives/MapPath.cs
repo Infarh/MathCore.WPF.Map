@@ -53,13 +53,13 @@ public class MapPath : Shape, IMapElement
     public static readonly DependencyProperty LocationProperty = DependencyProperty
        .Register(
             nameof(Location),
-            typeof(Location),
+            typeof(Location?),
             typeof(MapPath),
             new(null, (o, _) => ((MapPath)o).LocationPropertyChanged()));
 
-    public Location Location
+    public Location? Location
     {
-        get => (Location)GetValue(LocationProperty);
+        get => (Location?)GetValue(LocationProperty);
         set => SetValue(LocationProperty, value);
     }
 
@@ -132,7 +132,7 @@ public class MapPath : Shape, IMapElement
             if (viewport_position.X < 0d || viewport_position.X > render_width ||
                 viewport_position.Y < 0d || viewport_position.Y > render_height)
             {
-                var nearest_longitude = Location.NearestLongitude(longitude, center_longitude);
+                var nearest_longitude = Base.Location.NearestLongitude(longitude, center_longitude);
 
                 longitude_offset = longitude_scale * (nearest_longitude - longitude);
             }
