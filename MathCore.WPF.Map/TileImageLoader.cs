@@ -26,7 +26,7 @@ public class TileImageLoader : ITileImageLoader
     public static ObjectCache? Cache { get; set; } = MemoryCache.Default;
 
     /// <summary>Количество соединений по умолчанию</summary>
-    private static int DefaultConnectionLimit => ServicePointManager.DefaultConnectionLimit;
+    private static int DefaultConnectionLimit { get; set; } = 4;
 
     /// <summary>Время истечения времени действия кеша изображений</summary>
     /// <remarks>Используется когда время истечения действия не передаётся при скачивании. По умолчанию один день</remarks>
@@ -167,9 +167,11 @@ public class TileImageLoader : ITileImageLoader
 
         if (tile_source is not null && tiles.Any())
         {
-            if (Cache is null || source_name is not { Length: > 0 } ||
-                tile_source.UriFormat is null || !tile_source.UriFormat.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-                await tiles.Select(tile => LoadTileImageAsync(tile_source, tile)).WhenAll();
+            if (Cache is null 
+                || source_name is not { Length: > 0 } 
+                || tile_source.UriFormat is null
+                || !tile_source.UriFormat.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+                await tiles.Select(tile => LoadTileImageAsync(tile_source, tile)).WhenAll().ConfigureAwait(false);
             else
             {
                 foreach (var tile in tiles)
@@ -181,7 +183,7 @@ public class TileImageLoader : ITileImageLoader
 
                     _ = Task.Run(async () =>
                     {
-                        await LoadPendingTilesAsync(tile_source, source_name);
+                        await LoadPendingTilesAsync(tile_source, source_name).ConfigureAwait(false);
 
                         Interlocked.Decrement(ref _TaskCount);
                     });

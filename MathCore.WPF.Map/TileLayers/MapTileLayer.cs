@@ -337,13 +337,11 @@ public class MapTileLayer : Panel, IMapLayer
             if (tile_grid.Equals(TileGrid)) return;
             TileGrid = tile_grid;
             SetRenderTransform();
-            UpdateTiles();
         }
         else
-        {
             TileGrid = null;
-            UpdateTiles();
-        }
+
+        UpdateTiles();
     }
 
     private void TileSourcePropertyChanged()
