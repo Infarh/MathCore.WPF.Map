@@ -53,7 +53,8 @@ public class MapBase : MapPanel
             typeof(Location),
             typeof(MapBase),
             new FrameworkPropertyMetadata(
-                new Location(), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                new Location(), 
+                FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
                 (o, e) => ((MapBase)o).CenterPropertyChanged((Location)e.NewValue)));
 
     /// <summary>Точка центра карты</summary>
@@ -219,7 +220,7 @@ public class MapBase : MapPanel
     public static readonly DependencyProperty ProjectionCenterProperty = DependencyProperty
        .Register(
             nameof(ProjectionCenter),
-            typeof(Location),
+            typeof(Location?),
             typeof(MapBase),
             new(null, (o, _) => ((MapBase)o).ProjectionCenterPropertyChanged()));
 
@@ -557,36 +558,39 @@ public class MapBase : MapPanel
 #if NET5_0_OR_GREATER
         [NotNullWhen(true)]
 #endif 
-        ref Location? center)
+        ref Location? Center)
     {
-        if (center is null)
+        if (Center is not { } center)
         {
-            center = new();
-            InternalSetValue(property, center);
+            Center = new();
+            InternalSetValue(property, Center);
         }
         else
         {
             var projection = LayerMapProjection;
-            if (center.Longitude is >= -180 and <= 180 && center.Latitude >= -projection.MaxLatitude && center.Latitude <= projection.MaxLatitude)
+            if (center.Longitude is >= -180 and <= 180 && 
+                center.Latitude >= -projection.MaxLatitude &&
+                center.Latitude <= projection.MaxLatitude)
                 return;
 
-            center = new(
+            Center = new(
                 latitude: Math.Min(Math.Max(center.Latitude, -projection.MaxLatitude), projection.MaxLatitude),
                 longitude: Location.NormalizeLongitude(center.Longitude));
-            InternalSetValue(property, center);
+            InternalSetValue(property, Center);
         }
     }
 
-    private void CenterPropertyChanged(Location? center)
+    private void CenterPropertyChanged(Location? Center)
     {
         if (_InternalPropertyChange) return;
 
-        AdjustCenterProperty(CenterProperty, ref center);
+        AdjustCenterProperty(CenterProperty, ref Center);
         UpdateTransform();
 
-        if (_CenterAnimation is not null) return;
+        if (_CenterAnimation is not null || Center is not { } center) return;
+
         InternalSetValue(TargetCenterProperty, center);
-        InternalSetValue(CenterPointProperty, LayerMapProjection.LocationToPoint(center!));
+        InternalSetValue(CenterPointProperty, LayerMapProjection.LocationToPoint(center));
         UpdateBounds(ActualWidth, ActualHeight);
     }
 
@@ -605,7 +609,10 @@ public class MapBase : MapPanel
         AdjustCenterProperty(TargetCenterProperty, ref Center);
 
         if (Center!.Equals(this.Center)) return;
-        if (_CenterAnimation is not null) _CenterAnimation.Completed -= CenterAnimationCompleted;
+        if (_CenterAnimation is not null) 
+            _CenterAnimation.Completed -= CenterAnimationCompleted;
+
+        if(Center is not { } center) return;
 
         // animate private CenterPoint property by PointAnimation
         var projection = LayerMapProjection;
@@ -613,8 +620,8 @@ public class MapBase : MapPanel
         {
             From = projection.LocationToPoint(this.Center),
             To = projection.LocationToPoint(new(
-                latitude: Center.Latitude,
-                longitude: Location.NearestLongitude(Center.Longitude, this.Center.Longitude))),
+                latitude: center.Latitude,
+                longitude: Location.NearestLongitude(center.Longitude, this.Center.Longitude))),
             Duration = AnimationDuration,
             EasingFunction = AnimationEasingFunction,
             FillBehavior = __AnimationFillBehavior
@@ -639,7 +646,7 @@ public class MapBase : MapPanel
     {
         if (_InternalPropertyChange) return;
         var center = LayerMapProjection.PointToLocation(CenterPoint);
-        center.Longitude = Location.NormalizeLongitude(center.Longitude);
+        center = center with { Longitude = Location.NormalizeLongitude(center.Longitude) };
 
         InternalSetValue(CenterProperty, center);
         UpdateTransform();
@@ -786,11 +793,12 @@ public class MapBase : MapPanel
         if (_TransformCenter is not null)
         {
             center = projection.ViewportPointToLocation(new(RenderSize.Width / 2, RenderSize.Height / 2));
-            center.Longitude = Location.NormalizeLongitude(center.Longitude);
+            center = center with { Longitude = Location.NormalizeLongitude(center.Longitude) };
 
             if (center.Latitude < -projection.MaxLatitude || center.Latitude > projection.MaxLatitude)
             {
-                center.Latitude = Math.Min(Math.Max(center.Latitude, -projection.MaxLatitude), projection.MaxLatitude);
+                var latitude = Math.Min(Math.Max(center.Latitude, -projection.MaxLatitude), projection.MaxLatitude);
+                center = center with { Latitude = latitude };
                 ResetTransformCenter = true;
             }
 

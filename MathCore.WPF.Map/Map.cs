@@ -54,7 +54,7 @@ public class Map : MapBase
     private static readonly DependencyPropertyKey __CursorPositionPropertyKey = DependencyProperty
        .RegisterReadOnly(
             nameof(CursorPosition),
-            typeof(Location),
+            typeof(Location?),
             typeof(Map),
             new FrameworkPropertyMetadata(null));
 
@@ -62,9 +62,9 @@ public class Map : MapBase
     public static readonly DependencyProperty CursorPositionProperty = __CursorPositionPropertyKey.DependencyProperty;
 
     /// <summary>Положение курсора на карте</summary>
-    public Location CursorPosition
+    public Location? CursorPosition
     {
-        get => (Location)GetValue(CursorPositionProperty);
+        get => (Location?)GetValue(CursorPositionProperty);
         private set => SetValue(__CursorPositionPropertyKey, value);
     } 
 

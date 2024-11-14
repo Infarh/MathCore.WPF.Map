@@ -14,30 +14,34 @@ namespace MathCore.WPF.Map.Primitives.Base;
 [Serializable]
 [TypeConverter(typeof(LocationConverter))]
 [DebuggerDisplay("lat:{_Latitude}, lon:{_Longitude}")]
-public sealed class Location : IEquatable<Location?>, IFormattable
+public readonly record struct Location : IEquatable<Location?>, IFormattable
 {
     /// <summary>Широта</summary>
-    private double _Latitude;
+    private readonly double _Latitude;
 
     /// <summary>Широта</summary>
     [JsonPropertyName("lat")]
     public double Latitude
     {
         get => _Latitude;
-        set => _Latitude = Math.Min(Math.Max(value, -90d), 90d);
+        init => _Latitude = Math.Min(Math.Max(value, -90d), 90d);
     }
 
+    public Location WithLatitude(double latitude) => new(latitude, Longitude);
+
     /// <summary>Долгота</summary>
-    private double _Longitude;
+    private readonly double _Longitude;
 
     /// <summary>Долгота</summary>
     [JsonPropertyName("lon")]
     public double Longitude
     {
         get => _Longitude;
-        set => _Longitude = value;
+        init => _Longitude = value;
     }
 
+    public Location WithLongitude(double longitude) => new(Latitude, longitude);
+         
     /// <summary>Новая географическая точка</summary>
     public Location() { }
 
@@ -67,18 +71,16 @@ public sealed class Location : IEquatable<Location?>, IFormattable
         && Math.Abs(longitude - _Longitude) < 1e-9;
 #endif
 
-    public override bool Equals(object? obj) => Equals(obj as Location);
-
     public static bool operator ==(Location? a, Location? b) => Equals(a, b);
 
-    public static bool operator !=(Location? a, Location? b) => !(a == b);
+    public static bool operator !=(Location? a, Location? b) => !Equals(a, b);
 
-    public override int GetHashCode() =>
-#if NET5_0_OR_GREATER
-        HashCode.Combine(_Latitude, _Longitude);
-#else
-        HashBuilder.Create().Append(_Latitude).Append(_Longitude);
-#endif
+//    public override int GetHashCode() =>
+//#if NET5_0_OR_GREATER
+//        HashCode.Combine(_Latitude, _Longitude);
+//#else
+//        HashBuilder.Create().Append(_Latitude).Append(_Longitude);
+//#endif
 
     //private static readonly string __NumberFormat = "F5";
 
@@ -176,7 +178,7 @@ public sealed class Location : IEquatable<Location?>, IFormattable
         return longitude;
     }
 
-    public void Deconstruct(out double Latitude, out double Longitude) => (Latitude, Longitude) = (_Latitude, _Longitude);
+    public void Deconstruct(out double latitude, out double longitude) => (latitude, longitude) = (_Latitude, _Longitude);
 
     public string ToString(string? format)
     {
@@ -184,7 +186,7 @@ public sealed class Location : IEquatable<Location?>, IFormattable
 
         result.Append(_Latitude >= 0 ? 'N' : 'S');
         result.Append(_Latitude.ToString(format)).Append('\u00b0');
-        result.Append(", ");
+        result.Append(',').Append(' ');
 
         result.Append(_Longitude >= 0 ? 'E' : 'W');
         result.Append(_Longitude.ToString(format)).Append('\u00b0');
@@ -198,7 +200,7 @@ public sealed class Location : IEquatable<Location?>, IFormattable
 
         result.Append(_Latitude >= 0 ? 'N' : 'S');
         result.Append(_Latitude.ToString(format, provider)).Append('\u00b0');
-        result.Append(", ");
+        result.Append(',').Append(' ');
 
         result.Append(_Longitude >= 0 ? 'E' : 'W');
         result.Append(_Longitude.ToString(format, provider)).Append('\u00b0');

@@ -20,9 +20,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>0.0.2</Version>
+    <Version>0.0.3</Version>
     <PackageReleaseNotes>
-      Рефакторинг
+        
     </PackageReleaseNotes>
   </PropertyGroup>
 

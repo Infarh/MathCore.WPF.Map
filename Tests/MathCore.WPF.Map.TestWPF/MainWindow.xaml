@@ -31,7 +31,15 @@
                            StrokeStartLineCap="Round"
                            StrokeEndLineCap="Round"
                            Locations="{Binding Locations}"/>
-            <m:MapItemsControl></m:MapItemsControl>
+            <m:MapItemsControl ItemsSource="{Binding Locations}">
+                <m:MapItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" 
+                                   m:MapPanel.Location="{Binding}"
+                                   VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    </DataTemplate>
+                </m:MapItemsControl.ItemTemplate>
+            </m:MapItemsControl>
             <m:MapGraticule Opacity="0.3" Background="Transparent"/>
             <m:MapPath Location="55.65505,37.7578" StrokeThickness="2" Fill="Red" Stroke="Blue"/>
             <m:Pushpin m:MapPanel.Location="55.75,37.62" Opacity="0.6" Background="Blue" Foreground="White"
