@@ -11,53 +11,53 @@ namespace MathCore.WPF.Map.Primitives;
 /// <summary>Географическая прямоугольная область</summary>
 [Serializable]
 [TypeConverter(typeof(BoundingBoxConverter))]
-public class BoundingBox : IEquatable<BoundingBox?>
+public readonly record struct BoundingBox : IEquatable<BoundingBox?>
 {
     /// <summary>Северная граница</summary>
-    private double _North;
+    private readonly double _North;
 
     /// <summary>Восточная граница</summary>
-    private double _East;
+    private readonly double _East;
 
     /// <summary>Южная граница</summary>
-    private double _South;
+    private readonly double _South;
 
     /// <summary>Западная граница</summary>
-    private double _West;
+    private readonly double _West;
 
     /// <summary>Северная (верхняя) граница</summary>
     public double North
     {
         get => _North;
-        set => _North = Math.Min(Math.Max(value, -90), 90);
+        init => _North = Math.Min(Math.Max(value, -90), 90);
     }
 
     /// <summary>Восточная (правая) граница</summary>
     public double East
     {
         get => _East;
-        set => _East = value;
+        init => _East = value;
     }
 
     /// <summary>Южная (нижняя) граница</summary>
     public double South
     {
         get => _South;
-        set => _South = Math.Min(Math.Max(value, -90), 90);
+        init => _South = Math.Min(Math.Max(value, -90), 90);
     }
 
     /// <summary>Западная (левая) граница</summary>
     public double West
     {
         get => _West;
-        set => _West = value;
+        init => _West = value;
     }
 
     /// <summary>ШИрина области по долготе</summary>
-    public virtual double Width => _East - _West;
+    public double Width => _East - _West;
 
     /// <summary>Ширина области по широте</summary>
-    public virtual double Height => _North - _South;
+    public double Height => _North - _South;
 
     /// <summary>Область имеет корректные границы</summary>
     public bool HasValidBounds => _South < _North && _West < _East;
@@ -90,8 +90,8 @@ public class BoundingBox : IEquatable<BoundingBox?>
         South = lat - h2;
     }
 
-    /// <summary>Клонирование области</summary>
-    public virtual BoundingBox Clone() => new(_North, _East, _South, _West);
+    ///// <summary>Клонирование области</summary>
+    //public BoundingBox Clone() => new(_North, _East, _South, _West);
 
     public Location GetCenter() => new((_North + _South) / 2, (_East + _West) / 2);
 
@@ -152,27 +152,29 @@ public class BoundingBox : IEquatable<BoundingBox?>
     }
 
     /// <summary>Распаковка области по географическим координатам границ</summary>
-    /// <param name="North">Северная (верхняя) граница</param>
-    /// <param name="East">Восточная (правая) граница</param>
-    /// <param name="South">Южная (нижняя) граница</param>
-    /// <param name="West">Западная (левая) граница</param>
-    public void Deconstruct(out double North, out double East, out double South, out double West)
+    /// <param name="north">Северная (верхняя) граница</param>
+    /// <param name="east">Восточная (правая) граница</param>
+    /// <param name="south">Южная (нижняя) граница</param>
+    /// <param name="west">Западная (левая) граница</param>
+    public void Deconstruct(out double north, out double east, out double south, out double west)
     {
-        North = _North;
-        East = _East;
-        South = _South;
-        West = _West;
+        north = _North;
+        east = _East;
+        south = _South;
+        west = _West;
     }
 
     public override string ToString()
     {
         var invariant_culture = CultureInfo.InvariantCulture;
+
         var result = new StringBuilderValued(stackalloc char[77])
            .Append(_North, invariant_culture).Append(',')
            .Append(_East, invariant_culture).Append(',')
            .Append(_South, invariant_culture).Append(',')
            .Append(_West, invariant_culture)
            .ToString();
+
         return result;
 
         //return new StringBuilder(90)
@@ -187,24 +189,25 @@ public class BoundingBox : IEquatable<BoundingBox?>
 
     public bool Equals(BoundingBox? other)
     {
-        if (other is null) return false;
-        if (ReferenceEquals(this, other)) return true;
-        return _South.Equals(other._South)
-            && _West.Equals(other._West)
-            && _North.Equals(other._North)
-            && _East.Equals(other._East);
+        if (other is not { _South: var south, _East: var east, _North: var north, _West: var west }) return false;
+        //if (ReferenceEquals(this, other)) return true;
+
+        return _South.Equals(south)
+            && _West.Equals(west)
+            && _North.Equals(north)
+            && _East.Equals(east);
     }
 
-    public override bool Equals(object? obj)
-    {
-        if (obj is null) return false;
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj.GetType() != GetType()) return false;
-        return Equals((BoundingBox)obj);
-    }
+    //public override bool Equals(object? obj)
+    //{
+    //    if (obj is null) return false;
+    //    if (ReferenceEquals(this, obj)) return true;
+    //    if (obj.GetType() != GetType()) return false;
+    //    return Equals((BoundingBox)obj);
+    //}
 
-    public static bool operator ==(BoundingBox left, BoundingBox right) => Equals(left, right);
-    public static bool operator !=(BoundingBox left, BoundingBox right) => !Equals(left, right);
+    //public static bool operator ==(BoundingBox left, BoundingBox right) => Equals(left, right);
+    //public static bool operator !=(BoundingBox left, BoundingBox right) => !Equals(left, right);
 
     public static BoundingBox operator *(BoundingBox Box, double Scale)
     {

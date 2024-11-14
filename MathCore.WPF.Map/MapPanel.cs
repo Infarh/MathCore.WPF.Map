@@ -29,7 +29,7 @@ public class MapPanel : Panel, IMapElement
     public static readonly DependencyProperty BoundingBoxProperty = DependencyProperty
        .RegisterAttached(
             "BoundingBox", 
-            typeof(BoundingBox), 
+            typeof(BoundingBox?), 
             typeof(MapPanel), 
             new(null, BoundingBoxPropertyChanged));
 
@@ -145,7 +145,7 @@ public class MapPanel : Panel, IMapElement
     {
         var element = (FrameworkElement)obj;
         var map = GetParentMap(element);
-        var bounding_box = (BoundingBox)e.NewValue;
+        var bounding_box = (BoundingBox?)e.NewValue;
 
         if (bounding_box is null)
             ArrangeElement(element, map?.RenderSize ?? new());
@@ -233,9 +233,9 @@ public class MapPanel : Panel, IMapElement
                     Height: var render_size_height
                 }
             } 
-            && BoundingBox is not null)
+            && BoundingBox is { } box)
         {
-            var rect = projection.BoundingBoxToRect(BoundingBox);
+            var rect = projection.BoundingBoxToRect(box);
             var center = new Point(rect.X + rect.Width / 2d, rect.Y + rect.Height / 2d);
             
             rotation = heading;

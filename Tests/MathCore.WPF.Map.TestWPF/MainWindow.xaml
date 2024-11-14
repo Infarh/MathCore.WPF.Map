@@ -34,7 +34,7 @@
             <m:MapItemsControl ItemsSource="{Binding Locations}">
                 <m:MapItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding}" 
+                        <TextBlock Text="{Binding StringFormat=f2}" 
                                    m:MapPanel.Location="{Binding}"
                                    VerticalAlignment="Top" HorizontalAlignment="Left"/>
                     </DataTemplate>

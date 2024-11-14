@@ -220,7 +220,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
 
     private readonly DispatcherTimer _UpdateTimer;
 
-    private BoundingBox _BoundingBox = null!;
+    private BoundingBox? _BoundingBox;
 
     private int _TopImageIndex;
 
@@ -279,12 +279,15 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
         }
         else
         {
-            if (Math.Abs(e.LongitudeOffset) > 180 && _BoundingBox is { HasValidBounds: true })
+            if (Math.Abs(e.LongitudeOffset) > 180 && _BoundingBox is { HasValidBounds: true } box)
             {
                 var offset = 360 * Math.Sign(e.LongitudeOffset);
 
-                _BoundingBox.West += offset;
-                _BoundingBox.East += offset;
+                _BoundingBox = box with
+                {
+                    West = box.West + offset,
+                    East = box.East + offset,
+                };
 
                 foreach (UIElement element in Children)
                     if (GetBoundingBox(element) is { HasValidBounds: true, South: var south, West: var west, North: var north, East: var east })
@@ -333,25 +336,35 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
                     North: var north,
                     East: var east,
                     Width: var bounding_box_width
-                })
+                } box)
             {
                 if (!double.IsNaN(MinLatitude) && south < MinLatitude)
-                    _BoundingBox.South = MinLatitude;
+                    //_BoundingBox.South = MinLatitude;
+                    _BoundingBox = box with { South = MinLatitude };
 
                 if (!double.IsNaN(MinLongitude) && west < MinLongitude)
-                    _BoundingBox.West = MinLongitude;
+                    //_BoundingBox.West = MinLongitude;
+                    _BoundingBox = box with { West = MinLongitude };
 
                 if (!double.IsNaN(MaxLatitude) && north > MaxLatitude)
-                    _BoundingBox.North = MaxLatitude;
+                    //_BoundingBox.North = MaxLatitude;
+                    _BoundingBox = box with { North = MaxLatitude };
 
                 if (!double.IsNaN(MaxLongitude) && east > MaxLongitude)
-                    _BoundingBox.East = MaxLongitude;
+                    //_BoundingBox.East = MaxLongitude;
+                    _BoundingBox = box with { East = MaxLongitude };
 
                 if (!double.IsNaN(MaxBoundingBoxWidth) && bounding_box_width > MaxBoundingBoxWidth)
                 {
                     var d = (bounding_box_width - MaxBoundingBoxWidth) / 2;
-                    _BoundingBox.West += d;
-                    _BoundingBox.East -= d;
+                    //_BoundingBox.West += d;
+                    //_BoundingBox.East -= d;
+                    var bb = (BoundingBox)_BoundingBox;
+                    _BoundingBox = bb with
+                    {
+                        West = bb.West + d,
+                        East = bb.East - d,
+                    };
                 }
             }
 
@@ -359,7 +372,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
 
             try
             {
-                image_source = GetImage(_BoundingBox);
+                image_source = GetImage((BoundingBox)_BoundingBox);
             }
             catch (Exception ex)
             {
@@ -379,7 +392,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
         var top_image = (Image)Children[_TopImageIndex];
 
         top_image.Source = ImageSource;
-        SetBoundingBox(top_image, _BoundingBox?.Clone());
+        SetBoundingBox(top_image, _BoundingBox);
     }
 
     private void SwapImages()
