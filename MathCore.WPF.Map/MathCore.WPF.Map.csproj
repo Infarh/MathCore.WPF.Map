@@ -22,7 +22,7 @@
   <PropertyGroup>
     <Version>0.0.3</Version>
     <PackageReleaseNotes>
-        
+        Location и BoundingBox преобразованы в readonly структуры
     </PackageReleaseNotes>
   </PropertyGroup>
 
