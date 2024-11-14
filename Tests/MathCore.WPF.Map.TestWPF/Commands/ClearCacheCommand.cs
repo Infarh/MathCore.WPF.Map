@@ -26,7 +26,7 @@ public class ClearCacheCommand : Command
         OnCanExecuteChanged();
         try
         {
-            await task;
+            await task.ConfigureAwait(true);
         }
         catch (Exception error)
         {

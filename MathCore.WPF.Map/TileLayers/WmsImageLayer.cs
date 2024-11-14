@@ -153,10 +153,10 @@ public class WmsImageLayer : MapImageLayer
 
         try
         {
-            var xml = await Task.Factory.StartNew(v => XDocument.Load((string)v!), GetRequestUri("GetCapabilities").ToString());
+            var xml = await Task.Factory.StartNew(v => XDocument.Load((string)v!), GetRequestUri("GetCapabilities").ToString()).ConfigureAwait(false);
             layer_names.AddRange(xml.XPathSelectElements("//Name").Select(node => node.Value));
 
-            //var document = await XmlDocument.LoadFromUriAsync(GetRequestUri("GetCapabilities"));
+            //var document = await XmlDocument.LoadFromUriAsync(GetRequestUri("GetCapabilities")).ConfigureAwait(false);
             //if (ChildElements(document.DocumentElement, "Capability").FirstOrDefault() is { } capability)
             //    if (ChildElements(capability, "Layer").FirstOrDefault() is { } root_layer)
             //        foreach (var layer in ChildElements(root_layer, "Layer"))
