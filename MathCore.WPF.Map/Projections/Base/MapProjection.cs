@@ -7,6 +7,7 @@ using MathCore.WPF.Map.Infrastructure;
 using MathCore.WPF.Map.Primitives;
 using MathCore.WPF.Map.Primitives.Base;
 using MathCore.WPF.Map.TileLayers;
+// ReSharper disable StringLiteralTypo
 
 namespace MathCore.WPF.Map.Projections.Base;
 
@@ -39,7 +40,7 @@ public abstract class MapProjection
     public static double DegreesToViewportScale(double ZoomLevel) => Math.Pow(2d, ZoomLevel) * TileSizeScale;
 
     /// <summary>Идентификатор вида проекции</summary>
-    public string CrsId { get; set; }
+    public string CrsId { get; set; } = null!;
 
     /// <summary>Является ли проекция поддерживаемой проекцией веб-меркатора, поддерживаемая <see cref="MapTileLayer"/></summary>
     public bool IsWebMercator { get; protected set; }
