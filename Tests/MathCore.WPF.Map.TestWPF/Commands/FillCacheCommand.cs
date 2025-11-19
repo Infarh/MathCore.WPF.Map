@@ -27,7 +27,7 @@ public class FillCacheCommand : Command
         _ProcessingTask = task;
         try
         {
-            await task;
+            await task.ConfigureAwait(true);
         }
         catch (OperationCanceledException)
         {
@@ -51,6 +51,7 @@ public class FillCacheCommand : Command
             ParallelLevel: 32,
                 Progress: dialog.Progress, 
                   Status: dialog.Information,
-                  Cancel: dialog.Cancel));
+                  Cancel: dialog.Cancel))
+            .ConfigureAwait(false);
     }
 }

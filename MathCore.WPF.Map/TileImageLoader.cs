@@ -26,7 +26,7 @@ public class TileImageLoader : ITileImageLoader
     public static ObjectCache? Cache { get; set; } = MemoryCache.Default;
 
     /// <summary>Количество соединений по умолчанию</summary>
-    private static int DefaultConnectionLimit => ServicePointManager.DefaultConnectionLimit;
+    private static int DefaultConnectionLimit { get; set; } = 4;
 
     /// <summary>Время истечения времени действия кеша изображений</summary>
     /// <remarks>Используется когда время истечения действия не передаётся при скачивании. По умолчанию один день</remarks>
@@ -115,7 +115,7 @@ public class TileImageLoader : ITileImageLoader
     {
         var image_source = BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
 
-        await Task.Run(() => tile.Image.Dispatcher.Invoke(() => tile.SetImage(image_source)));
+        await Task.Run(() => tile.Image.Dispatcher.Invoke(() => tile.SetImage(image_source))).ConfigureAwait(false);
     }
 
     private const string __ExpiresStr = "EXPIRES:";
@@ -124,7 +124,8 @@ public class TileImageLoader : ITileImageLoader
     {
         var buffer = Cache?.Get(CacheKey) as byte[];
 
-        if (buffer is { Length: >= 16 } && Encoding.ASCII.GetString(buffer, buffer.Length - 16, 8) == __ExpiresStr)
+        if (buffer is { Length: >= 16 } 
+            && Encoding.ASCII.GetString(buffer, buffer.Length - 16, 8) == __ExpiresStr)
             expiration = new(BitConverter.ToInt64(buffer, buffer.Length - 8), DateTimeKind.Utc);
         else
             expiration = DateTime.MinValue;
@@ -167,9 +168,11 @@ public class TileImageLoader : ITileImageLoader
 
         if (tile_source is not null && tiles.Any())
         {
-            if (Cache is null || source_name is not { Length: > 0 } ||
-                tile_source.UriFormat is null || !tile_source.UriFormat.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-                await tiles.Select(tile => LoadTileImageAsync(tile_source, tile)).WhenAll();
+            if (Cache is null 
+                || source_name is not { Length: > 0 } 
+                || tile_source.UriFormat is null
+                || !tile_source.UriFormat.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+                await tiles.Select(tile => LoadTileImageAsync(tile_source, tile)).WhenAll().ConfigureAwait(false);
             else
             {
                 foreach (var tile in tiles)
@@ -181,7 +184,7 @@ public class TileImageLoader : ITileImageLoader
 
                     _ = Task.Run(async () =>
                     {
-                        await LoadPendingTilesAsync(tile_source, source_name);
+                        await LoadPendingTilesAsync(tile_source, source_name).ConfigureAwait(false);
 
                         Interlocked.Decrement(ref _TaskCount);
                     });
@@ -358,17 +361,17 @@ public class TileImageLoader : ITileImageLoader
 
                         using var stream = new MemoryStream();
 #if NET5_0_OR_GREATER
-                            await response.Content.CopyToAsync(stream, Cancel);
+                            await response.Content.CopyToAsync(stream, Cancel).ConfigureAwait(false);
 #else
-                        await response.Content.CopyToAsync(stream);
+                        await response.Content.CopyToAsync(stream).ConfigureAwait(false);
 #endif
                         stream.Seek(0, SeekOrigin.Begin);
 
-                        await SetExpirationAsync(stream, Expiration ?? GetExpiration(response), Cancel);
+                        await SetExpirationAsync(stream, Expiration ?? GetExpiration(response), Cancel).ConfigureAwait(false);
 
                         var file_path = ImageFileCache.GetFilePath(cache_root_folder, cache_key);
 
-                        await SaveFileDataAsync(stream, file_path, Cancel);
+                        await SaveFileDataAsync(stream, file_path, Cancel).ConfigureAwait(false);
 
                         Debug.WriteLine("Тайл[x:{0}/{3},y:{1}/{3},z:{2}] загружен из {4} за {5} мс",
                             x, y, Level, line_count, uri.Host, timer.ElapsedMilliseconds);
@@ -508,17 +511,17 @@ public class TileImageLoader : ITileImageLoader
 
                             using var stream = new MemoryStream();
 #if NET5_0_OR_GREATER
-                            await response.Content.CopyToAsync(stream, Cancel);
+                            await response.Content.CopyToAsync(stream, Cancel).ConfigureAwait(false);
 #else
-                            await response.Content.CopyToAsync(stream);
+                            await response.Content.CopyToAsync(stream).ConfigureAwait(false);
 #endif
                             stream.Seek(0, SeekOrigin.Begin);
 
-                            await SetExpirationAsync(stream, Expiration ?? GetExpiration(response), Cancel);
+                            await SetExpirationAsync(stream, Expiration ?? GetExpiration(response), Cancel).ConfigureAwait(false);
 
                             var file_path = ImageFileCache.GetFilePath(cache_root_folder, cache_key);
 
-                            await SaveFileDataAsync(stream, file_path, Cancel);
+                            await SaveFileDataAsync(stream, file_path, Cancel).ConfigureAwait(false);
 
                             Debug.WriteLine("Тайл[x:{0},y:{1},z:{2}] загружен из {3} за {4} мс - {5}",
                                 x, y, Level,
@@ -560,10 +563,10 @@ public class TileImageLoader : ITileImageLoader
             Directory.CreateDirectory(Path.GetDirectoryName(FileName)!);
 #if NET5_0_OR_GREATER
             await using var file = File.Create(FileName);
-            await Data.CopyToAsync(file, Cancel);
+            await Data.CopyToAsync(file, Cancel).ConfigureAwait(false);
 #else
             using var file = File.Create(FileName);
-            await Data.CopyToAsync(file);
+            await Data.CopyToAsync(file).ConfigureAwait(false);
 #endif
         }
         catch (OperationCanceledException)

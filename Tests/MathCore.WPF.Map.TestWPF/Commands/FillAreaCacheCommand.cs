@@ -55,7 +55,7 @@ public class FillAreaCacheCommand : Command
         _ProcessingTask = task;
         try
         {
-            await task;
+            await task.ConfigureAwait(true);
         }
         catch (OperationCanceledException)
         {

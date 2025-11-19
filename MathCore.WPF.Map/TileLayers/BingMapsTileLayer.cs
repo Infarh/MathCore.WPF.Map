@@ -57,7 +57,7 @@ public class BingMapsTileLayer : MapTileLayer
 
         try
         {
-            var xml = await Task.Factory.StartNew(v => XDocument.Load((string)v!), imagery_metadata_url_sb);
+            var xml = await Task.Factory.StartNew(v => XDocument.Load((string)v!), imagery_metadata_url_sb).ConfigureAwait(true);
             if (xml.Element("ImageryMetadata") is { } imagery_metadata2)
                 ReadImageryMetadata(imagery_metadata2);
 
@@ -66,7 +66,7 @@ public class BingMapsTileLayer : MapTileLayer
 
             //var uri = new Uri(imagery_metadata_url + "?output=xml&key=" + ApiKey);
             //var uri = new Uri(imagery_metadata_url_sb);
-            //var document = await XmlDocument.LoadFromUriAsync(uri);
+            //var document = await XmlDocument.LoadFromUriAsync(uri).ConfigureAwait(true);
 
             //var imagery_metadata = document.DocumentElement!
             //   .GetElementsByTagName("ImageryMetadata")

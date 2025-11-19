@@ -71,7 +71,7 @@ public class TileSource
 #else
             using var stream = new MemoryStream();
 #endif
-            await response.Content.CopyToAsync(stream);
+            await response.Content.CopyToAsync(stream).ConfigureAwait(false);
             stream.Seek(0, SeekOrigin.Begin);
 
             return BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
