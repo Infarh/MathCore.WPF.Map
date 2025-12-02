@@ -1,0 +1,102 @@
+<Page x:Class="MathCore.WPF.Map.TestWPF.Views.Bootstrap.FormsDemo"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Forms">
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="{StaticResource P.4}" MaxWidth="600" HorizontalAlignment="Left">
+            
+            <TextBlock Style="{StaticResource Text.H2}" Text="Form Controls"/>
+            <TextBlock Style="{StaticResource Text.Muted}" 
+                      Text="Form input styles and controls"
+                      Margin="{StaticResource MB.4}"/>
+            
+            <!-- TextBox -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Text Input" Margin="{StaticResource MT.4}"/>
+            <Label Style="{StaticResource Form.Label}" Content="Email address"/>
+            <TextBox Style="{StaticResource Form.Control}" Text="example@email.com"/>
+            
+            <Label Style="{StaticResource Form.Label}" Content="Disabled Input" Margin="{StaticResource MT.3}"/>
+            <TextBox Style="{StaticResource Form.Control}" Text="Disabled" IsEnabled="False"/>
+            
+            <Label Style="{StaticResource Form.Label}" Content="Readonly Input" Margin="{StaticResource MT.3}"/>
+            <TextBox Style="{StaticResource Form.Control.ReadOnly}" Text="Readonly value"/>
+            
+            <!-- PasswordBox -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Password Input" Margin="{StaticResource MT.5}"/>
+            <Label Style="{StaticResource Form.Label}" Content="Password"/>
+            <PasswordBox Style="{StaticResource Form.Control.Password}"/>
+            
+            <!-- ComboBox -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Select" Margin="{StaticResource MT.5}"/>
+            <Label Style="{StaticResource Form.Label}" Content="Select option"/>
+            <ComboBox Style="{StaticResource Form.Control.Select}">
+                <ComboBoxItem Content="Option 1" IsSelected="True"/>
+                <ComboBoxItem Content="Option 2"/>
+                <ComboBoxItem Content="Option 3"/>
+                <ComboBoxItem Content="Option 4"/>
+            </ComboBox>
+            
+            <!-- CheckBox -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Checkboxes" Margin="{StaticResource MT.5}"/>
+            <CheckBox Style="{StaticResource Form.Check}" Content="Check me out" IsChecked="True" Margin="{StaticResource MY.2}"/>
+            <CheckBox Style="{StaticResource Form.Check}" Content="Another option" Margin="{StaticResource MY.2}"/>
+            <CheckBox Style="{StaticResource Form.Check}" Content="Disabled checkbox" IsEnabled="False" Margin="{StaticResource MY.2}"/>
+            
+            <!-- RadioButton -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Radio Buttons" Margin="{StaticResource MT.5}"/>
+            <RadioButton Style="{StaticResource Form.Radio}" Content="Default radio" GroupName="Group1" IsChecked="True" Margin="{StaticResource MY.2}"/>
+            <RadioButton Style="{StaticResource Form.Radio}" Content="Second radio" GroupName="Group1" Margin="{StaticResource MY.2}"/>
+            <RadioButton Style="{StaticResource Form.Radio}" Content="Disabled radio" GroupName="Group1" IsEnabled="False" Margin="{StaticResource MY.2}"/>
+            
+            <!-- Slider -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Range Slider" Margin="{StaticResource MT.5}"/>
+            <Label Style="{StaticResource Form.Label}" Content="Range"/>
+            <Slider Style="{StaticResource Form.Range}" Minimum="0" Maximum="100" Value="50"/>
+            
+            <!-- Form Example -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Complete Form Example" Margin="{StaticResource MT.5}"/>
+            
+            <Border Style="{StaticResource Border.Style}" Padding="{StaticResource P.4}" Margin="{StaticResource MY.3}">
+                <StackPanel>
+                    <Label Style="{StaticResource Form.Label}" Content="Full Name"/>
+                    <TextBox Style="{StaticResource Form.Control}" Margin="{StaticResource MB.3}"/>
+                    
+                    <Label Style="{StaticResource Form.Label}" Content="Email"/>
+                    <TextBox Style="{StaticResource Form.Control}" Margin="{StaticResource MB.3}"/>
+                    
+                    <Label Style="{StaticResource Form.Label}" Content="Country"/>
+                    <ComboBox Style="{StaticResource Form.Control.Select}" Margin="{StaticResource MB.3}">
+                        <ComboBoxItem Content="United States"/>
+                        <ComboBoxItem Content="Canada"/>
+                        <ComboBoxItem Content="United Kingdom"/>
+                    </ComboBox>
+                    
+                    <CheckBox Style="{StaticResource Form.Check}" Content="I agree to terms and conditions" Margin="{StaticResource MY.3}"/>
+                    
+                    <Button Style="{StaticResource Button.Primary}" Content="Submit" HorizontalAlignment="Left"/>
+                </StackPanel>
+            </Border>
+            
+            <!-- Usage -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Usage Examples" Margin="{StaticResource MT.5}"/>
+            <Border Background="{StaticResource Brush.Gray.100}" 
+                   Padding="{StaticResource P.3}" 
+                   Margin="{StaticResource MY.3}"
+                   CornerRadius="4">
+                <TextBlock FontFamily="Consolas" FontSize="12" xml:space="preserve"><![CDATA[<Label Style="{StaticResource Form.Label}" Content="Email"/>
+<TextBox Style="{StaticResource Form.Control}"/>
+
+<PasswordBox Style="{StaticResource Form.Control.Password}"/>
+<ComboBox Style="{StaticResource Form.Control.Select}"/>
+
+<CheckBox Style="{StaticResource Form.Check}" Content="Check"/>
+<RadioButton Style="{StaticResource Form.Radio}" Content="Option"/>
+
+<Slider Style="{StaticResource Form.Range}"/>]]></TextBlock>
+            </Border>
+            
+        </StackPanel>
+    </ScrollViewer>
+    
+</Page>

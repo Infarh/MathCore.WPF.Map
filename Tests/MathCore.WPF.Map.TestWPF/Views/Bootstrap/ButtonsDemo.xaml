@@ -1,0 +1,146 @@
+<Page x:Class="MathCore.WPF.Map.TestWPF.Views.Bootstrap.ButtonsDemo"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Buttons">
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="{StaticResource P.4}">
+            
+            <TextBlock Style="{StaticResource Text.H2}" Text="Buttons"/>
+            <TextBlock Style="{StaticResource Text.Muted}" 
+                      Text="Button styles with multiple color variants and sizes"
+                      Margin="{StaticResource MB.4}"/>
+            
+            <!-- Standard Buttons -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Standard Buttons" Margin="{StaticResource MT.4}"/>
+            
+            <WrapPanel Margin="{StaticResource MY.3}">
+                <Button Style="{StaticResource Button.Primary}" Content="Primary" Margin="{StaticResource M.2}"/>
+                <Button Style="{StaticResource Button.Secondary}" Content="Secondary" Margin="{StaticResource M.2}"/>
+                <Button Style="{StaticResource Button.Success}" Content="Success" Margin="{StaticResource M.2}"/>
+                <Button Style="{StaticResource Button.Danger}" Content="Danger" Margin="{StaticResource M.2}"/>
+                <Button Style="{StaticResource Button.Warning}" Content="Warning" Margin="{StaticResource M.2}"/>
+                <Button Style="{StaticResource Button.Info}" Content="Info" Margin="{StaticResource M.2}"/>
+                <Button Style="{StaticResource Button.Light}" Content="Light" Margin="{StaticResource M.2}"/>
+                <Button Style="{StaticResource Button.Dark}" Content="Dark" Margin="{StaticResource M.2}"/>
+            </WrapPanel>
+            
+            <!-- Outline Buttons -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Outline Buttons" Margin="{StaticResource MT.5}"/>
+            <TextBlock Style="{StaticResource Text.Muted}" 
+                      Text="Lighter weight buttons with transparent backgrounds"
+                      Margin="{StaticResource MB.3}"/>
+            
+            <WrapPanel Margin="{StaticResource MY.3}">
+                <Button Style="{StaticResource Button.Outline.Primary}" Content="Primary" Margin="{StaticResource M.2}"/>
+                <Button Style="{StaticResource Button.Outline.Secondary}" Content="Secondary" Margin="{StaticResource M.2}"/>
+                <Button Style="{StaticResource Button.Outline.Success}" Content="Success" Margin="{StaticResource M.2}"/>
+                <Button Style="{StaticResource Button.Outline.Danger}" Content="Danger" Margin="{StaticResource M.2}"/>
+                <Button Style="{StaticResource Button.Outline.Warning}" Content="Warning" Margin="{StaticResource M.2}"/>
+                <Button Style="{StaticResource Button.Outline.Info}" Content="Info" Margin="{StaticResource M.2}"/>
+                <Button Style="{StaticResource Button.Outline.Dark}" Content="Dark" Margin="{StaticResource M.2}"/>
+            </WrapPanel>
+            
+            <!-- Button Sizes -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Button Sizes" Margin="{StaticResource MT.5}"/>
+            
+            <StackPanel Orientation="Horizontal" Margin="{StaticResource MY.3}">
+                <Button Style="{StaticResource Button.Primary}" Content="Large Button" Margin="{StaticResource M.2}">
+                    <Button.Resources>
+                        <Style TargetType="Button" BasedOn="{StaticResource Button.Primary}">
+                            <Setter Property="FontSize" Value="18"/>
+                            <Setter Property="Padding" Value="16,10"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+                
+                <Button Style="{StaticResource Button.Primary}" Content="Default Button" Margin="{StaticResource M.2}"/>
+                
+                <Button Style="{StaticResource Button.Primary}" Content="Small Button" Margin="{StaticResource M.2}">
+                    <Button.Resources>
+                        <Style TargetType="Button" BasedOn="{StaticResource Button.Primary}">
+                            <Setter Property="FontSize" Value="12"/>
+                            <Setter Property="Padding" Value="8,4"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </StackPanel>
+            
+            <!-- Link Button -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Link Button" Margin="{StaticResource MT.5}"/>
+            <TextBlock Style="{StaticResource Text.Muted}" 
+                      Text="Button styled to look like a hyperlink"
+                      Margin="{StaticResource MB.3}"/>
+            
+            <StackPanel Orientation="Horizontal" Margin="{StaticResource MY.3}">
+                <Button Style="{StaticResource Button.Link}" Content="Link Button" Margin="{StaticResource M.2}"/>
+                <TextBlock Text="| " VerticalAlignment="Center"/>
+                <Button Style="{StaticResource Button.Link}" Content="Another Link" Margin="{StaticResource M.2}"/>
+            </StackPanel>
+            
+            <!-- Block Button -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Block Button" Margin="{StaticResource MT.5}"/>
+            <TextBlock Style="{StaticResource Text.Muted}" 
+                      Text="Full-width button"
+                      Margin="{StaticResource MB.3}"/>
+            
+            <Button Style="{StaticResource Button.Primary}" Content="Block Level Button" Margin="{StaticResource MY.3}">
+                <Button.Resources>
+                    <Style TargetType="Button" BasedOn="{StaticResource Button.Primary}">
+                        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            
+            <Button Style="{StaticResource Button.Secondary}" Content="Another Block Button" Margin="{StaticResource MY.3}">
+                <Button.Resources>
+                    <Style TargetType="Button" BasedOn="{StaticResource Button.Secondary}">
+                        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            
+            <!-- Disabled State -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Disabled State" Margin="{StaticResource MT.5}"/>
+            
+            <StackPanel Orientation="Horizontal" Margin="{StaticResource MY.3}">
+                <Button Style="{StaticResource Button.Primary}" Content="Disabled Primary" IsEnabled="False" Margin="{StaticResource M.2}"/>
+                <Button Style="{StaticResource Button.Outline.Success}" Content="Disabled Outline" IsEnabled="False" Margin="{StaticResource M.2}"/>
+            </StackPanel>
+            
+            <!-- Button Groups -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Button Groups" Margin="{StaticResource MT.5}"/>
+            
+            <StackPanel Orientation="Horizontal" Margin="{StaticResource MY.3}">
+                <Button Style="{StaticResource Button.Primary}" Content="Left" Margin="0,0,1,0"/>
+                <Button Style="{StaticResource Button.Primary}" Content="Middle" Margin="0,0,1,0"/>
+                <Button Style="{StaticResource Button.Primary}" Content="Right"/>
+            </StackPanel>
+            
+            <!-- Usage Examples -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Usage Examples" Margin="{StaticResource MT.5}"/>
+            <Border Background="{StaticResource Brush.Gray.100}" 
+                   Padding="{StaticResource P.3}" 
+                   Margin="{StaticResource MY.3}"
+                   CornerRadius="4">
+                <TextBlock FontFamily="Consolas" FontSize="12" xml:space="preserve"><![CDATA[<!-- Standard Buttons -->
+<Button Style="{StaticResource Button.Primary}" Content="Primary"/>
+<Button Style="{StaticResource Button.Success}" Content="Success"/>
+
+<!-- Outline Buttons -->
+<Button Style="{StaticResource Button.Outline.Primary}" Content="Primary"/>
+<Button Style="{StaticResource Button.Outline.Danger}" Content="Danger"/>
+
+<!-- Link Button -->
+<Button Style="{StaticResource Button.Link}" Content="Link"/>
+
+<!-- Disabled Button -->
+<Button Style="{StaticResource Button.Primary}" 
+        Content="Disabled" 
+        IsEnabled="False"/>]]></TextBlock>
+            </Border>
+            
+        </StackPanel>
+    </ScrollViewer>
+    
+</Page>

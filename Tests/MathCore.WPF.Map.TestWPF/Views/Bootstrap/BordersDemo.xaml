@@ -1,0 +1,148 @@
+<Page x:Class="MathCore.WPF.Map.TestWPF.Views.Bootstrap.BordersDemo"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Borders">
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="{StaticResource P.4}">
+            
+            <TextBlock Style="{StaticResource Text.H2}" Text="Borders &amp; Radius"/>
+            <TextBlock Style="{StaticResource Text.Muted}" 
+                      Text="Border styles and corner radius utilities"
+                      Margin="{StaticResource MB.4}"/>
+            
+            <TextBlock Style="{StaticResource Text.H4}" Text="Border Colors" Margin="{StaticResource MT.4}"/>
+            
+            <UniformGrid Columns="4" Margin="{StaticResource MY.3}">
+                <Border Style="{StaticResource Border.Primary}" Padding="{StaticResource P.3}" Margin="{StaticResource M.2}">
+                    <TextBlock Text="Primary" TextAlignment="Center"/>
+                </Border>
+                
+                <Border Style="{StaticResource Border.Success}" Padding="{StaticResource P.3}" Margin="{StaticResource M.2}">
+                    <TextBlock Text="Success" TextAlignment="Center"/>
+                </Border>
+                
+                <Border Style="{StaticResource Border.Danger}" Padding="{StaticResource P.3}" Margin="{StaticResource M.2}">
+                    <TextBlock Text="Danger" TextAlignment="Center"/>
+                </Border>
+                
+                <Border Style="{StaticResource Border.Warning}" Padding="{StaticResource P.3}" Margin="{StaticResource M.2}">
+                    <TextBlock Text="Warning" TextAlignment="Center"/>
+                </Border>
+            </UniformGrid>
+            
+            <TextBlock Style="{StaticResource Text.H4}" Text="Border Radius" Margin="{StaticResource MT.5}"/>
+            
+            <UniformGrid Columns="3" Margin="{StaticResource MY.3}">
+                <Border Background="{StaticResource Brush.Primary}" 
+                       Padding="{StaticResource P.3}" 
+                       Margin="{StaticResource M.2}"
+                       CornerRadius="{StaticResource Rounded.0}">
+                    <TextBlock Text="Rounded.0 (None)" Foreground="White" TextAlignment="Center"/>
+                </Border>
+                
+                <Border Background="{StaticResource Brush.Primary}" 
+                       Padding="{StaticResource P.3}" 
+                       Margin="{StaticResource M.2}"
+                       CornerRadius="{StaticResource Rounded.2}">
+                    <TextBlock Text="Rounded.2 (Small)" Foreground="White" TextAlignment="Center"/>
+                </Border>
+                
+                <Border Background="{StaticResource Brush.Primary}" 
+                       Padding="{StaticResource P.3}" 
+                       Margin="{StaticResource M.2}"
+                       CornerRadius="{StaticResource Rounded.3}">
+                    <TextBlock Text="Rounded.3 (Medium)" Foreground="White" TextAlignment="Center"/>
+                </Border>
+                
+                <Border Background="{StaticResource Brush.Primary}" 
+                       Padding="{StaticResource P.3}" 
+                       Margin="{StaticResource M.2}"
+                       CornerRadius="{StaticResource Rounded.5}">
+                    <TextBlock Text="Rounded.5 (Large)" Foreground="White" TextAlignment="Center"/>
+                </Border>
+                
+                <Border Background="{StaticResource Brush.Primary}" 
+                       Padding="{StaticResource P.3}" 
+                       Margin="{StaticResource M.2}"
+                       Width="100"
+                       Height="100"
+                       CornerRadius="{StaticResource Rounded.Circle}">
+                    <TextBlock Text="Circle" Foreground="White" TextAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                
+                <Border Background="{StaticResource Brush.Primary}" 
+                       Padding="{StaticResource P.3}" 
+                       Margin="{StaticResource M.2}"
+                       CornerRadius="{StaticResource Rounded.Pill}">
+                    <TextBlock Text="Pill" Foreground="White" TextAlignment="Center"/>
+                </Border>
+            </UniformGrid>
+            
+            <TextBlock Style="{StaticResource Text.H4}" Text="Border Thickness" Margin="{StaticResource MT.5}"/>
+            
+            <StackPanel Margin="{StaticResource MY.3}">
+                <Border BorderBrush="{StaticResource Brush.Primary}" 
+                       BorderThickness="{StaticResource Border.1}" 
+                       Padding="{StaticResource P.2}" 
+                       Margin="{StaticResource MB.2}">
+                    <TextBlock Text="Border.1 (1px)"/>
+                </Border>
+                
+                <Border BorderBrush="{StaticResource Brush.Primary}" 
+                       BorderThickness="{StaticResource Border.2}" 
+                       Padding="{StaticResource P.2}" 
+                       Margin="{StaticResource MB.2}">
+                    <TextBlock Text="Border.2 (2px)"/>
+                </Border>
+                
+                <Border BorderBrush="{StaticResource Brush.Primary}" 
+                       BorderThickness="{StaticResource Border.4}" 
+                       Padding="{StaticResource P.2}" 
+                       Margin="{StaticResource MB.2}">
+                    <TextBlock Text="Border.4 (4px)"/>
+                </Border>
+            </StackPanel>
+            
+            <TextBlock Style="{StaticResource Text.H4}" Text="Dividers" Margin="{StaticResource MT.5}"/>
+            
+            <Border Style="{StaticResource Divider.Horizontal}"/>
+            
+            <Grid Height="100" Margin="{StaticResource MY.3}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Grid.Column="0" Text="Left Content" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Border Grid.Column="1" Style="{StaticResource Divider.Vertical}"/>
+                <TextBlock Grid.Column="2" Text="Right Content" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </Grid>
+            
+            <TextBlock Style="{StaticResource Text.H4}" Text="Usage Examples" Margin="{StaticResource MT.5}"/>
+            <Border Background="{StaticResource Brush.Gray.100}" 
+                   Padding="{StaticResource P.3}" 
+                   Margin="{StaticResource MY.3}"
+                   CornerRadius="4">
+                <TextBlock FontFamily="Consolas" FontSize="12" xml:space="preserve"><![CDATA[<!-- Colored Borders -->
+<Border Style="{StaticResource Border.Primary}"/>
+<Border Style="{StaticResource Border.Success}"/>
+
+<!-- Border Radius -->
+<Border CornerRadius="{StaticResource Rounded.2}"/>
+<Border CornerRadius="{StaticResource Rounded.Circle}"/>
+
+<!-- Border Thickness -->
+<Border BorderThickness="{StaticResource Border.2}"
+        BorderBrush="{StaticResource Brush.Primary}"/>
+
+<!-- Dividers -->
+<Border Style="{StaticResource Divider.Horizontal}"/>
+<Border Style="{StaticResource Divider.Vertical}"/>]]></TextBlock>
+            </Border>
+            
+        </StackPanel>
+    </ScrollViewer>
+    
+</Page>

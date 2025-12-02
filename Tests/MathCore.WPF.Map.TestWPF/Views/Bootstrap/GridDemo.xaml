@@ -1,0 +1,101 @@
+<Page x:Class="MathCore.WPF.Map.TestWPF.Views.Bootstrap.GridDemo"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Grid">
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="{StaticResource P.4}">
+            
+            <TextBlock Style="{StaticResource Text.H2}" Text="Grid System"/>
+            <TextBlock Style="{StaticResource Text.Muted}" 
+                      Text="Responsive grid layout utilities"
+                      Margin="{StaticResource MB.4}"/>
+            
+            <TextBlock Style="{StaticResource Text.H4}" Text="12-Column Grid" Margin="{StaticResource MT.4}"/>
+            
+            <Grid Style="{StaticResource Row}" Margin="{StaticResource MY.3}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{StaticResource Col.12}"/>
+                </Grid.ColumnDefinitions>
+                <Border Style="{StaticResource Col}" Background="{StaticResource Brush.Primary}" Padding="{StaticResource P.2}">
+                    <TextBlock Text="col-12" Foreground="White" TextAlignment="Center"/>
+                </Border>
+            </Grid>
+            
+            <Grid Style="{StaticResource Row}" Margin="{StaticResource MY.3}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{StaticResource Col.6}"/>
+                    <ColumnDefinition Width="{StaticResource Col.6}"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Style="{StaticResource Col}" Background="{StaticResource Brush.Secondary}" Padding="{StaticResource P.2}">
+                    <TextBlock Text="col-6" Foreground="White" TextAlignment="Center"/>
+                </Border>
+                <Border Grid.Column="1" Style="{StaticResource Col}" Background="{StaticResource Brush.Secondary}" Padding="{StaticResource P.2}">
+                    <TextBlock Text="col-6" Foreground="White" TextAlignment="Center"/>
+                </Border>
+            </Grid>
+            
+            <Grid Style="{StaticResource Row}" Margin="{StaticResource MY.3}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{StaticResource Col.4}"/>
+                    <ColumnDefinition Width="{StaticResource Col.4}"/>
+                    <ColumnDefinition Width="{StaticResource Col.4}"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Style="{StaticResource Col}" Background="{StaticResource Brush.Success}" Padding="{StaticResource P.2}">
+                    <TextBlock Text="col-4" Foreground="White" TextAlignment="Center"/>
+                </Border>
+                <Border Grid.Column="1" Style="{StaticResource Col}" Background="{StaticResource Brush.Success}" Padding="{StaticResource P.2}">
+                    <TextBlock Text="col-4" Foreground="White" TextAlignment="Center"/>
+                </Border>
+                <Border Grid.Column="2" Style="{StaticResource Col}" Background="{StaticResource Brush.Success}" Padding="{StaticResource P.2}">
+                    <TextBlock Text="col-4" Foreground="White" TextAlignment="Center"/>
+                </Border>
+            </Grid>
+            
+            <TextBlock Style="{StaticResource Text.H4}" Text="Mixed Column Widths" Margin="{StaticResource MT.5}"/>
+            
+            <Grid Style="{StaticResource Row}" Margin="{StaticResource MY.3}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{StaticResource Col.3}"/>
+                    <ColumnDefinition Width="{StaticResource Col.9}"/>
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Style="{StaticResource Col}" Background="{StaticResource Brush.Info}" Padding="{StaticResource P.2}">
+                    <TextBlock Text="col-3" Foreground="{StaticResource Brush.Dark}" TextAlignment="Center"/>
+                </Border>
+                <Border Grid.Column="1" Style="{StaticResource Col}" Background="{StaticResource Brush.Info}" Padding="{StaticResource P.2}">
+                    <TextBlock Text="col-9" Foreground="{StaticResource Brush.Dark}" TextAlignment="Center"/>
+                </Border>
+            </Grid>
+            
+            <TextBlock Style="{StaticResource Text.H4}" Text="Alignment" Margin="{StaticResource MT.5}"/>
+            
+            <Border BorderBrush="{StaticResource Brush.Gray.300}" BorderThickness="1" Height="150" Margin="{StaticResource MY.3}">
+                <Grid>
+                    <Button Style="{StaticResource Button.Primary}" Content="Align Start" 
+                           VerticalAlignment="Top" HorizontalAlignment="Left" Margin="{StaticResource M.2}"/>
+                    <Button Style="{StaticResource Button.Primary}" Content="Align Center" 
+                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <Button Style="{StaticResource Button.Primary}" Content="Align End" 
+                           VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="{StaticResource M.2}"/>
+                </Grid>
+            </Border>
+            
+            <TextBlock Style="{StaticResource Text.H4}" Text="Usage Examples" Margin="{StaticResource MT.5}"/>
+            <Border Background="{StaticResource Brush.Gray.100}" 
+                   Padding="{StaticResource P.3}" 
+                   Margin="{StaticResource MY.3}"
+                   CornerRadius="4">
+                <TextBlock FontFamily="Consolas" FontSize="12" xml:space="preserve"><![CDATA[<Grid Style="{StaticResource Row}">
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="{StaticResource Col.4}"/>
+        <ColumnDefinition Width="{StaticResource Col.8}"/>
+    </Grid.ColumnDefinitions>
+    <Border Grid.Column="0" Style="{StaticResource Col}"/>
+    <Border Grid.Column="1" Style="{StaticResource Col}"/>
+</Grid>]]></TextBlock>
+            </Border>
+            
+        </StackPanel>
+    </ScrollViewer>
+    
+</Page>

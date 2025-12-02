@@ -1,0 +1,214 @@
+<Page x:Class="MathCore.WPF.Map.TestWPF.Views.Bootstrap.ComponentsDemo"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Components">
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="{StaticResource P.4}">
+            
+            <TextBlock Style="{StaticResource Text.H2}" Text="Components"/>
+            <TextBlock Style="{StaticResource Text.Muted}" 
+                      Text="Pre-styled UI components"
+                      Margin="{StaticResource MB.4}"/>
+            
+            <!-- Alerts -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Alerts" Margin="{StaticResource MT.4}"/>
+            
+            <Border Style="{StaticResource Alert.Primary}">
+                <TextBlock Text="A simple primary alert - check it out!"/>
+            </Border>
+            
+            <Border Style="{StaticResource Alert.Success}">
+                <TextBlock Text="A simple success alert - check it out!"/>
+            </Border>
+            
+            <Border Style="{StaticResource Alert.Danger}">
+                <TextBlock Text="A simple danger alert - check it out!"/>
+            </Border>
+            
+            <Border Style="{StaticResource Alert.Warning}">
+                <TextBlock Text="A simple warning alert - check it out!"/>
+            </Border>
+            
+            <!-- Badges -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Badges" Margin="{StaticResource MT.5}"/>
+            
+            <WrapPanel Margin="{StaticResource MY.3}">
+                <Border Style="{StaticResource Badge.Primary}" Margin="{StaticResource M.1}">
+                    <TextBlock Text="Primary" Foreground="White"/>
+                </Border>
+                
+                <Border Style="{StaticResource Badge.Success}" Margin="{StaticResource M.1}">
+                    <TextBlock Text="Success" Foreground="White"/>
+                </Border>
+                
+                <Border Style="{StaticResource Badge.Danger}" Margin="{StaticResource M.1}">
+                    <TextBlock Text="Danger" Foreground="White"/>
+                </Border>
+                
+                <Border Style="{StaticResource Badge.Warning}" Margin="{StaticResource M.1}">
+                    <TextBlock Text="Warning" Foreground="{StaticResource Brush.Dark}"/>
+                </Border>
+                
+                <Border Style="{StaticResource Badge.Info}" Margin="{StaticResource M.1}">
+                    <TextBlock Text="Info" Foreground="{StaticResource Brush.Dark}"/>
+                </Border>
+            </WrapPanel>
+            
+            <TextBlock Style="{StaticResource Text.H5}" Text="Pill Badges" Margin="{StaticResource MT.3}"/>
+            <WrapPanel Margin="{StaticResource MY.3}">
+                <Border Style="{StaticResource Badge.Pill}" Background="{StaticResource Brush.Primary}" Margin="{StaticResource M.1}">
+                    <TextBlock Text="Primary Pill" Foreground="White"/>
+                </Border>
+                
+                <Border Style="{StaticResource Badge.Pill}" Background="{StaticResource Brush.Success}" Margin="{StaticResource M.1}">
+                    <TextBlock Text="Success Pill" Foreground="White"/>
+                </Border>
+            </WrapPanel>
+            
+            <!-- Cards -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Cards" Margin="{StaticResource MT.5}"/>
+            
+            <Border Style="{StaticResource Card}" MaxWidth="400" HorizontalAlignment="Left" Margin="{StaticResource MY.3}">
+                <StackPanel>
+                    <Border Style="{StaticResource Card.Header}">
+                        <TextBlock Text="Card Header" FontWeight="Bold"/>
+                    </Border>
+                    
+                    <Border Style="{StaticResource Card.Body}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource Text.H5}" Text="Card Title"/>
+                            <TextBlock TextWrapping="Wrap" Margin="{StaticResource MY.2}">
+                                Some quick example text to build on the card title and make up the bulk of the card's content.
+                            </TextBlock>
+                            <Button Style="{StaticResource Button.Primary}" Content="Go somewhere" HorizontalAlignment="Left"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <Border Style="{StaticResource Card.Footer}">
+                        <TextBlock Text="2 days ago" Style="{StaticResource Text.Muted}"/>
+                    </Border>
+                </StackPanel>
+            </Border>
+            
+            <!-- List Group -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="List Group" Margin="{StaticResource MT.5}"/>
+            
+            <Border Style="{StaticResource ListGroup}" MaxWidth="400" HorizontalAlignment="Left" Margin="{StaticResource MY.3}">
+                <StackPanel>
+                    <Border Style="{StaticResource ListGroup.Item.Active}">
+                        <TextBlock Text="Active item" Foreground="White"/>
+                    </Border>
+                    <Border Style="{StaticResource ListGroup.Item}">
+                        <TextBlock Text="Second item"/>
+                    </Border>
+                    <Border Style="{StaticResource ListGroup.Item}">
+                        <TextBlock Text="A simple primary alert - check it out!"/>
+                    </Border>
+                    
+                    <Border Style="{StaticResource Alert.Success}">
+                        <TextBlock Text="A simple success alert - check it out!"/>
+                    </Border>
+                    
+                    <Border Style="{StaticResource Alert.Danger}">
+                        <TextBlock Text="A simple danger alert - check it out!"/>
+                    </Border>
+                    
+                    <Border Style="{StaticResource Alert.Warning}">
+                        <TextBlock Text="A simple warning alert - check it out!"/>
+                    </Border>
+                </StackPanel>
+            </Border>
+            
+            <!-- Progress Bar -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Progress Bar" Margin="{StaticResource MT.5}"/>
+            
+            <ProgressBar Style="{StaticResource Progress}" 
+                        Value="25" 
+                        Maximum="100" 
+                        Margin="{StaticResource MY.3}"/>
+            
+            <ProgressBar Style="{StaticResource Progress}" 
+                        Value="50" 
+                        Maximum="100" 
+                        Foreground="{StaticResource Brush.Success}"
+                        Margin="{StaticResource MY.3}"/>
+            
+            <ProgressBar Style="{StaticResource Progress}" 
+                        Value="75" 
+                        Maximum="100" 
+                        Foreground="{StaticResource Brush.Warning}"
+                        Margin="{StaticResource MY.3}"/>
+            
+            <!-- Modal Example -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Modal/Dialog" Margin="{StaticResource MT.5}"/>
+            
+            <Border Style="{StaticResource Modal}" HorizontalAlignment="Left" Margin="{StaticResource MY.3}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource Text.H5}" Text="Modal Title" Margin="{StaticResource MB.3}"/>
+                    <TextBlock TextWrapping="Wrap" Margin="{StaticResource MB.3}">
+                        This is a modal dialog example. It can contain any content you need.
+                    </TextBlock>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource Button.Secondary}" Content="Close" Margin="{StaticResource MR.2}"/>
+                        <Button Style="{StaticResource Button.Primary}" Content="Save changes"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            
+            <!-- Navbar -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Navbar" Margin="{StaticResource MT.5}"/>
+            
+            <Border Style="{StaticResource Navbar}" Margin="{StaticResource MY.3}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Brand" FontWeight="Bold" FontSize="18" Margin="{StaticResource MR.4}"/>
+                    <Button Style="{StaticResource Button.Link}" Content="Home" Margin="{StaticResource MR.2}"/>
+                    <Button Style="{StaticResource Button.Link}" Content="Features" Margin="{StaticResource MR.2}"/>
+                    <Button Style="{StaticResource Button.Link}" Content="Pricing" Margin="{StaticResource MR.2}"/>
+                </StackPanel>
+            </Border>
+            
+            <Border Style="{StaticResource Navbar.Dark}" Margin="{StaticResource MY.3}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Brand" Foreground="White" FontWeight="Bold" FontSize="18" Margin="{StaticResource MR.4}"/>
+                    <Button Content="Home" Margin="{StaticResource MR.2}" Background="Transparent" Foreground="White" BorderThickness="0"/>
+                    <Button Content="Features" Margin="{StaticResource MR.2}" Background="Transparent" Foreground="White" BorderThickness="0"/>
+                </StackPanel>
+            </Border>
+            
+            <!-- Usage Examples -->
+            <TextBlock Style="{StaticResource Text.H4}" Text="Usage Examples" Margin="{StaticResource MT.5}"/>
+            <Border Background="{StaticResource Brush.Gray.100}" 
+                   Padding="{StaticResource P.3}" 
+                   Margin="{StaticResource MY.3}"
+                   CornerRadius="4">
+                <TextBlock FontFamily="Consolas" FontSize="12" xml:space="preserve"><![CDATA[<!-- Alert -->
+<Border Style="{StaticResource Alert.Success}">
+    <TextBlock Text="Success message"/>
+</Border>
+
+<!-- Badge -->
+<Border Style="{StaticResource Badge.Primary}">
+    <TextBlock Text="New" Foreground="White"/>
+</Border>
+
+<!-- Card -->
+<Border Style="{StaticResource Card}">
+    <StackPanel>
+        <Border Style="{StaticResource Card.Header}">
+            <TextBlock Text="Header"/>
+        </Border>
+        <Border Style="{StaticResource Card.Body}">
+            <TextBlock Text="Content"/>
+        </Border>
+    </StackPanel>
+</Border>
+
+<!-- Progress -->
+<ProgressBar Style="{StaticResource Progress}" Value="50"/>]]></TextBlock>
+            </Border>
+            
+        </StackPanel>
+    </ScrollViewer>
+    
+</Page>

@@ -1,0 +1,98 @@
+<Page x:Class="MathCore.WPF.Map.TestWPF.Views.Bootstrap.SpacingDemo"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Spacing">
+    
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="{StaticResource P.4}">
+            
+            <TextBlock Style="{StaticResource Text.H2}" Text="Spacing Utilities"/>
+            <TextBlock Style="{StaticResource Text.Muted}" 
+                      Text="Margin and padding utilities (0-5 scale)"
+                      Margin="{StaticResource MB.4}"/>
+            
+            <TextBlock Style="{StaticResource Text.H4}" Text="Margin Examples" Margin="{StaticResource MT.4}"/>
+            
+            <Border BorderBrush="{StaticResource Brush.Gray.300}" BorderThickness="1" Padding="{StaticResource P.3}" Margin="{StaticResource MY.3}">
+                <StackPanel>
+                    <Border Background="{StaticResource Brush.Primary}" Padding="{StaticResource P.2}" Margin="{StaticResource M.0}">
+                        <TextBlock Text="M.0 - No margin" Foreground="White"/>
+                    </Border>
+                    
+                    <Border Background="{StaticResource Brush.Primary}" Padding="{StaticResource P.2}" Margin="{StaticResource M.2}">
+                        <TextBlock Text="M.2 - Medium margin" Foreground="White"/>
+                    </Border>
+                    
+                    <Border Background="{StaticResource Brush.Primary}" Padding="{StaticResource P.2}" Margin="{StaticResource M.4}">
+                        <TextBlock Text="M.4 - Large margin" Foreground="White"/>
+                    </Border>
+                </StackPanel>
+            </Border>
+            
+            <TextBlock Style="{StaticResource Text.H4}" Text="Directional Margins" Margin="{StaticResource MT.5}"/>
+            
+            <Border BorderBrush="{StaticResource Brush.Gray.300}" BorderThickness="1" Padding="{StaticResource P.3}" Margin="{StaticResource MY.3}">
+                <StackPanel>
+                    <Border Background="{StaticResource Brush.Success}" Padding="{StaticResource P.2}" Margin="{StaticResource MT.3}">
+                        <TextBlock Text="MT.3 - Margin top" Foreground="White"/>
+                    </Border>
+                    
+                    <Border Background="{StaticResource Brush.Success}" Padding="{StaticResource P.2}" Margin="{StaticResource MB.3}">
+                        <TextBlock Text="MB.3 - Margin bottom" Foreground="White"/>
+                    </Border>
+                    
+                    <Border Style="{StaticResource ListGroup.Item}">
+                        <TextBlock Text="MY.3 - Margin top and bottom" Foreground="White"/>
+                    </Border>
+                    
+                    <Border Background="{StaticResource Brush.Success}" Padding="{StaticResource P.2}" Margin="{StaticResource MX.3}">
+                        <TextBlock Text="MX.3 - Margin left and right" Foreground="White"/>
+                    </Border>
+                </StackPanel>
+            </Border>
+            
+            <TextBlock Style="{StaticResource Text.H4}" Text="Padding Examples" Margin="{StaticResource MT.5}"/>
+            
+            <Border BorderBrush="{StaticResource Brush.Gray.300}" BorderThickness="1" Margin="{StaticResource MY.3}">
+                <StackPanel>
+                    <Border Background="{StaticResource Brush.Info}" Padding="{StaticResource P.1}">
+                        <TextBlock Text="P.1 - Small padding" Foreground="{StaticResource Brush.Dark}"/>
+                    </Border>
+                    
+                    <Border Background="{StaticResource Brush.Info}" Padding="{StaticResource P.3}">
+                        <TextBlock Text="P.3 - Medium padding" Foreground="{StaticResource Brush.Dark}"/>
+                    </Border>
+                    
+                    <Border Background="{StaticResource Brush.Info}" Padding="{StaticResource P.5}">
+                        <TextBlock Text="P.5 - Large padding" Foreground="{StaticResource Brush.Dark}"/>
+                    </Border>
+                </StackPanel>
+            </Border>
+            
+            <TextBlock Style="{StaticResource Text.H4}" Text="Spacing Scale" Margin="{StaticResource MT.5}"/>
+            <TextBlock Style="{StaticResource Text.Muted}" Margin="{StaticResource MB.3}">
+                0 = 0px | 1 = 4px | 2 = 8px | 3 = 16px | 4 = 24px | 5 = 48px
+            </TextBlock>
+            
+            <TextBlock Style="{StaticResource Text.H4}" Text="Usage Examples" Margin="{StaticResource MT.5}"/>
+            <Border Background="{StaticResource Brush.Gray.100}" 
+                   Padding="{StaticResource P.3}" 
+                   Margin="{StaticResource MY.3}"
+                   CornerRadius="4">
+                <TextBlock FontFamily="Consolas" FontSize="12" xml:space="preserve"><![CDATA[<!-- Margin -->
+<Button Margin="{StaticResource M.3}"/>
+<Button Margin="{StaticResource MT.2}"/>  <!-- Top -->
+<Button Margin="{StaticResource MB.4}"/>  <!-- Bottom -->
+<Button Margin="{StaticResource MX.3}"/>  <!-- Horizontal -->
+<Button Margin="{StaticResource MY.2}"/>  <!-- Vertical -->
+
+<!-- Padding -->
+<Border Padding="{StaticResource P.3}"/>
+<Border Padding="{StaticResource PX.4}"/>
+<Border Padding="{StaticResource PY.2}"/>]]></TextBlock>
+            </Border>
+            
+        </StackPanel>
+    </ScrollViewer>
+    
+</Page>
