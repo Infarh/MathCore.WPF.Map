@@ -1,7 +1,5 @@
-﻿using System.Runtime.CompilerServices;
-using System.Windows;
+﻿using System.Windows;
 
-using MathCore.WPF.Map.Infrastructure;
 using MathCore.WPF.Map.Primitives.Base;
 using MathCore.WPF.Map.Projections.Base;
 
@@ -49,8 +47,8 @@ public class WorldMercatorProjection : MapProjection
         var scale_y = scale_x / Math.Cos(lat * Consts.ToRad);
 
         return new(
-             latitude: lat - translation.Y / scale_y,
-            longitude: lon + translation.X / scale_x);
+             latitude: lat - (translation.Y / scale_y),
+            longitude: lon + (translation.X / scale_x));
     }
 
     public static double LatitudeToY(double latitude)
@@ -58,32 +56,38 @@ public class WorldMercatorProjection : MapProjection
         switch (latitude)
         {
             case <= -90d: return double.NegativeInfinity;
-            case >= 90d: return double.PositiveInfinity;
+            case >= +90d: return double.PositiveInfinity;
             default:
-            {
                 var lat = latitude * Consts.ToRad;
-                return Math.Log(Math.Tan(0.5 * lat + Consts.PI025) * ConformalFactor(lat)) * Consts.ToDeg; // p.44 (7-7)
-            }
+                return Math.Log(Math.Tan((0.5 * lat) + Consts.PI025) * ConformalFactor(lat)) * Consts.ToDeg; // p.44 (7-7)
         }
     }
 
     public static double YToLatitude(double y)
     {
         var e = Math.Exp(-y * Consts.ToRad); // p.44 (7-10)
-        var lat = Consts.PI05 - 2 * Math.Atan(e); // p.44 (7-11)
+        var lat = Consts.PI05 - (2 * Math.Atan(e)); // начальное приближение p.44 (7-11)
 
-        const double accuracy = 1e-6;
-        const int max_iterations = 10;
-        for (var (i, delta)= (0, 1d); delta > accuracy && i < max_iterations; i++)
+        const double accuracy = 1e-6; // требуемая точность в радианах
+        const int max_iterations = 10; // защитный предел итераций
+
+        for (var i = 0; i < max_iterations; i++)
         {
-            var new_lat = Consts.PI05 - 2 * Math.Atan(e * ConformalFactor(lat)); // p.44 (7-9)
-            (lat, delta) = (new_lat, Math.Abs(1 - new_lat / lat));
+            var new_lat = Consts.PI05 - (2 * Math.Atan(e * ConformalFactor(lat))); // p.44 (7-9)
+            var delta = Math.Abs(new_lat - lat); // абсолютная разница, более устойчивая метрика
+
+            lat = new_lat; // обновляем приближение
+
+            if (double.IsNaN(lat) || double.IsInfinity(lat)) // защититься от некорректных значений
+                break;
+
+            if (delta <= accuracy) // проверка сходимости
+                break;
         }
 
         return lat * Consts.ToDeg;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static double ConformalFactor(double lat)
     {
         var sin_lat = Eccentricity * Math.Sin(lat);
