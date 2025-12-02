@@ -13,7 +13,7 @@ public sealed class FunctionalTileLayer : MapTileLayer
     /// <param name="Description">Описание слоя</param>
     /// <param name="TileFunc">Функция генерации тайлов</param>
     public FunctionalTileLayer(string SourceName, string Description,
-        Func<(double LatMin, double LatMax), (double LonMin, double LonMax), int, CancellationToken, Task<ImageSource?>> TileFunc)
+        FunctionalTileSourceDelegate TileFunc)
     {
         this.SourceName = SourceName;
         this.Description = Description;

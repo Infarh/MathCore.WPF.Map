@@ -1,7 +1,6 @@
-﻿using System.Threading;
+﻿using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows;
 
 using MathCore.WPF.Map.Primitives.Base;
 using MathCore.WPF.Map.TileLayers;
@@ -36,21 +35,21 @@ public partial class MainWindow
                 for (var y = 0; y < tile_size; y++)
                 {
                     ct.ThrowIfCancellationRequested();
-                    var lat = lat_max - (lat_max - lat_min) * y / (tile_size - 1.0);
+                    var lat = lat_max - ((lat_max - lat_min) * y / (tile_size - 1.0));
                     for (var x = 0; x < tile_size; x++)
                     {
-                        var lon = lon_min + (lon_max - lon_min) * x / (tile_size - 1.0);
+                        var lon = lon_min + ((lon_max - lon_min) * x / (tile_size - 1.0));
                         var loc = new Location(lat, lon);
 
-                        var distance_rad = MathCore.WPF.Map.Projections.Base.AzimuthalProjection.GetAzimuthDistance(center, loc).Distance; // радианы
-                        var distance_m = distance_rad * MathCore.WPF.Map.Projections.Base.MapProjection.Wgs84EquatorialRadius; // м
+                        var distance_rad = Projections.Base.AzimuthalProjection.GetAzimuthDistance(center, loc).Distance; // радианы
+                        var distance_m = distance_rad * Projections.Base.MapProjection.Wgs84EquatorialRadius; // м
 
                         var r = distance_m / 1000.0; // нормировка
                         var f = r == 0 ? 1.0 : Math.Sin(r) / r;
                         f = Math.Max(0, f);
 
                         var (b, g, r8) = HeatColor(f);
-                        var index = y * stride + x * 4;
+                        var index = (y * stride) + (x * 4);
                         pixels[index + 0] = b; // B
                         pixels[index + 1] = g; // G
                         pixels[index + 2] = r8; // R
