@@ -20,11 +20,9 @@
     <Grid>
         <!-- 55.65505,37.7578 -->
         <m:Map ZoomLevel="10" Name="MapControl" 
-               Center="{Binding MapCenter}" Heading="0"
+               Center="55.75,37.62" Heading="0"
                DoubleLeftMouseCommand="{Binding AddLocationCommand}">
-            <!--<m:MapPolyline Stroke="Red" StrokeThickness="1" Fill="Blue" 
-                           Location="55.75,37.62" 
-                           Locations="55.75,37.62 55.63405,37.7868 55.61805,37.5538 55.81805,37.5538"/>-->
+            <!-- Базовые оверлеи -->
             <m:MapPolyline Stroke="Red" StrokeThickness="3"
                            Location="0,10" 
                            StrokeLineJoin="Round"
@@ -64,6 +62,8 @@
                 </Border>
             </m:Pushpin>
             <m:MapScale Margin="4" Opacity="0.5" Background="Transparent" HorizontalAlignment="Left"/>
+
+            <!-- Функциональный слой: визуализация sin(x)/x -->
         </m:Map>
 
         <StackPanel Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top" Background="#8E000000">
@@ -129,13 +129,7 @@
                        Margin="10,0,3,10"
                        Foreground="White"
                        FontWeight="Black"
-                       infrastructure:ComponentEx.DoubleClickCommand="{Binding RemoveLastPointCommand}">
-                <!--<i:Interaction.Triggers>
-                    <i:EventTrigger EventName="DoubleClick">
-                        <i:InvokeCommandAction Command="{Binding RemoveLastPointCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>-->
-            </TextBlock>
+                       infrastructure:ComponentEx.DoubleClickCommand="{Binding RemoveLastPointCommand}"></TextBlock>
         </StackPanel>
 
         <ComboBox SelectedIndex="5" 
