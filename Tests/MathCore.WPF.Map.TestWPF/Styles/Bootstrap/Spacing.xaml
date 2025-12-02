@@ -1,0 +1,178 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!-- Spacing utilities Bootstrap for WPF -->
+    <!-- Base spacing unit: 4px -->
+    
+    <!-- Margin All Sides -->
+    <Thickness x:Key="M.0">0</Thickness>
+    <Thickness x:Key="M.1">4</Thickness>
+    <Thickness x:Key="M.2">8</Thickness>
+    <Thickness x:Key="M.3">16</Thickness>
+    <Thickness x:Key="M.4">24</Thickness>
+    <Thickness x:Key="M.5">48</Thickness>
+    <Thickness x:Key="M.Auto">Auto</Thickness>
+    
+    <!-- Margin Top -->
+    <Thickness x:Key="MT.0">0,0,0,0</Thickness>
+    <Thickness x:Key="MT.1">0,4,0,0</Thickness>
+    <Thickness x:Key="MT.2">0,8,0,0</Thickness>
+    <Thickness x:Key="MT.3">0,16,0,0</Thickness>
+    <Thickness x:Key="MT.4">0,24,0,0</Thickness>
+    <Thickness x:Key="MT.5">0,48,0,0</Thickness>
+    
+    <!-- Margin Bottom -->
+    <Thickness x:Key="MB.0">0,0,0,0</Thickness>
+    <Thickness x:Key="MB.1">0,0,0,4</Thickness>
+    <Thickness x:Key="MB.2">0,0,0,8</Thickness>
+    <Thickness x:Key="MB.3">0,0,0,16</Thickness>
+    <Thickness x:Key="MB.4">0,0,0,24</Thickness>
+    <Thickness x:Key="MB.5">0,0,0,48</Thickness>
+    
+    <!-- Margin Left -->
+    <Thickness x:Key="ML.0">0,0,0,0</Thickness>
+    <Thickness x:Key="ML.1">4,0,0,0</Thickness>
+    <Thickness x:Key="ML.2">8,0,0,0</Thickness>
+    <Thickness x:Key="ML.3">16,0,0,0</Thickness>
+    <Thickness x:Key="ML.4">24,0,0,0</Thickness>
+    <Thickness x:Key="ML.5">48,0,0,0</Thickness>
+    
+    <!-- Margin Right -->
+    <Thickness x:Key="MR.0">0,0,0,0</Thickness>
+    <Thickness x:Key="MR.1">0,0,4,0</Thickness>
+    <Thickness x:Key="MR.2">0,0,8,0</Thickness>
+    <Thickness x:Key="MR.3">0,0,16,0</Thickness>
+    <Thickness x:Key="MR.4">0,0,24,0</Thickness>
+    <Thickness x:Key="MR.5">0,0,48,0</Thickness>
+    
+    <!-- Margin X (Left + Right) -->
+    <Thickness x:Key="MX.0">0,0,0,0</Thickness>
+    <Thickness x:Key="MX.1">4,0,4,0</Thickness>
+    <Thickness x:Key="MX.2">8,0,8,0</Thickness>
+    <Thickness x:Key="MX.3">16,0,16,0</Thickness>
+    <Thickness x:Key="MX.4">24,0,24,0</Thickness>
+    <Thickness x:Key="MX.5">48,0,48,0</Thickness>
+    
+    <!-- Margin Y (Top + Bottom) -->
+    <Thickness x:Key="MY.0">0,0,0,0</Thickness>
+    <Thickness x:Key="MY.1">0,4,0,4</Thickness>
+    <Thickness x:Key="MY.2">0,8,0,8</Thickness>
+    <Thickness x:Key="MY.3">0,16,0,16</Thickness>
+    <Thickness x:Key="MY.4">0,24,0,24</Thickness>
+    <Thickness x:Key="MY.5">0,48,0,48</Thickness>
+    
+    <!-- Padding All Sides -->
+    <Thickness x:Key="P.0">0</Thickness>
+    <Thickness x:Key="P.1">4</Thickness>
+    <Thickness x:Key="P.2">8</Thickness>
+    <Thickness x:Key="P.3">16</Thickness>
+    <Thickness x:Key="P.4">24</Thickness>
+    <Thickness x:Key="P.5">48</Thickness>
+    
+    <!-- Padding Top -->
+    <Thickness x:Key="PT.0">0,0,0,0</Thickness>
+    <Thickness x:Key="PT.1">0,4,0,0</Thickness>
+    <Thickness x:Key="PT.2">0,8,0,0</Thickness>
+    <Thickness x:Key="PT.3">0,16,0,0</Thickness>
+    <Thickness x:Key="PT.4">0,24,0,0</Thickness>
+    <Thickness x:Key="PT.5">0,48,0,0</Thickness>
+    
+    <!-- Padding Bottom -->
+    <Thickness x:Key="PB.0">0,0,0,0</Thickness>
+    <Thickness x:Key="PB.1">0,0,0,4</Thickness>
+    <Thickness x:Key="PB.2">0,0,0,8</Thickness>
+    <Thickness x:Key="PB.3">0,0,0,16</Thickness>
+    <Thickness x:Key="PB.4">0,0,0,24</Thickness>
+    <Thickness x:Key="PB.5">0,0,0,48</Thickness>
+    
+    <!-- Padding Left -->
+    <Thickness x:Key="PL.0">0,0,0,0</Thickness>
+    <Thickness x:Key="PL.1">4,0,0,0</Thickness>
+    <Thickness x:Key="PL.2">8,0,0,0</Thickness>
+    <Thickness x:Key="PL.3">16,0,0,0</Thickness>
+    <Thickness x:Key="PL.4">24,0,0,0</Thickness>
+    <Thickness x:Key="PL.5">48,0,0,0</Thickness>
+    
+    <!-- Padding Right -->
+    <Thickness x:Key="PR.0">0,0,0,0</Thickness>
+    <Thickness x:Key="PR.1">0,0,4,0</Thickness>
+    <Thickness x:Key="PR.2">0,0,8,0</Thickness>
+    <Thickness x:Key="PR.3">0,0,16,0</Thickness>
+    <Thickness x:Key="PR.4">0,0,24,0</Thickness>
+    <Thickness x:Key="PR.5">0,0,48,0</Thickness>
+    
+    <!-- Padding X (Left + Right) -->
+    <Thickness x:Key="PX.0">0,0,0,0</Thickness>
+    <Thickness x:Key="PX.1">4,0,4,0</Thickness>
+    <Thickness x:Key="PX.2">8,0,8,0</Thickness>
+    <Thickness x:Key="PX.3">16,0,16,0</Thickness>
+    <Thickness x:Key="PX.4">24,0,24,0</Thickness>
+    <Thickness x:Key="PX.5">48,0,48,0</Thickness>
+    
+    <!-- Padding Y (Top + Bottom) -->
+    <Thickness x:Key="PY.0">0,0,0,0</Thickness>
+    <Thickness x:Key="PY.1">0,4,0,4</Thickness>
+    <Thickness x:Key="PY.2">0,8,0,8</Thickness>
+    <Thickness x:Key="PY.3">0,16,0,16</Thickness>
+    <Thickness x:Key="PY.4">0,24,0,24</Thickness>
+    <Thickness x:Key="PY.5">0,48,0,48</Thickness>
+    
+    <!-- Gap for StackPanel -->
+    <System:Double x:Key="Gap.0" xmlns:System="clr-namespace:System;assembly=mscorlib">0</System:Double>
+    <System:Double x:Key="Gap.1" xmlns:System="clr-namespace:System;assembly=mscorlib">4</System:Double>
+    <System:Double x:Key="Gap.2" xmlns:System="clr-namespace:System;assembly=mscorlib">8</System:Double>
+    <System:Double x:Key="Gap.3" xmlns:System="clr-namespace:System;assembly=mscorlib">16</System:Double>
+    <System:Double x:Key="Gap.4" xmlns:System="clr-namespace:System;assembly=mscorlib">24</System:Double>
+    <System:Double x:Key="Gap.5" xmlns:System="clr-namespace:System;assembly=mscorlib">48</System:Double>
+    
+    <!-- Margin Styles -->
+    <Style x:Key="Style.M.0" TargetType="FrameworkElement">
+        <Setter Property="Margin" Value="{StaticResource M.0}"/>
+    </Style>
+    
+    <Style x:Key="Style.M.1" TargetType="FrameworkElement">
+        <Setter Property="Margin" Value="{StaticResource M.1}"/>
+    </Style>
+    
+    <Style x:Key="Style.M.2" TargetType="FrameworkElement">
+        <Setter Property="Margin" Value="{StaticResource M.2}"/>
+    </Style>
+    
+    <Style x:Key="Style.M.3" TargetType="FrameworkElement">
+        <Setter Property="Margin" Value="{StaticResource M.3}"/>
+    </Style>
+    
+    <Style x:Key="Style.M.4" TargetType="FrameworkElement">
+        <Setter Property="Margin" Value="{StaticResource M.4}"/>
+    </Style>
+    
+    <Style x:Key="Style.M.5" TargetType="FrameworkElement">
+        <Setter Property="Margin" Value="{StaticResource M.5}"/>
+    </Style>
+    
+    <!-- Padding Styles for Control -->
+    <Style x:Key="Style.P.0" TargetType="Control">
+        <Setter Property="Padding" Value="{StaticResource P.0}"/>
+    </Style>
+    
+    <Style x:Key="Style.P.1" TargetType="Control">
+        <Setter Property="Padding" Value="{StaticResource P.1}"/>
+    </Style>
+    
+    <Style x:Key="Style.P.2" TargetType="Control">
+        <Setter Property="Padding" Value="{StaticResource P.2}"/>
+    </Style>
+    
+    <Style x:Key="Style.P.3" TargetType="Control">
+        <Setter Property="Padding" Value="{StaticResource P.3}"/>
+    </Style>
+    
+    <Style x:Key="Style.P.4" TargetType="Control">
+        <Setter Property="Padding" Value="{StaticResource P.4}"/>
+    </Style>
+    
+    <Style x:Key="Style.P.5" TargetType="Control">
+        <Setter Property="Padding" Value="{StaticResource P.5}"/>
+    </Style>
+    
+</ResourceDictionary>

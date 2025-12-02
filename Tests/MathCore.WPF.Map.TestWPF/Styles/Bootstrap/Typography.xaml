@@ -1,0 +1,221 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Colors.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+    
+    <!-- Base font settings -->
+    <FontFamily x:Key="Font.Family.Base">Segoe UI, -apple-system, BlinkMacSystemFont, Roboto, Helvetica Neue, Arial, sans-serif</FontFamily>
+    <FontFamily x:Key="Font.Family.Monospace">SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace</FontFamily>
+    
+    <System:Double x:Key="Font.Size.Base" xmlns:System="clr-namespace:System;assembly=mscorlib">14</System:Double>
+    <System:Double x:Key="Font.Size.Small" xmlns:System="clr-namespace:System;assembly=mscorlib">12</System:Double>
+    <System:Double x:Key="Font.Size.Large" xmlns:System="clr-namespace:System;assembly=mscorlib">16</System:Double>
+    
+    <!-- Heading sizes H1-H6 -->
+    <System:Double x:Key="Font.Size.H1" xmlns:System="clr-namespace:System;assembly=mscorlib">40</System:Double>
+    <System:Double x:Key="Font.Size.H2" xmlns:System="clr-namespace:System;assembly=mscorlib">32</System:Double>
+    <System:Double x:Key="Font.Size.H3" xmlns:System="clr-namespace:System;assembly=mscorlib">28</System:Double>
+    <System:Double x:Key="Font.Size.H4" xmlns:System="clr-namespace:System;assembly=mscorlib">24</System:Double>
+    <System:Double x:Key="Font.Size.H5" xmlns:System="clr-namespace:System;assembly=mscorlib">20</System:Double>
+    <System:Double x:Key="Font.Size.H6" xmlns:System="clr-namespace:System;assembly=mscorlib">16</System:Double>
+    
+    <!-- Heading styles -->
+    <Style x:Key="Text.H1" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource Font.Size.H1}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="LineHeight" Value="48"/>
+        <Setter Property="Margin" Value="0,0,0,8"/>
+    </Style>
+    
+    <Style x:Key="Text.H2" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource Font.Size.H2}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="LineHeight" Value="40"/>
+        <Setter Property="Margin" Value="0,0,0,8"/>
+    </Style>
+    
+    <Style x:Key="Text.H3" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource Font.Size.H3}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="LineHeight" Value="36"/>
+        <Setter Property="Margin" Value="0,0,0,8"/>
+    </Style>
+    
+    <Style x:Key="Text.H4" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource Font.Size.H4}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="LineHeight" Value="32"/>
+        <Setter Property="Margin" Value="0,0,0,8"/>
+    </Style>
+    
+    <Style x:Key="Text.H5" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource Font.Size.H5}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="LineHeight" Value="28"/>
+        <Setter Property="Margin" Value="0,0,0,8"/>
+    </Style>
+    
+    <Style x:Key="Text.H6" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource Font.Size.H6}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="LineHeight" Value="24"/>
+        <Setter Property="Margin" Value="0,0,0,8"/>
+    </Style>
+    
+    <!-- Display styles -->
+    <Style x:Key="Text.Display1" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="80"/>
+        <Setter Property="FontWeight" Value="Light"/>
+        <Setter Property="LineHeight" Value="96"/>
+    </Style>
+    
+    <Style x:Key="Text.Display2" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="72"/>
+        <Setter Property="FontWeight" Value="Light"/>
+        <Setter Property="LineHeight" Value="86"/>
+    </Style>
+    
+    <Style x:Key="Text.Display3" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="64"/>
+        <Setter Property="FontWeight" Value="Light"/>
+        <Setter Property="LineHeight" Value="77"/>
+    </Style>
+    
+    <Style x:Key="Text.Display4" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="56"/>
+        <Setter Property="FontWeight" Value="Light"/>
+        <Setter Property="LineHeight" Value="67"/>
+    </Style>
+    
+    <Style x:Key="Text.Display5" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="48"/>
+        <Setter Property="FontWeight" Value="Light"/>
+        <Setter Property="LineHeight" Value="58"/>
+    </Style>
+    
+    <Style x:Key="Text.Display6" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="40"/>
+        <Setter Property="FontWeight" Value="Light"/>
+        <Setter Property="LineHeight" Value="48"/>
+    </Style>
+    
+    <!-- Paragraph styles -->
+    <Style x:Key="Text.Lead" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontWeight" Value="Light"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+    
+    <Style x:Key="Text.Body" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource Font.Size.Base}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="LineHeight" Value="24"/>
+    </Style>
+    
+    <Style x:Key="Text.Small" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="{StaticResource Font.Size.Small}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+    
+    <!-- Text utilities -->
+    <Style x:Key="Text.Muted" TargetType="TextBlock" BasedOn="{StaticResource Text.Body}">
+        <Setter Property="Foreground" Value="{StaticResource Brush.Gray.600}"/>
+    </Style>
+    
+    <Style x:Key="Text.Primary" TargetType="TextBlock" BasedOn="{StaticResource Text.Body}">
+        <Setter Property="Foreground" Value="{StaticResource Brush.Primary}"/>
+    </Style>
+    
+    <Style x:Key="Text.Secondary" TargetType="TextBlock" BasedOn="{StaticResource Text.Body}">
+        <Setter Property="Foreground" Value="{StaticResource Brush.Secondary}"/>
+    </Style>
+    
+    <Style x:Key="Text.Success" TargetType="TextBlock" BasedOn="{StaticResource Text.Body}">
+        <Setter Property="Foreground" Value="{StaticResource Brush.Success}"/>
+    </Style>
+    
+    <Style x:Key="Text.Danger" TargetType="TextBlock" BasedOn="{StaticResource Text.Body}">
+        <Setter Property="Foreground" Value="{StaticResource Brush.Danger}"/>
+    </Style>
+    
+    <Style x:Key="Text.Warning" TargetType="TextBlock" BasedOn="{StaticResource Text.Body}">
+        <Setter Property="Foreground" Value="{StaticResource Brush.Warning}"/>
+    </Style>
+    
+    <Style x:Key="Text.Info" TargetType="TextBlock" BasedOn="{StaticResource Text.Body}">
+        <Setter Property="Foreground" Value="{StaticResource Brush.Info}"/>
+    </Style>
+    
+    <Style x:Key="Text.Light" TargetType="TextBlock" BasedOn="{StaticResource Text.Body}">
+        <Setter Property="Foreground" Value="{StaticResource Brush.Light}"/>
+    </Style>
+    
+    <Style x:Key="Text.Dark" TargetType="TextBlock" BasedOn="{StaticResource Text.Body}">
+        <Setter Property="Foreground" Value="{StaticResource Brush.Dark}"/>
+    </Style>
+    
+    <!-- Text alignment -->
+    <Style x:Key="Text.Left" TargetType="TextBlock">
+        <Setter Property="TextAlignment" Value="Left"/>
+    </Style>
+    
+    <Style x:Key="Text.Center" TargetType="TextBlock">
+        <Setter Property="TextAlignment" Value="Center"/>
+    </Style>
+    
+    <Style x:Key="Text.Right" TargetType="TextBlock">
+        <Setter Property="TextAlignment" Value="Right"/>
+    </Style>
+    
+    <!-- Font weights -->
+    <Style x:Key="Text.Bold" TargetType="TextBlock">
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+    
+    <Style x:Key="Text.SemiBold" TargetType="TextBlock">
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+    
+    <Style x:Key="Text.Normal" TargetType="TextBlock">
+        <Setter Property="FontWeight" Value="Normal"/>
+    </Style>
+    
+    <Style x:Key="Text.Light.Weight" TargetType="TextBlock">
+        <Setter Property="FontWeight" Value="Light"/>
+    </Style>
+    
+    <Style x:Key="Text.Italic" TargetType="TextBlock">
+        <Setter Property="FontStyle" Value="Italic"/>
+    </Style>
+    
+    <!-- Monospace text -->
+    <Style x:Key="Text.Monospace" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource Font.Family.Monospace}"/>
+        <Setter Property="FontSize" Value="{StaticResource Font.Size.Small}"/>
+    </Style>
+    
+    <!-- BlockQuote style using Border -->
+    <Style x:Key="Text.BlockQuote" TargetType="Border">
+        <Setter Property="Padding" Value="16,0,0,0"/>
+        <Setter Property="Margin" Value="0,0,0,16"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Brush.Gray.300}"/>
+        <Setter Property="BorderThickness" Value="4,0,0,0"/>
+    </Style>
+    
+    <!-- Text decorations -->
+    <Style x:Key="Text.Underline" TargetType="TextBlock">
+        <Setter Property="TextDecorations" Value="Underline"/>
+    </Style>
+    
+    <Style x:Key="Text.Strikethrough" TargetType="TextBlock">
+        <Setter Property="TextDecorations" Value="Strikethrough"/>
+    </Style>
+    
+    <!-- Text transformations -->
+    <Style x:Key="Text.Uppercase" TargetType="TextBlock">
+        <Setter Property="Typography.Capitals" Value="AllSmallCaps"/>
+    </Style>
+    
+</ResourceDictionary>

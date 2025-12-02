@@ -1,0 +1,109 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Colors.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+    
+    <!-- ������� ����� Bootstrap ��� WPF -->
+    
+    <!-- Box Shadow (����) -->
+    <DropShadowEffect x:Key="Shadow.None" 
+                      ShadowDepth="0" 
+                      BlurRadius="0" 
+                      Opacity="0"/>
+    
+    <DropShadowEffect x:Key="Shadow.Small" 
+                      ShadowDepth="1" 
+                      BlurRadius="2" 
+                      Opacity="0.15" 
+                      Color="#000000"/>
+    
+    <DropShadowEffect x:Key="Shadow" 
+                      ShadowDepth="2" 
+                      BlurRadius="8" 
+                      Opacity="0.15" 
+                      Color="#000000"/>
+    
+    <DropShadowEffect x:Key="Shadow.Large" 
+                      ShadowDepth="4" 
+                      BlurRadius="16" 
+                      Opacity="0.175" 
+                      Color="#000000"/>
+    
+    <DropShadowEffect x:Key="Shadow.XLarge" 
+                      ShadowDepth="8" 
+                      BlurRadius="32" 
+                      Opacity="0.2" 
+                      Color="#000000"/>
+    
+    <!-- ����� � ������ ��� Border -->
+    <Style x:Key="Shadow.Style" TargetType="Border">
+        <Setter Property="Effect" Value="{StaticResource Shadow}"/>
+    </Style>
+    
+    <Style x:Key="Shadow.Small.Style" TargetType="Border">
+        <Setter Property="Effect" Value="{StaticResource Shadow.Small}"/>
+    </Style>
+    
+    <Style x:Key="Shadow.Large.Style" TargetType="Border">
+        <Setter Property="Effect" Value="{StaticResource Shadow.Large}"/>
+    </Style>
+    
+    <Style x:Key="Shadow.XLarge.Style" TargetType="Border">
+        <Setter Property="Effect" Value="{StaticResource Shadow.XLarge}"/>
+    </Style>
+    
+    <!-- Elevation (�����������) - ���������� ���� � �������� -->
+    <Style x:Key="Elevation.1" TargetType="Border">
+        <Setter Property="Effect" Value="{StaticResource Shadow.Small}"/>
+        <Setter Property="Padding" Value="8"/>
+    </Style>
+    
+    <Style x:Key="Elevation.2" TargetType="Border">
+        <Setter Property="Effect" Value="{StaticResource Shadow}"/>
+        <Setter Property="Padding" Value="12"/>
+    </Style>
+    
+    <Style x:Key="Elevation.3" TargetType="Border">
+        <Setter Property="Effect" Value="{StaticResource Shadow.Large}"/>
+        <Setter Property="Padding" Value="16"/>
+    </Style>
+    
+    <Style x:Key="Elevation.4" TargetType="Border">
+        <Setter Property="Effect" Value="{StaticResource Shadow.XLarge}"/>
+        <Setter Property="Padding" Value="24"/>
+    </Style>
+    
+    <!-- Focus Shadow (���� ��� ������) -->
+    <DropShadowEffect x:Key="Shadow.Focus.Primary" 
+                      ShadowDepth="0" 
+                      BlurRadius="8" 
+                      Opacity="0.25" 
+                      Color="{StaticResource Color.Primary}"/>
+    
+    <DropShadowEffect x:Key="Shadow.Focus.Success" 
+                      ShadowDepth="0" 
+                      BlurRadius="8" 
+                      Opacity="0.25" 
+                      Color="{StaticResource Color.Success}"/>
+    
+    <DropShadowEffect x:Key="Shadow.Focus.Danger" 
+                      ShadowDepth="0" 
+                      BlurRadius="8" 
+                      Opacity="0.25" 
+                      Color="{StaticResource Color.Danger}"/>
+    
+    <DropShadowEffect x:Key="Shadow.Focus.Warning" 
+                      ShadowDepth="0" 
+                      BlurRadius="8" 
+                      Opacity="0.25" 
+                      Color="{StaticResource Color.Warning}"/>
+    
+    <DropShadowEffect x:Key="Shadow.Focus.Info" 
+                      ShadowDepth="0" 
+                      BlurRadius="8" 
+                      Opacity="0.25" 
+                      Color="{StaticResource Color.Info}"/>
+    
+</ResourceDictionary>

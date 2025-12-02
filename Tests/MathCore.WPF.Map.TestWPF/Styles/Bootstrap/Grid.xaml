@@ -1,0 +1,100 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!-- Grid utilities Bootstrap for WPF -->
+    
+    <!-- Container -->
+    <Style x:Key="Container" TargetType="FrameworkElement">
+        <Setter Property="MaxWidth" Value="1140"/>
+        <Setter Property="Margin" Value="15,0"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+    
+    <Style x:Key="Container.Fluid" TargetType="FrameworkElement">
+        <Setter Property="Margin" Value="15,0"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    </Style>
+    
+    <!-- Row -->
+    <Style x:Key="Row" TargetType="Grid">
+        <Setter Property="Margin" Value="-15,0"/>
+    </Style>
+    
+    <!-- Column widths -->
+    <GridLength x:Key="Col.1">1*</GridLength>
+    <GridLength x:Key="Col.2">2*</GridLength>
+    <GridLength x:Key="Col.3">3*</GridLength>
+    <GridLength x:Key="Col.4">4*</GridLength>
+    <GridLength x:Key="Col.5">5*</GridLength>
+    <GridLength x:Key="Col.6">6*</GridLength>
+    <GridLength x:Key="Col.7">7*</GridLength>
+    <GridLength x:Key="Col.8">8*</GridLength>
+    <GridLength x:Key="Col.9">9*</GridLength>
+    <GridLength x:Key="Col.10">10*</GridLength>
+    <GridLength x:Key="Col.11">11*</GridLength>
+    <GridLength x:Key="Col.12">12*</GridLength>
+    
+    <!-- Column styles -->
+    <Style x:Key="Col" TargetType="FrameworkElement">
+        <Setter Property="Margin" Value="15,0"/>
+    </Style>
+    
+    <!-- Auto columns -->
+    <Style x:Key="Col.Auto" TargetType="FrameworkElement">
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="Margin" Value="15,0"/>
+    </Style>
+    
+    <!-- Justify Content -->
+    <Style x:Key="Justify.Start" TargetType="Panel">
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+    </Style>
+    
+    <Style x:Key="Justify.Center" TargetType="Panel">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+    
+    <Style x:Key="Justify.End" TargetType="Panel">
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+    </Style>
+    
+    <Style x:Key="Justify.Between" TargetType="Panel">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    </Style>
+    
+    <!-- Align Items -->
+    <Style x:Key="Align.Start" TargetType="FrameworkElement">
+        <Setter Property="VerticalAlignment" Value="Top"/>
+    </Style>
+    
+    <Style x:Key="Align.Center" TargetType="FrameworkElement">
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    
+    <Style x:Key="Align.End" TargetType="FrameworkElement">
+        <Setter Property="VerticalAlignment" Value="Bottom"/>
+    </Style>
+    
+    <Style x:Key="Align.Stretch" TargetType="FrameworkElement">
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+    </Style>
+    
+    <!-- Gutters -->
+    <Thickness x:Key="Gutter.0">0</Thickness>
+    <Thickness x:Key="Gutter.1">4,0</Thickness>
+    <Thickness x:Key="Gutter.2">8,0</Thickness>
+    <Thickness x:Key="Gutter.3">12,0</Thickness>
+    <Thickness x:Key="Gutter.4">16,0</Thickness>
+    <Thickness x:Key="Gutter.5">24,0</Thickness>
+    
+    <!-- Order -->
+    <System:Int32 x:Key="Order.First" xmlns:System="clr-namespace:System;assembly=mscorlib">-1</System:Int32>
+    <System:Int32 x:Key="Order.0" xmlns:System="clr-namespace:System;assembly=mscorlib">0</System:Int32>
+    <System:Int32 x:Key="Order.1" xmlns:System="clr-namespace:System;assembly=mscorlib">1</System:Int32>
+    <System:Int32 x:Key="Order.2" xmlns:System="clr-namespace:System;assembly=mscorlib">2</System:Int32>
+    <System:Int32 x:Key="Order.3" xmlns:System="clr-namespace:System;assembly=mscorlib">3</System:Int32>
+    <System:Int32 x:Key="Order.4" xmlns:System="clr-namespace:System;assembly=mscorlib">4</System:Int32>
+    <System:Int32 x:Key="Order.5" xmlns:System="clr-namespace:System;assembly=mscorlib">5</System:Int32>
+    <System:Int32 x:Key="Order.Last" xmlns:System="clr-namespace:System;assembly=mscorlib">999</System:Int32>
+    
+</ResourceDictionary>

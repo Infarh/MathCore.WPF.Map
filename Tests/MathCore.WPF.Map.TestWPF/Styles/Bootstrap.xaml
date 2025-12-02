@@ -1,0 +1,35 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!-- Система стилей Bootstrap 5 для WPF -->
+    
+    <ResourceDictionary.MergedDictionaries>
+        <!-- Цветовая палитра -->
+        <ResourceDictionary Source="Bootstrap/Colors.xaml"/>
+        
+        <!-- Типографика -->
+        <ResourceDictionary Source="Bootstrap/Typography.xaml"/>
+        
+        <!-- Кнопки -->
+        <ResourceDictionary Source="Bootstrap/Buttons.xaml"/>
+        
+        <!-- Формы -->
+        <ResourceDictionary Source="Bootstrap/Forms.xaml"/>
+        
+        <!-- Сеточная система -->
+        <ResourceDictionary Source="Bootstrap/Grid.xaml"/>
+        
+        <!-- Отступы -->
+        <ResourceDictionary Source="Bootstrap/Spacing.xaml"/>
+        
+        <!-- Границы -->
+        <ResourceDictionary Source="Bootstrap/Borders.xaml"/>
+        
+        <!-- Тени -->
+        <ResourceDictionary Source="Bootstrap/Shadows.xaml"/>
+        
+        <!-- Компоненты -->
+        <ResourceDictionary Source="Bootstrap/Components.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+    
+</ResourceDictionary>
