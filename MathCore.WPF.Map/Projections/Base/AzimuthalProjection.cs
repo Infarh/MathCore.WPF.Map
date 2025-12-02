@@ -10,18 +10,30 @@ namespace MathCore.WPF.Map.Projections.Base;
 /// <summary>Азимутальная проекция</summary>
 public abstract class AzimuthalProjection : MapProjection
 {
+    /// <summary>Центр проекции</summary>
     public Location ProjectionCenter { get; private set; } = new();
 
+    /// <summary>Создаёт экземпляр азимутальной проекции и настраивает параметры</summary>
     protected AzimuthalProjection()
     {
         IsAzimuthal = true;
         LongitudeScale = double.NaN;
     }
 
+    /// <summary>Возвращает масштаб видимой области как отношение градусов к пикселям</summary>
+    /// <param name="ZoomLevel">Уровень масштаба</param>
+    /// <returns>Масштаб видимой области</returns>
     public override double GetViewportScale(double ZoomLevel) => DegreesToViewportScale(ZoomLevel) / MetersPerDegree;
 
+    /// <summary>Возвращает масштаб карты по обеим осям</summary>
+    /// <param name="location">Географическая позиция</param>
+    /// <returns>Масштаб по X и Y</returns>
     public override Point GetMapScale(Location location) => new(ViewportScale, ViewportScale);
 
+    /// <summary>Переводит географическую позицию с учётом экранного смещения</summary>
+    /// <param name="location">Исходная позиция</param>
+    /// <param name="translation">Смещение на экране в пикселях</param>
+    /// <returns>Новая географическая позиция</returns>
     public override Location TranslateLocation(Location location, Point translation)
     {
         var scale_y = ViewportScale * MetersPerDegree;
@@ -32,6 +44,9 @@ public abstract class AzimuthalProjection : MapProjection
             longitude: location.Longitude + translation.X / scale_x);
     }
 
+    /// <summary>Преобразует ограничивающий прямоугольник координат в декартовую систему проекции</summary>
+    /// <param name="BoundingBox">Границы области</param>
+    /// <returns>Прямоугольник в декартовых координатах проекции</returns>
     public override Rect BoundingBoxToRect(BoundingBox BoundingBox)
     {
         var center = LocationToPoint(BoundingBox.GetCenter());
@@ -43,6 +58,9 @@ public abstract class AzimuthalProjection : MapProjection
             height: BoundingBox.Height);
     }
 
+    /// <summary>Преобразует прямоугольник проекции в географические границы</summary>
+    /// <param name="rect">Прямоугольник в декартовых координатах</param>
+    /// <returns>Географические границы области</returns>
     public override BoundingBox RectToBoundingBox(Rect rect)
     {
         var center = PointToLocation(new(rect.X + rect.Width / 2, rect.Y + rect.Height / 2));
@@ -50,6 +68,12 @@ public abstract class AzimuthalProjection : MapProjection
         return new(center, rect.Width, rect.Height); // width и height в метрах
     }
 
+    /// <summary>Устанавливает трансформацию видимой области и центр проекции</summary>
+    /// <param name="Center">Центр видимой области</param>
+    /// <param name="MapCenter">Центр карты</param>
+    /// <param name="ViewportCenter">Центр экрана</param>
+    /// <param name="ZoomLevel">Уровень масштаба</param>
+    /// <param name="Heading">Азимут поворота</param>
     public override void SetViewportTransform(Location Center, Location MapCenter, Point ViewportCenter, double ZoomLevel, double Heading)
     {
         ProjectionCenter = Center;
@@ -57,6 +81,10 @@ public abstract class AzimuthalProjection : MapProjection
         base.SetViewportTransform(Center, MapCenter, ViewportCenter, ZoomLevel, Heading);
     }
 
+    /// <summary>Формирует параметры запроса WMS для указанной области</summary>
+    /// <param name="BoundingBox">Границы области</param>
+    /// <param name="Version">Версия протокола WMS</param>
+    /// <returns>Строка параметров запроса или null если `CrsId` не задан</returns>
     public override string? WmsQueryParameters(BoundingBox BoundingBox, string Version = "1.3.0")
     {
         if (string.IsNullOrEmpty(CrsId))
@@ -81,7 +109,10 @@ public abstract class AzimuthalProjection : MapProjection
             height);
     }
 
-    /// <summary>Расчёт азимута и дистанции в радианах между location1 и location2</summary>
+    /// <summary>Расчёт азимута и дистанции в радианах между двумя позициями</summary>
+    /// <param name="location1">Первая позиция</param>
+    /// <param name="location2">Вторая позиция</param>
+    /// <returns>Азимут и дистанция в радианах</returns>
     public static (double Azimuth, double Distance) GetAzimuthDistance(Location location1, Location location2)
     {
         var lat1 = location1.Latitude * Consts.ToRad;
@@ -108,7 +139,11 @@ public abstract class AzimuthalProjection : MapProjection
         return (azimuth, distance);
     }
 
-    /// <summary>Расчёт координат относительно указанной точки, а также азимута и расстояния</summary>
+    /// <summary>Расчёт позиции по исходной позиции, азимуту и расстоянию</summary>
+    /// <param name="location">Исходная позиция</param>
+    /// <param name="azimuth">Азимут в радианах</param>
+    /// <param name="distance">Расстояние в радианах</param>
+    /// <returns>Новая позиция</returns>
     public static Location GetLocation(Location location, double azimuth, double distance)
     {
         var lat1 = location.Latitude * Consts.ToRad;

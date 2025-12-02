@@ -106,7 +106,8 @@ public class Map : MapBase
 
     private Point? _MouseDownPosition;
 
-    /// <summary>Обработка изменения положения колёсика мышки</summary>
+    /// <summary>Обрабатывает изменение положения колёсика мышки для масштабирования карты</summary>
+    /// <param name="e">Аргументы события</param>
     protected override void OnMouseWheel(MouseWheelEventArgs e)
     {
         base.OnMouseWheel(e);
@@ -117,7 +118,8 @@ public class Map : MapBase
         ZoomMap(e.GetPosition(this), TargetZoomLevel + zoom_delta);
     }
 
-    /// <summary>Обработка события нажатия левой клавиши мышки</summary>
+    /// <summary>Обрабатывает событие нажатия левой клавиши мыши с поддержкой двойного клика</summary>
+    /// <param name="e">Аргументы события</param>
     protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
     {
         base.OnMouseLeftButtonDown(e);
@@ -137,6 +139,8 @@ public class Map : MapBase
         _MouseDownPosition = position;
     }
 
+    /// <summary>Обрабатывает событие отпускания левой клавиши мыши и завершает перетаскивание карты</summary>
+    /// <param name="e">Аргументы события</param>
     protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
     {
         base.OnMouseLeftButtonUp(e);
@@ -147,6 +151,8 @@ public class Map : MapBase
         ReleaseMouseCapture();
     }
 
+    /// <summary>Обрабатывает событие перемещения мыши для перетаскивания карты и обновления позиции курсора</summary>
+    /// <param name="e">Аргументы события</param>
     protected override void OnMouseMove(MouseEventArgs e)
     {
         base.OnMouseMove(e);
@@ -161,6 +167,8 @@ public class Map : MapBase
         _MouseDownPosition = position;
     }
 
+    /// <summary>Начинает жестовую манипуляцию, устанавливая режимы взаимодействия</summary>
+    /// <param name="e">Аргументы события</param>
     protected override void OnManipulationStarted(ManipulationStartedEventArgs e)
     {
         base.OnManipulationStarted(e);
@@ -168,6 +176,8 @@ public class Map : MapBase
         Manipulation.SetManipulationMode(this, ManipulationMode);
     }
 
+    /// <summary>Обрабатывает шаг жестовой манипуляции с изменением масштаба, поворота и смещения</summary>
+    /// <param name="e">Аргументы события</param>
     protected override void OnManipulationDelta(ManipulationDeltaEventArgs e)
     {
         base.OnManipulationDelta(e);

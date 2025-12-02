@@ -9,10 +9,16 @@ namespace MathCore.WPF.Map.Projections;
 /// <summary>Ортогональная проекция</summary>
 public class OrthographicProjection : AzimuthalProjection
 {
+    /// <summary>Инициализирует проекцию с CRS по умолчанию</summary>
     public OrthographicProjection() : this("AUTO2:42003") { }
 
+    /// <summary>Инициализирует проекцию с указанным идентификатором CRS</summary>
+    /// <param name="CrsId">Идентификатор системы координат</param>
     public OrthographicProjection(string CrsId) => this.CrsId = CrsId;
 
+    /// <summary>Преобразует географические координаты в экранную точку</summary>
+    /// <param name="location">Географическое положение</param>
+    /// <returns>Точка в проекции</returns>
     public override Point LocationToPoint(Location location)
     {
         if (location.Equals(ProjectionCenter))
@@ -27,6 +33,9 @@ public class OrthographicProjection : AzimuthalProjection
             y: Wgs84EquatorialRadius * (Math.Cos(lat0) * Math.Sin(lat) - Math.Sin(lat0) * Math.Cos(lat) * Math.Cos(d_lon)));
     }
 
+    /// <summary>Преобразует экранную точку в географические координаты</summary>
+    /// <param name="point">Точка проекции</param>
+    /// <returns>Географическое положение</returns>
     public override Location PointToLocation(Point point)
     {
         if (point is { X: 0, Y: 0 })

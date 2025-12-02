@@ -1,8 +1,10 @@
 ﻿using System.Windows;
 
-using MathCore.WPF.Map.Infrastructure;
 using MathCore.WPF.Map.Primitives.Base;
 using MathCore.WPF.Map.Projections.Base;
+
+using static System.Math;
+using static MathCore.WPF.Map.Infrastructure.Consts;
 
 namespace MathCore.WPF.Map.Projections;
 
@@ -28,7 +30,7 @@ public class WebMercatorProjection : MapProjection
 
     public override Point GetMapScale(Location location)
     {
-        var scale = ViewportScale / Math.Cos(location.Latitude * Consts.ToRad);
+        var scale = ViewportScale / Cos(location.Latitude * ToRad);
 
         return new(scale, scale);
     }
@@ -45,20 +47,20 @@ public class WebMercatorProjection : MapProjection
     {
         var scale_x = MetersPerDegree * ViewportScale;
         var (lat, lon) = location;
-        var scale_y = scale_x / Math.Cos(lat * Consts.ToRad);
+        var scale_y = scale_x / Cos(lat * ToRad);
 
         return new(
-             latitude: lat - translation.Y / scale_y,
-            longitude: lon + translation.X / scale_x);
+             latitude: lat - (translation.Y / scale_y),
+            longitude: lon + (translation.X / scale_x));
     }
 
     public static double LatitudeToY(double latitude) => latitude switch
     {
         <= -90d => double.NegativeInfinity,
-        >= 90d => double.PositiveInfinity,
-        _ => Math.Log(Math.Tan((latitude + 90d) * 0.5 * Consts.ToRad)) * Consts.ToDeg
+        >= +90d => double.PositiveInfinity,
+        _ => Log(Tan((latitude + 90d) * 0.5 * ToRad)) * ToDeg
     };
 
     //public static double YToLatitude(double y) => 2 * Math.Atan(Math.Exp(y * Consts.ToRad)) * Consts.ToDeg - 90d;
-    public static double YToLatitude(double y) => 90 - 2 * Math.Atan(Math.Exp(-y * Consts.ToRad)) * Consts.ToDeg;
+    public static double YToLatitude(double y) => 90 - (2 * Atan(Exp(-y * ToRad)) * ToDeg);
 }
