@@ -1,0 +1,285 @@
+﻿<Window x:Class="MathCore.WPF.Map.TestWPF.DarkStyleWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Dark Menu Styles Demo" 
+        Height="600" 
+        Width="900"
+        WindowStartupLocation="CenterScreen">
+    
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles/DarkMenus.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            
+            <!-- Дополнительные цвета для демо -->
+            <SolidColorBrush x:Key="DarkWindow.Background" Color="#1E1E1E"/>
+            <SolidColorBrush x:Key="DarkWindow.Foreground" Color="#F1F1F1"/>
+            <SolidColorBrush x:Key="DarkWindow.Border" Color="#3F3F46"/>
+            <SolidColorBrush x:Key="DarkPanel.Background" Color="#252526"/>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Background="{StaticResource DarkWindow.Background}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Главное меню -->
+        <Menu Grid.Row="0" Style="{StaticResource DarkMenuStyle}">
+            <MenuItem Header="_Файл">
+                <MenuItem Header="_Создать" InputGestureText="Ctrl+N"/>
+                <MenuItem Header="_Открыть" InputGestureText="Ctrl+O"/>
+                <MenuItem Header="_Сохранить" InputGestureText="Ctrl+S"/>
+                <MenuItem Header="Сохранить _как..." InputGestureText="Ctrl+Shift+S"/>
+                <Separator Style="{StaticResource DarkMenuSeparatorStyle}"/>
+                <MenuItem Header="Недавние файлы">
+                    <MenuItem Header="Документ1.txt"/>
+                    <MenuItem Header="Документ2.txt"/>
+                    <MenuItem Header="Документ3.txt"/>
+                </MenuItem>
+                <Separator Style="{StaticResource DarkMenuSeparatorStyle}"/>
+                <MenuItem Header="Настройки..."/>
+                <Separator Style="{StaticResource DarkMenuSeparatorStyle}"/>
+                <MenuItem Header="_Выход" InputGestureText="Alt+F4" Click="CloseWindow_Click"/>
+            </MenuItem>
+
+            <MenuItem Header="_Правка">
+                <MenuItem Header="_Отменить" InputGestureText="Ctrl+Z"/>
+                <MenuItem Header="_Повторить" InputGestureText="Ctrl+Y"/>
+                <Separator Style="{StaticResource DarkMenuSeparatorStyle}"/>
+                <MenuItem Header="_Вырезать" InputGestureText="Ctrl+X"/>
+                <MenuItem Header="_Копировать" InputGestureText="Ctrl+C"/>
+                <MenuItem Header="В_ставить" InputGestureText="Ctrl+V"/>
+                <Separator Style="{StaticResource DarkMenuSeparatorStyle}"/>
+                <MenuItem Header="Выделить всё" InputGestureText="Ctrl+A"/>
+            </MenuItem>
+
+            <MenuItem Header="_Вид">
+                <MenuItem Header="Панель инструментов" IsCheckable="True" IsChecked="True"/>
+                <MenuItem Header="Строка состояния" IsCheckable="True" IsChecked="True"/>
+                <Separator Style="{StaticResource DarkMenuSeparatorStyle}"/>
+                <MenuItem Header="Масштаб">
+                    <MenuItem Header="Увеличить" InputGestureText="Ctrl++"/>
+                    <MenuItem Header="Уменьшить" InputGestureText="Ctrl+-"/>
+                    <MenuItem Header="100%" InputGestureText="Ctrl+0"/>
+                    <Separator Style="{StaticResource DarkMenuSeparatorStyle}"/>
+                    <MenuItem Header="50%"/>
+                    <MenuItem Header="75%"/>
+                    <MenuItem Header="100%"/>
+                    <MenuItem Header="125%"/>
+                    <MenuItem Header="150%"/>
+                    <MenuItem Header="200%"/>
+                </MenuItem>
+                <Separator Style="{StaticResource DarkMenuSeparatorStyle}"/>
+                <MenuItem Header="Полноэкранный режим" InputGestureText="F11"/>
+            </MenuItem>
+
+            <MenuItem Header="_Окна">
+                <MenuItem Header="Bootstrap Demo" Click="OpenBootstrapWindow_Click"/>
+            </MenuItem>
+
+            <MenuItem Header="_Справка">
+                <MenuItem Header="Справка" InputGestureText="F1"/>
+                <MenuItem Header="Документация"/>
+                <Separator Style="{StaticResource DarkMenuSeparatorStyle}"/>
+                <MenuItem Header="Проверить обновления..."/>
+                <Separator Style="{StaticResource DarkMenuSeparatorStyle}"/>
+                <MenuItem Header="О программе..."/>
+            </MenuItem>
+        </Menu>
+
+        <!-- Заголовок -->
+        <Border Grid.Row="1" 
+                Background="{StaticResource DarkPanel.Background}"
+                BorderBrush="{StaticResource DarkWindow.Border}"
+                BorderThickness="0,0,0,1"
+                Padding="20,15">
+            <StackPanel>
+                <TextBlock Text="Демонстрация тёмных стилей меню" 
+                          Foreground="{StaticResource DarkWindow.Foreground}"
+                          FontSize="24"
+                          FontWeight="Bold"/>
+                <TextBlock Text="Полная поддержка настройки Background/Foreground для тёмной темы" 
+                          Foreground="{StaticResource DarkWindow.Foreground}"
+                          FontSize="13"
+                          Opacity="0.8"
+                          Margin="0,8,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Основной контент -->
+        <ScrollViewer Grid.Row="2" 
+                      VerticalScrollBarVisibility="Auto"
+                      Padding="20">
+            <StackPanel>
+                <!-- Секция 1: Контекстное меню на тексте -->
+                <Border Background="{StaticResource DarkPanel.Background}"
+                        BorderBrush="{StaticResource DarkWindow.Border}"
+                        BorderThickness="1"
+                        Padding="20"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <TextBlock Text="Контекстное меню"
+                                  Foreground="{StaticResource DarkWindow.Foreground}"
+                                  FontSize="18"
+                                  FontWeight="SemiBold"
+                                  Margin="0,0,0,10"/>
+                        
+                        <TextBlock Foreground="{StaticResource DarkWindow.Foreground}"
+                                  FontSize="14"
+                                  Opacity="0.8"
+                                  Margin="0,0,0,15">
+                            Щелкните правой кнопкой мыши на тексте ниже, чтобы открыть контекстное меню:
+                        </TextBlock>
+
+                        <TextBox Text="Щёлкните правой кнопкой мыши здесь для вызова контекстного меню"
+                                Background="{StaticResource DarkWindow.Background}"
+                                Foreground="{StaticResource DarkWindow.Foreground}"
+                                BorderBrush="{StaticResource DarkWindow.Border}"
+                                BorderThickness="1"
+                                Padding="10"
+                                FontSize="14"
+                                TextWrapping="Wrap"
+                                MinHeight="80">
+                            <TextBox.ContextMenu>
+                                <ContextMenu Style="{StaticResource DarkContextMenuStyle}">
+                                    <MenuItem Header="_Вырезать" InputGestureText="Ctrl+X"/>
+                                    <MenuItem Header="_Копировать" InputGestureText="Ctrl+C"/>
+                                    <MenuItem Header="В_ставить" InputGestureText="Ctrl+V"/>
+                                    <Separator Style="{StaticResource DarkMenuSeparatorStyle}"/>
+                                    <MenuItem Header="Выделить всё" InputGestureText="Ctrl+A"/>
+                                    <Separator Style="{StaticResource DarkMenuSeparatorStyle}"/>
+                                    <MenuItem Header="Дополнительно">
+                                        <MenuItem Header="Преобразовать">
+                                            <MenuItem Header="В ВЕРХНИЙ РЕГИСТР"/>
+                                            <MenuItem Header="в нижний регистр"/>
+                                            <MenuItem Header="В Заглавный Регистр"/>
+                                        </MenuItem>
+                                        <MenuItem Header="Отступы">
+                                            <MenuItem Header="Увеличить отступ" InputGestureText="Tab"/>
+                                            <MenuItem Header="Уменьшить отступ" InputGestureText="Shift+Tab"/>
+                                        </MenuItem>
+                                        <Separator Style="{StaticResource DarkMenuSeparatorStyle}"/>
+                                        <MenuItem Header="Комментарий" InputGestureText="Ctrl+K, Ctrl+C"/>
+                                        <MenuItem Header="Раскомментировать" InputGestureText="Ctrl+K, Ctrl+U"/>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </TextBox.ContextMenu>
+                        </TextBox>
+                    </StackPanel>
+                </Border>
+
+                <!-- Секция 2: Контекстное меню с чекбоксами и иконками -->
+                <Border Background="{StaticResource DarkPanel.Background}"
+                        BorderBrush="{StaticResource DarkWindow.Border}"
+                        BorderThickness="1"
+                        Padding="20"
+                        Margin="0,0,0,15">
+                    <StackPanel>
+                        <TextBlock Text="Контекстное меню с опциями"
+                                  Foreground="{StaticResource DarkWindow.Foreground}"
+                                  FontSize="18"
+                                  FontWeight="SemiBold"
+                                  Margin="0,0,0,10"/>
+                        
+                        <TextBlock Foreground="{StaticResource DarkWindow.Foreground}"
+                                  FontSize="14"
+                                  Opacity="0.8"
+                                  Margin="0,0,0,15">
+                            Щелкните правой кнопкой мыши на панели ниже:
+                        </TextBlock>
+
+                        <Border Background="{StaticResource DarkWindow.Background}"
+                                BorderBrush="{StaticResource DarkWindow.Border}"
+                                BorderThickness="1"
+                                Padding="20"
+                                MinHeight="100">
+                            <TextBlock Text="Область с контекстным меню (щёлкните правой кнопкой)"
+                                      Foreground="{StaticResource DarkWindow.Foreground}"
+                                      FontSize="14"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Opacity="0.6"/>
+                            <Border.ContextMenu>
+                                <ContextMenu Style="{StaticResource DarkContextMenuStyle}">
+                                    <MenuItem Header="Просмотр" IsCheckable="True" IsChecked="True"/>
+                                    <MenuItem Header="Редактирование" IsCheckable="True" IsChecked="False"/>
+                                    <MenuItem Header="Отладка" IsCheckable="True" IsChecked="True"/>
+                                    <Separator Style="{StaticResource DarkMenuSeparatorStyle}"/>
+                                    <MenuItem Header="Сортировка">
+                                        <MenuItem Header="По имени" IsCheckable="True" IsChecked="True"/>
+                                        <MenuItem Header="По типу" IsCheckable="True"/>
+                                        <MenuItem Header="По дате" IsCheckable="True"/>
+                                        <MenuItem Header="По размеру" IsCheckable="True"/>
+                                    </MenuItem>
+                                    <Separator Style="{StaticResource DarkMenuSeparatorStyle}"/>
+                                    <MenuItem Header="Обновить" InputGestureText="F5"/>
+                                    <MenuItem Header="Свойства" InputGestureText="Alt+Enter"/>
+                                </ContextMenu>
+                            </Border.ContextMenu>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- Секция 3: Описание возможностей -->
+                <Border Background="{StaticResource DarkPanel.Background}"
+                        BorderBrush="{StaticResource DarkWindow.Border}"
+                        BorderThickness="1"
+                        Padding="20">
+                    <StackPanel>
+                        <TextBlock Text="Особенности реализации"
+                                  Foreground="{StaticResource DarkWindow.Foreground}"
+                                  FontSize="18"
+                                  FontWeight="SemiBold"
+                                  Margin="0,0,0,15"/>
+                        
+                        <TextBlock Foreground="{StaticResource DarkWindow.Foreground}"
+                                  FontSize="14"
+                                  TextWrapping="Wrap"
+                                  LineHeight="24">
+                            <Run Text="✓" FontWeight="Bold" Foreground="#4EC9B0"/> Полная поддержка настройки Background/Foreground<LineBreak/>
+                            <Run Text="✓" FontWeight="Bold" Foreground="#4EC9B0"/> Единообразный внешний вид фона и границ<LineBreak/>
+                            <Run Text="✓" FontWeight="Bold" Foreground="#4EC9B0"/> Поддержка вложенных подменю<LineBreak/>
+                            <Run Text="✓" FontWeight="Bold" Foreground="#4EC9B0"/> Чекбоксы и иконки в пунктах меню<LineBreak/>
+                            <Run Text="✓" FontWeight="Bold" Foreground="#4EC9B0"/> Разделители с правильным стилем<LineBreak/>
+                            <Run Text="✓" FontWeight="Bold" Foreground="#4EC9B0"/> Горячие клавиши (InputGestureText)<LineBreak/>
+                            <Run Text="✓" FontWeight="Bold" Foreground="#4EC9B0"/> Состояния Hover, Selected, Disabled<LineBreak/>
+                            <Run Text="✓" FontWeight="Bold" Foreground="#4EC9B0"/> Оптимизировано для тёмной темы Visual Studio<LineBreak/>
+                        </TextBlock>
+
+                        <Border Background="{StaticResource DarkWindow.Background}"
+                                BorderBrush="{StaticResource DarkWindow.Border}"
+                                BorderThickness="1"
+                                Padding="15"
+                                Margin="0,15,0,0">
+                            <StackPanel>
+                                <TextBlock Text="Использование:"
+                                          Foreground="{StaticResource DarkWindow.Foreground}"
+                                          FontSize="14"
+                                          FontWeight="SemiBold"
+                                          Margin="0,0,0,10"/>
+                                
+                                <TextBlock Foreground="{StaticResource DarkWindow.Foreground}"
+                                          FontSize="13"
+                                          FontFamily="Consolas"
+                                          TextWrapping="Wrap"
+                                          Opacity="0.9">
+                                    <Run Text="&lt;Menu Style=&quot;{StaticResource DarkMenuStyle}&quot;&gt;"/><LineBreak/>
+                                    <Run Text="&lt;ContextMenu Style=&quot;{StaticResource DarkContextMenuStyle}&quot;&gt;"/><LineBreak/>
+                                    <Run Text="&lt;MenuItem Style=&quot;{StaticResource DarkMenuItemStyle}&quot;&gt;"/><LineBreak/>
+                                    <Run Text="&lt;Separator Style=&quot;{StaticResource DarkMenuSeparatorStyle}&quot;&gt;"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
