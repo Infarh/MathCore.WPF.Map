@@ -21,15 +21,11 @@ namespace MathCore.WPF.Map.TestWPF.ViewModels;
 [Service]
 public class MainWindowViewModel() : TitledViewModel("Главное окно")
 {
-    #region MapCenter : Location? - Центр карты
-
     /// <summary>Центр карты</summary>
-    private Location? _MapCenter = new(55.65505, 37.7578);
+    public Location? MapCenter { get; set => Set(ref field, value); } = new(55.65505, 37.7578);
 
-    /// <summary>Центр карты</summary>
-    public Location? MapCenter { get => _MapCenter; set => Set(ref _MapCenter, value); }
-
-    #endregion
+    /// <summary>Курсор на карте</summary>
+    public Location? MapCursorPosition { get; set => Set(ref field, value); }
 
     #region Command ClearCacheCommand - Очистка кеша
 
@@ -110,12 +106,14 @@ public class MainWindowViewModel() : TitledViewModel("Главное окно")
 
     #endregion
 
+    private Location _FunctionTileSourceCenter = new(55.75, 37.62);
+
     [field: MaybeNull, AllowNull]
     public TileSource FunctionTileSource => field ??= new FunctionalTileSource
     {
         TileFunc = async (lat_range, lon_range, tile_size, ct) =>
         {
-            var center = new Location(55.75, 37.62);
+            var center = _FunctionTileSourceCenter;
 
             var wb = new WriteableBitmap(tile_size, tile_size, 96, 96, PixelFormats.Bgra32, null);
             var stride = wb.BackBufferStride;
@@ -129,10 +127,10 @@ public class MainWindowViewModel() : TitledViewModel("Главное окно")
             for (var y = 0; y < tile_size; y++)
             {
                 ct.ThrowIfCancellationRequested();
-                var lat = lat_max - ((lat_max - lat_min) * y / (tile_size - 1.0));
+                var lat = lat_max - (lat_max - lat_min) * y / (tile_size - 1.0);
                 for (var x = 0; x < tile_size; x++)
                 {
-                    var lon = lon_min + ((lon_max - lon_min) * x / (tile_size - 1.0));
+                    var lon = lon_min + (lon_max - lon_min) * x / (tile_size - 1.0);
                     var loc = new Location(lat, lon);
 
                     var distance_rad = Projections.Base.AzimuthalProjection.GetAzimuthDistance(center, loc).Distance; // радианы
@@ -143,7 +141,7 @@ public class MainWindowViewModel() : TitledViewModel("Главное окно")
                     f = Math.Max(0, f);
 
                     var (b, g, r8) = HeatColor(f);
-                    var index = (y * stride) + (x * 4);
+                    var index = y * stride + x * 4;
                     pixels[index + 0] = b; // B
                     pixels[index + 1] = g; // G
                     pixels[index + 2] = r8; // R
@@ -308,4 +306,11 @@ public class MainWindowViewModel() : TitledViewModel("Главное окно")
         });
 
     #endregion
+
+    public ICommand ResetFunctionLayer => field ??= Command.New(
+        () =>
+        {
+            _FunctionTileSourceCenter = MapCenter ?? throw new InvalidOperationException();
+            (FunctionTileSource as FunctionalTileSource)?.ResetLayer();
+        });
 }

@@ -4,6 +4,8 @@ using Microsoft.Extensions.Primitives;
 
 namespace MathCore.WPF.Map.Primitives;
 
+/// <summary>Коллекция поддоменов для тайловых серверов</summary>
+/// <remarks>Используется для чередования поддоменов при загрузке тайлов с серверов, поддерживающих несколько поддоменов (например, a.tile.openstreetmap.org, b.tile.openstreetmap.org и т.д.)</remarks>
 [Serializable]
 [TypeConverter(typeof(SubdomainsCollectionConverter))]
 public class SubdomainsCollection(string[] Subdomains)

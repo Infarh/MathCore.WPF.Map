@@ -1,23 +1,12 @@
 using System.Diagnostics;
+using System.Windows.Input;
 using System.Windows.Media;
 
+using MathCore.WPF.Map.Commands;
 using MathCore.WPF.Map.Projections;
 using MathCore.WPF.Map.Projections.Base;
 
 namespace MathCore.WPF.Map.TileLayers;
-
-/// <summary>Делегат генерации изображения тайла</summary>
-/// <param name="LatitudeRange">Диапазон широт в градусах: минимальная и максимальная широта (LatMin, LatMax)</param>
-/// <param name="LongitudeRange">Диапазон долгот в градусах: минимальная и максимальная долгота (LonMin, LonMax)</param>
-/// <param name="TilePixelSize">Размер тайла в пикселях по обеим осям</param>
-/// <param name="Cancellation">Токен отмены операции генерации тайла</param>
-/// <returns>Асинхронный результат с изображением тайла или null, если тайл недоступен/операция отменена</returns>
-public delegate Task<ImageSource?> FunctionalTileSourceDelegate(
-    (double LatMin, double LatMax) LatitudeRange,
-    (double LonMin, double LonMax) LongitudeRange,
-    int TilePixelSize,
-    CancellationToken Cancellation
-);
 
 /// <summary>Источник тайлов, формируемых функцией</summary>
 public sealed class FunctionalTileSource : TileSource
@@ -46,6 +35,9 @@ public sealed class FunctionalTileSource : TileSource
         var lat_min = WebMercatorProjection.YToLatitude(180 - ((y + 1) * tile_size_deg));
         var lat_max = WebMercatorProjection.YToLatitude(180 - (y * tile_size_deg));
 
+#if DEBUG
+        var timer = Stopwatch.StartNew();
+#endif
         try
         {
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)); // ограничение по времени
@@ -53,6 +45,7 @@ public sealed class FunctionalTileSource : TileSource
         }
         catch (OperationCanceledException)
         {
+            Debug.WriteLine("FunctionalTileSource: z={0} x={1} y={2}: generation canceled", ZoomLevel, x, y);
             return null;
         }
         catch (Exception ex)
@@ -60,5 +53,18 @@ public sealed class FunctionalTileSource : TileSource
             Debug.WriteLine("FunctionalTileSource: z={0} x={1} y={2}: {3}", ZoomLevel, x, y, ex.Message);
             return null;
         }
+#if DEBUG
+        finally
+        {
+            timer.Stop();
+            Debug.WriteLine("FunctionalTileSource: z={0} x={1} y={2} generated in {3} ms", ZoomLevel, x, y, timer.ElapsedMilliseconds);
+        }
+#endif
     }
+
+    /// <summary>Генерирует событие сброса тайлового слоя, к которому данный источник присоединён</summary>
+    public void ResetLayer() => OnReset(EventArgs.Empty);
+
+    /// <summary>Команда сброса тайлового слоя</summary>
+    public ICommand ResetLayerCommand => field ??= new LambdaCommand(_ => ResetLayer());
 }
