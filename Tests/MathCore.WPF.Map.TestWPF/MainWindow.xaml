@@ -22,6 +22,9 @@
         <m:Map ZoomLevel="10" Name="MapControl" 
                Center="55.75,37.62" Heading="0"
                DoubleLeftMouseCommand="{Binding AddLocationCommand}">
+            <m:FunctionalTileLayer SourceName="FuncLayer" Description="sin(x)/x heatmap" MaxZoomLevel="21" Opacity="0.6"
+                                   TileSource="{Binding FunctionTileSource}"/>
+
             <!-- Базовые оверлеи -->
             <m:MapPolyline Stroke="Red" StrokeThickness="3"
                            Location="0,10" 
