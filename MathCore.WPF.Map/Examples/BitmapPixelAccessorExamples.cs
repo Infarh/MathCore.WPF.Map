@@ -1,14 +1,13 @@
-using MathCore.WPF.Map.Extensions;
-using MathCore.WPF.Map.Infrastructure;
+п»їusing MathCore.WPF.Map.Extensions;
 using MathCore.WPF.Map.Primitives.Base;
 using MathCore.WPF.Map.TileLayers;
 
 namespace MathCore.WPF.Map.Examples;
 
-/// <summary>Примеры использования BitmapPixelAccessor</summary>
+/// <summary>РџСЂРёРјРµСЂС‹ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ BitmapPixelAccessor</summary>
 public static class BitmapPixelAccessorExamples
 {
-    /// <summary>Пример 1: Простой градиент</summary>
+    /// <summary>РџСЂРёРјРµСЂ 1: РџСЂРѕСЃС‚РѕР№ РіСЂР°РґРёРµРЅС‚</summary>
     public static FunctionalTileSourceDelegate CreateGradientTileFunc()
     {
         return async (tile, cancel) =>
@@ -21,14 +20,14 @@ public static class BitmapPixelAccessorExamples
                 var v = (byte)(255.0 * y / (accessor.Height - 1));
 
                 for (var x = 0; x < accessor.Width; x++)
-                    accessor[x, y].Set(R: v, G: v, B: v, A: 255);
+                    accessor[x, y] = (b: v, g: v, r: v, a: 255);
             }
 
             return accessor.Bitmap;
         };
     }
 
-    /// <summary>Пример 2: Шахматная доска</summary>
+    /// <summary>РџСЂРёРјРµСЂ 2: РЁР°С…РјР°С‚РЅР°СЏ РґРѕСЃРєР°</summary>
     public static FunctionalTileSourceDelegate CreateCheckerboardTileFunc(int CellSize = 32)
     {
         return async (tile, cancel) =>
@@ -43,7 +42,7 @@ public static class BitmapPixelAccessorExamples
                 {
                     var is_white = ((x / CellSize) + (y / CellSize)) % 2 == 0;
                     var color = is_white ? (byte)255 : (byte)0;
-                    accessor[x, y].Set(color, color, color, 255);
+                    accessor[x, y] = (color, color, color, 255);
                 }
             }
 
@@ -51,7 +50,7 @@ public static class BitmapPixelAccessorExamples
         };
     }
 
-    /// <summary>Пример 3: Тепловая карта на основе расстояния от центра</summary>
+    /// <summary>РџСЂРёРјРµСЂ 3: РўРµРїР»РѕРІР°СЏ РєР°СЂС‚Р° РЅР° РѕСЃРЅРѕРІРµ СЂР°СЃСЃС‚РѕСЏРЅРёСЏ РѕС‚ С†РµРЅС‚СЂР°</summary>
     public static FunctionalTileSourceDelegate CreateHeatmapTileFunc(Location Center)
     {
         return async (tile, cancel) =>
@@ -67,21 +66,21 @@ public static class BitmapPixelAccessorExamples
             for (var y = 0; y < size; y++)
             {
                 cancel.ThrowIfCancellationRequested();
-                var lat = lat_max - (lat_max - lat_min) * y / (size - 1.0);
+                var lat = lat_max - ((lat_max - lat_min) * y / (size - 1.0));
 
                 for (var x = 0; x < size; x++)
                 {
-                    var lon = lon_min + (lon_max - lon_min) * x / (size - 1.0);
+                    var lon = lon_min + ((lon_max - lon_min) * x / (size - 1.0));
                     var loc = new Location(lat, lon);
 
                     var distance_rad = Projections.Base.AzimuthalProjection
                         .GetAzimuthDistance(Center, loc).Distance;
                     var distance_km = distance_rad * Projections.Base.MapProjection.Wgs84EquatorialRadius / 1000.0;
 
-                    var normalized = Math.Min(1.0, distance_km / 1000.0); // нормализация до 1000 км
+                    var normalized = Math.Min(1.0, distance_km / 1000.0); // РЅРѕСЂРјР°Р»РёР·Р°С†РёСЏ РґРѕ 1000 РєРј
                     var (r, g, b) = HeatmapColor(normalized);
 
-                    accessor[x, y].Set(r, g, b, 200);
+                    accessor[x, y] = (r, g, b, 200);
                 }
             }
 
@@ -89,24 +88,24 @@ public static class BitmapPixelAccessorExamples
         };
     }
 
-    /// <summary>Пример 4: Использование вспомогательной функции рисования</summary>
+    /// <summary>РџСЂРёРјРµСЂ 4: РСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ РІСЃРїРѕРјРѕРіР°С‚РµР»СЊРЅРѕР№ С„СѓРЅРєС†РёРё СЂРёСЃРѕРІР°РЅРёСЏ</summary>
     public static FunctionalTileSourceDelegate CreateCustomPattern()
     {
         return async (tile, cancel) =>
         {
             using var accessor = tile.CreatePixelAccessor();
 
-            // Очистка фона
+            // РћС‡РёСЃС‚РєР° С„РѕРЅР°
             accessor.Clear(R: 255, G: 255, B: 255, A: 255);
 
-            // Рисование диагональных линий
+            // Р РёСЃРѕРІР°РЅРёРµ РґРёР°РіРѕРЅР°Р»СЊРЅС‹С… Р»РёРЅРёР№
             DrawDiagonalLines(accessor, 10, (r: 255, g: 0, b: 0, a: 255));
 
             return accessor.Bitmap;
         };
     }
 
-    /// <summary>Пример 5: Передача accessor в другую функцию</summary>
+    /// <summary>РџСЂРёРјРµСЂ 5: РџРµСЂРµРґР°С‡Р° accessor РІ РґСЂСѓРіСѓСЋ С„СѓРЅРєС†РёСЋ</summary>
     private static void DrawDiagonalLines(
         BitmapPixelAccessor Accessor,
         int Step,
@@ -115,10 +114,10 @@ public static class BitmapPixelAccessorExamples
         for (var y = 0; y < Accessor.Height; y++)
             for (var x = 0; x < Accessor.Width; x++)
                 if ((x + y) % Step == 0)
-                    Accessor[x, y].Set(Color.r, Color.g, Color.b, Color.a);
+                    Accessor[x, y] = (Color.r, Color.g, Color.b, Color.a);
     }
 
-    /// <summary>Пример 6: Возврат accessor из функции для дальнейшей обработки</summary>
+    /// <summary>РџСЂРёРјРµСЂ 6: Р’РѕР·РІСЂР°С‚ accessor РёР· С„СѓРЅРєС†РёРё РґР»СЏ РґР°Р»СЊРЅРµР№С€РµР№ РѕР±СЂР°Р±РѕС‚РєРё</summary>
     public static BitmapPixelAccessor CreateAccessorWithBackground(int Width, int Height, byte R, byte G, byte B)
     {
         var bitmap = new System.Windows.Media.Imaging.WriteableBitmap(
@@ -131,7 +130,7 @@ public static class BitmapPixelAccessorExamples
         return accessor;
     }
 
-    /// <summary>Преобразование нормализованного значения [0..1] в цвет тепловой карты</summary>
+    /// <summary>РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РЅРѕСЂРјР°Р»РёР·РѕРІР°РЅРЅРѕРіРѕ Р·РЅР°С‡РµРЅРёСЏ [0..1] РІ С†РІРµС‚ С‚РµРїР»РѕРІРѕР№ РєР°СЂС‚С‹</summary>
     private static (byte R, byte G, byte B) HeatmapColor(double Value)
     {
         Value = Math.Max(0, Math.Min(1, Value));

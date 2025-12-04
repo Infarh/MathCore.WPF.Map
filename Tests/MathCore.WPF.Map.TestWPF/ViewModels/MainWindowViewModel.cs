@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
-using System.Windows;
 using System.Windows.Input;
 
 using MathCore.DI;
@@ -119,16 +118,16 @@ public class MainWindowViewModel() : TitledViewModel("Главное окно")
             var lon_min = tile.Min.Longitude;
             var lon_max = tile.Max.Longitude;
 
-            using var accessor = tile.CreatePixelAccessor();
+            using var bmp = tile.CreatePixelAccessor();
             var tile_size = tile.TilePixelSize;
 
             for (var y = 0; y < tile_size; y++)
             {
                 cancel.ThrowIfCancellationRequested();
-                var lat = lat_max - (lat_max - lat_min) * y / (tile_size - 1.0);
+                var lat = lat_max - ((lat_max - lat_min) * y / (tile_size - 1.0));
                 for (var x = 0; x < tile_size; x++)
                 {
-                    var lon = lon_min + (lon_max - lon_min) * x / (tile_size - 1.0);
+                    var lon = lon_min + ((lon_max - lon_min) * x / (tile_size - 1.0));
                     var loc = new Location(lat, lon);
 
                     var distance_rad = Projections.Base.AzimuthalProjection.GetAzimuthDistance(center, loc).Distance; // радианы
@@ -139,11 +138,12 @@ public class MainWindowViewModel() : TitledViewModel("Главное окно")
                     f = Math.Max(0, f);
 
                     var (b, g, r8) = HeatColor(f);
-                    accessor[x, y].Set(r8, g, b, 200); // A чуть прозрачный
+                    //accessor[x, y].Set(r, g, b, 200); // A чуть прозрачный
+                    bmp[x, y] = (b, g, r8, 200);
                 }
             }
 
-            return accessor.Bitmap;
+            return bmp.Bitmap;
 
             static (byte B, byte G, byte R) HeatColor(double v)
             {

@@ -1,47 +1,67 @@
-using System.Windows;
+п»їusing System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace MathCore.WPF.Map.Infrastructure;
 
-/// <summary>Обеспечивает доступ к пикселям WriteableBitmap для чтения и записи</summary>
+/// <summary>РћР±РµСЃРїРµС‡РёРІР°РµС‚ РґРѕСЃС‚СѓРї Рє РїРёРєСЃРµР»СЏРј WriteableBitmap РґР»СЏ С‡С‚РµРЅРёСЏ Рё Р·Р°РїРёСЃРё</summary>
 public sealed class BitmapPixelAccessor : IDisposable
 {
-    /// <summary>Один пиксель изображения в формате BGRA</summary>
+    /// <summary>РћРґРёРЅ РїРёРєСЃРµР»СЊ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ РІ С„РѕСЂРјР°С‚Рµ BGRA</summary>
     public readonly ref struct Pixel
     {
-        private readonly byte[] _Buffer;
-        private readonly int _Index;
+        /// <summary>РљСЂР°СЃРЅС‹Р№ РєР°РЅР°Р»</summary>
+        public byte R { get; init; }
 
-        internal Pixel(byte[] Buffer, int Index) => (_Buffer, _Index) = (Buffer, Index);
+        /// <summary>Р—РµР»С‘РЅС‹Р№ РєР°РЅР°Р»</summary>
+        public byte G { get; init; }
 
-        /// <summary>Красный канал</summary>
-        public byte R { get => _Buffer[_Index + 2]; set => _Buffer[_Index + 2] = value; }
+        /// <summary>РЎРёРЅРёР№ РєР°РЅР°Р»</summary>
+        public byte B { get; init; }
 
-        /// <summary>Зелёный канал</summary>
-        public byte G { get => _Buffer[_Index + 1]; set => _Buffer[_Index + 1] = value; }
-
-        /// <summary>Синий канал</summary>
-        public byte B { get => _Buffer[_Index + 0]; set => _Buffer[_Index + 0] = value; }
-
-        /// <summary>Альфа-канал (прозрачность)</summary>
-        public byte A { get => _Buffer[_Index + 3]; set => _Buffer[_Index + 3] = value; }
-
-        /// <summary>Устанавливает значения всех каналов пикселя</summary>
-        public void Set(byte R, byte G, byte B, byte A)
-        {
-            _Buffer[_Index + 0] = B;
-            _Buffer[_Index + 1] = G;
-            _Buffer[_Index + 2] = R;
-            _Buffer[_Index + 3] = A;
-        }
+        /// <summary>РђР»СЊС„Р°-РєР°РЅР°Р» (РїСЂРѕР·СЂР°С‡РЅРѕСЃС‚СЊ)</summary>
+        public byte A { get; init; }
 
         public void Deconstruct(out byte R, out byte G, out byte B, out byte A)
         {
-            R = _Buffer[_Index + 2];
-            G = _Buffer[_Index + 1];
-            B = _Buffer[_Index + 0];
-            A = _Buffer[_Index + 3];
+            R = this.R;
+            G = this.G;
+            B = this.B;
+            A = this.A;
         }
+
+        public void Deconstruct(out byte R, out byte G, out byte B)
+        {
+            R = this.R;
+            G = this.G;
+            B = this.B;
+        }
+
+        public static implicit operator Pixel((byte b, byte g, byte r, byte a) v) => new()
+        {
+            B = v.b,
+            G = v.g,
+            R = v.r,
+            A = v.a
+        };
+
+        public static implicit operator Pixel(Color color) => new()
+        {
+            R = color.R,
+            G = color.G,
+            B = color.B,
+            A = color.A
+        };
+
+        public static implicit operator Color(Pixel pixel) => Color.FromArgb(pixel.A, pixel.R, pixel.G, pixel.B);
+
+        public static implicit operator Pixel(Span<byte> bytes) => new()
+        {
+            B = bytes[0],
+            G = bytes[1],
+            R = bytes[2],
+            A = bytes[3]
+        };
     }
 
     private readonly WriteableBitmap _Bitmap;
@@ -51,7 +71,7 @@ public sealed class BitmapPixelAccessor : IDisposable
     private readonly int _Height;
     private bool _Disposed;
 
-    /// <summary>Создаёт accessor для работы с пикселями WriteableBitmap</summary>
+    /// <summary>РЎРѕР·РґР°С‘С‚ accessor РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ РїРёРєСЃРµР»СЏРјРё WriteableBitmap</summary>
     public BitmapPixelAccessor(WriteableBitmap Bitmap)
     {
         _Bitmap = Bitmap;
@@ -61,25 +81,25 @@ public sealed class BitmapPixelAccessor : IDisposable
         _Pixels = new byte[_Stride * _Height];
     }
 
-    /// <summary>Ширина изображения в пикселях</summary>
+    /// <summary>РЁРёСЂРёРЅР° РёР·РѕР±СЂР°Р¶РµРЅРёСЏ РІ РїРёРєСЃРµР»СЏС…</summary>
     public int Width => _Width;
 
-    /// <summary>Высота изображения в пикселях</summary>
+    /// <summary>Р’С‹СЃРѕС‚Р° РёР·РѕР±СЂР°Р¶РµРЅРёСЏ РІ РїРёРєСЃРµР»СЏС…</summary>
     public int Height => _Height;
 
-    /// <summary>Шаг строки в байтах</summary>
+    /// <summary>РЁР°Рі СЃС‚СЂРѕРєРё РІ Р±Р°Р№С‚Р°С…</summary>
     public int Stride => _Stride;
 
-    /// <summary>Изображение к которому предоставляется доступ</summary>
+    /// <summary>РР·РѕР±СЂР°Р¶РµРЅРёРµ Рє РєРѕС‚РѕСЂРѕРјСѓ РїСЂРµРґРѕСЃС‚Р°РІР»СЏРµС‚СЃСЏ РґРѕСЃС‚СѓРї</summary>
     public WriteableBitmap Bitmap => _Bitmap;
 
-    /// <summary>Доступ к пикселю по координатам</summary>
+    /// <summary>Р”РѕСЃС‚СѓРї Рє РїРёРєСЃРµР»СЋ РїРѕ РєРѕРѕСЂРґРёРЅР°С‚Р°Рј</summary>
     public Pixel this[int X, int Y]
     {
-        get => new(_Pixels, Y * _Stride + X * 4);
+        get => _Pixels.AsSpan((Y * _Stride) + (X * 4), 4);
         set
         {
-            var index = Y * _Stride + X * 4;
+            var index = (Y * _Stride) + (X * 4);
             _Pixels[index + 0] = value.B;
             _Pixels[index + 1] = value.G;
             _Pixels[index + 2] = value.R;
@@ -87,13 +107,10 @@ public sealed class BitmapPixelAccessor : IDisposable
         }
     }
 
-    /// <summary>Применяет изменения к WriteableBitmap</summary>
-    public void Flush()
-    {
-        _Bitmap.WritePixels(new Int32Rect(0, 0, _Width, _Height), _Pixels, _Stride, 0);
-    }
+    /// <summary>РџСЂРёРјРµРЅСЏРµС‚ РёР·РјРµРЅРµРЅРёСЏ Рє WriteableBitmap</summary>
+    public void Flush() => _Bitmap.WritePixels(new Int32Rect(0, 0, _Width, _Height), _Pixels, _Stride, 0);
 
-    /// <summary>Очищает все пиксели указанным цветом</summary>
+    /// <summary>РћС‡РёС‰Р°РµС‚ РІСЃРµ РїРёРєСЃРµР»Рё СѓРєР°Р·Р°РЅРЅС‹Рј С†РІРµС‚РѕРј</summary>
     public void Clear(byte R = 0, byte G = 0, byte B = 0, byte A = 0)
     {
         for (var i = 0; i < _Pixels.Length; i += 4)
