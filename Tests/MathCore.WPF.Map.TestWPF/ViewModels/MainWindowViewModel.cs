@@ -111,22 +111,23 @@ public class MainWindowViewModel() : TitledViewModel("Главное окно")
     [field: MaybeNull, AllowNull]
     public TileSource FunctionTileSource => field ??= new FunctionalTileSource
     {
-        TileFunc = async (lat_range, lon_range, tile_size, ct) =>
+        TileFunc = async (tile, cancel) =>
         {
             var center = _FunctionTileSourceCenter;
 
+            var tile_size = tile.TilePixelSize;
             var wb = new WriteableBitmap(tile_size, tile_size, 96, 96, PixelFormats.Bgra32, null);
             var stride = wb.BackBufferStride;
             var pixels = new byte[stride * tile_size];
 
-            var lat_min = lat_range.LatMin;
-            var lat_max = lat_range.LatMax;
-            var lon_min = lon_range.LonMin;
-            var lon_max = lon_range.LonMax;
+            var lat_min = tile.Min.Latitude;
+            var lat_max = tile.Max.Latitude;
+            var lon_min = tile.Min.Longitude;
+            var lon_max = tile.Max.Longitude;
 
             for (var y = 0; y < tile_size; y++)
             {
-                ct.ThrowIfCancellationRequested();
+                cancel.ThrowIfCancellationRequested();
                 var lat = lat_max - (lat_max - lat_min) * y / (tile_size - 1.0);
                 for (var x = 0; x < tile_size; x++)
                 {

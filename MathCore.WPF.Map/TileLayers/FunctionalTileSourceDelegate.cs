@@ -1,16 +1,30 @@
 ﻿using System.Windows.Media;
 
+using MathCore.WPF.Map.Primitives.Base;
+
 namespace MathCore.WPF.Map.TileLayers;
 
 /// <summary>Делегат генерации изображения тайла</summary>
-/// <param name="LatitudeRange">Диапазон широт в градусах: минимальная и максимальная широта (LatMin, LatMax)</param>
-/// <param name="LongitudeRange">Диапазон долгот в градусах: минимальная и максимальная долгота (LonMin, LonMax)</param>
-/// <param name="TilePixelSize">Размер тайла в пикселях по обеим осям</param>
-/// <param name="Cancellation">Токен отмены операции генерации тайла</param>
+/// <param name="Tile">Информация о тайле включая географические границы и размер в пикселях</param>
+/// <param name="Cancel">Токен отмены операции генерации тайла</param>
 /// <returns>Асинхронный результат с изображением тайла или null, если тайл недоступен/операция отменена</returns>
-public delegate Task<ImageSource?> FunctionalTileSourceDelegate(
-    (double LatMin, double LatMax) LatitudeRange,
-    (double LonMin, double LonMax) LongitudeRange,
-    int TilePixelSize,
-    CancellationToken Cancellation
-);
+public delegate Task<ImageSource?> FunctionalTileSourceDelegate(TileInfo Tile, CancellationToken Cancel);
+
+/// <summary>Информация о тайле с географическими границами и размером</summary>
+public readonly struct TileInfo
+{
+    /// <summary>Минимальная координата тайла (юго-западный угол)</summary>
+    public Location Min { get; init; }
+
+    /// <summary>Максимальная координата тайла (северо-восточный угол)</summary>
+    public Location Max { get; init; }
+
+    /// <summary>Размер тайла в пикселях</summary>
+    public int TilePixelSize { get; init; }
+
+    /// <summary>Ширина тайла по широте в градусах</summary>
+    public double LatWidth => Max.Latitude - Min.Latitude;
+
+    /// <summary>Ширина тайла по долготе в градусах</summary>
+    public double LonWidth => Max.Longitude - Min.Longitude;
+}

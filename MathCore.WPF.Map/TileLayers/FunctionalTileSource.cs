@@ -3,6 +3,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 using MathCore.WPF.Map.Commands;
+using MathCore.WPF.Map.Primitives.Base;
 using MathCore.WPF.Map.Projections;
 using MathCore.WPF.Map.Projections.Base;
 
@@ -26,7 +27,7 @@ public sealed class FunctionalTileSource : TileSource
     public override async Task<ImageSource?> LoadImageAsync(int x, int y, int ZoomLevel)
     {
         var func = TileFunc;
-        if (func is null) return null; // нет функции Ч нет тайла // кратко по делу
+        if (func is null) return null; // нет функции Ч нет тайла
 
         // ¬ычисл€ем географические границы тайла дл€ WebMercator
         var tile_size_deg = 360d / (1 << ZoomLevel);
@@ -35,13 +36,20 @@ public sealed class FunctionalTileSource : TileSource
         var lat_min = WebMercatorProjection.YToLatitude(180 - ((y + 1) * tile_size_deg));
         var lat_max = WebMercatorProjection.YToLatitude(180 - (y * tile_size_deg));
 
+        var tile_info = new TileInfo
+        {
+            Min = new Location(lat_min, lon_min),
+            Max = new Location(lat_max, lon_max),
+            TilePixelSize = MapProjection.TileSize
+        };
+
 #if DEBUG
         var timer = Stopwatch.StartNew();
 #endif
         try
         {
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)); // ограничение по времени
-            return await func((lat_min, lat_max), (lon_min, lon_max), MapProjection.TileSize, cts.Token).ConfigureAwait(false);
+            return await func(tile_info, cts.Token).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
         {
