@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using System.Windows;
 
-using MathCore.WPF.Map.Infrastructure;
 using MathCore.WPF.Map.Primitives;
 using MathCore.WPF.Map.Primitives.Base;
 
@@ -40,8 +39,8 @@ public abstract class AzimuthalProjection : MapProjection
         var scale_x = scale_y * Math.Cos(location.Latitude * Consts.ToRad);
 
         return new(
-            latitude: location.Latitude - translation.Y / scale_y,
-            longitude: location.Longitude + translation.X / scale_x);
+            latitude: location.Latitude - (translation.Y / scale_y),
+            longitude: location.Longitude + (translation.X / scale_x));
     }
 
     /// <summary>Преобразует ограничивающий прямоугольник координат в декартовую систему проекции</summary>
@@ -52,8 +51,8 @@ public abstract class AzimuthalProjection : MapProjection
         var center = LocationToPoint(BoundingBox.GetCenter());
 
         return new(
-            x: center.X - BoundingBox.Width / 2,
-            y: center.Y - BoundingBox.Height / 2,
+            x: center.X - (BoundingBox.Width / 2),
+            y: center.Y - (BoundingBox.Height / 2),
             width: BoundingBox.Width,
             height: BoundingBox.Height);
     }
@@ -63,7 +62,7 @@ public abstract class AzimuthalProjection : MapProjection
     /// <returns>Географические границы области</returns>
     public override BoundingBox RectToBoundingBox(Rect rect)
     {
-        var center = PointToLocation(new(rect.X + rect.Width / 2, rect.Y + rect.Height / 2));
+        var center = PointToLocation(new(rect.X + (rect.Width / 2), rect.Y + (rect.Height / 2)));
 
         return new(center, rect.Width, rect.Height); // width и height в метрах
     }
@@ -131,12 +130,41 @@ public abstract class AzimuthalProjection : MapProjection
         var sin_lon12 = Math.Sin(lon2 - lon1);
         var cos_lon12 = Math.Cos(lon2 - lon1);
 #endif
-        var cos_distance = sin_lat1 * sin_lat2 + cos_lat1 * cos_lat2 * cos_lon12;
+        var cos_distance = (sin_lat1 * sin_lat2) + (cos_lat1 * cos_lat2 * cos_lon12);
 
-        var azimuth = Math.Atan2(sin_lon12, cos_lat1 * sin_lat2 / cos_lat2 - sin_lat1 * cos_lon12);
+        var azimuth = Math.Atan2(sin_lon12, (cos_lat1 * sin_lat2 / cos_lat2) - (sin_lat1 * cos_lon12));
         var distance = Math.Acos(Math.Max(Math.Min(cos_distance, 1), -1));
 
         return (azimuth, distance);
+    }
+
+    /// <summary>Расчёт дистанции в радианах между двумя позициями</summary>
+    /// <param name="location1">Первая позиция</param>
+    /// <param name="location2">Вторая позиция</param>
+    /// <returns>Дистанция в радианах</returns>
+    public static double GetDistance(Location location1, Location location2)
+    {
+        var lat1 = location1.Latitude * Consts.ToRad;
+        var lon1 = location1.Longitude * Consts.ToRad;
+        var lat2 = location2.Latitude * Consts.ToRad;
+        var lon2 = location2.Longitude * Consts.ToRad;
+#if NET8_0_OR_GREATER
+        var (sin_lat1, cos_lat1) = Math.SinCos(lat1);
+        var (sin_lat2, cos_lat2) = Math.SinCos(lat2);
+        var (sin_lon12, cos_lon12) = Math.SinCos(lon2 - lon1);
+#else
+        var cos_lat1 = Math.Cos(lat1);
+        var sin_lat1 = Math.Sin(lat1);
+        var cos_lat2 = Math.Cos(lat2);
+        var sin_lat2 = Math.Sin(lat2);
+        var sin_lon12 = Math.Sin(lon2 - lon1);
+        var cos_lon12 = Math.Cos(lon2 - lon1);
+#endif
+        var cos_distance = (sin_lat1 * sin_lat2) + (cos_lat1 * cos_lat2 * cos_lon12);
+
+        var distance = Math.Acos(Math.Max(Math.Min(cos_distance, 1), -1));
+
+        return distance;
     }
 
     /// <summary>Расчёт позиции по исходной позиции, азимуту и расстоянию</summary>
@@ -159,10 +187,10 @@ public abstract class AzimuthalProjection : MapProjection
         var cos_lat1 = Math.Cos(lat1);
         var sin_lat1 = Math.Sin(lat1); 
 #endif
-        var sin_lat2 = sin_lat1 * cos_distance + cos_lat1 * sin_distance * cos_azimuth;
+        var sin_lat2 = (sin_lat1 * cos_distance) + (cos_lat1 * sin_distance * cos_azimuth);
         var lat2 = Math.Asin(Math.Max(Math.Min(sin_lat2, 1), -1));
-        var d_lon = Math.Atan2(sin_distance * sin_azimuth, cos_lat1 * cos_distance - sin_lat1 * sin_distance * cos_azimuth);
+        var d_lon = Math.Atan2(sin_distance * sin_azimuth, (cos_lat1 * cos_distance) - (sin_lat1 * sin_distance * cos_azimuth));
 
-        return new(lat2 * Consts.ToDeg, location.Longitude + d_lon * Consts.ToDeg);
+        return new(lat2 * Consts.ToDeg, location.Longitude + (d_lon * Consts.ToDeg));
     }
 }

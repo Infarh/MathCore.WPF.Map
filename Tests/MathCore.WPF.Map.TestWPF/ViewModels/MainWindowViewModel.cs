@@ -8,6 +8,7 @@ using MathCore.Geolocation;
 using MathCore.WPF.Commands;
 using MathCore.WPF.Map.Extensions;
 using MathCore.WPF.Map.Primitives.Base;
+using MathCore.WPF.Map.Projections.Base;
 using MathCore.WPF.Map.TestWPF.Commands;
 using MathCore.WPF.Map.TileLayers;
 using MathCore.WPF.ViewModels;
@@ -118,34 +119,35 @@ public class MainWindowViewModel() : TitledViewModel("Главное окно")
             var lon_min = tile.Min.Longitude;
             var lon_max = tile.Max.Longitude;
 
+            var lat_delta = lat_max - lat_min;
+            var lon_delta = lon_max - lon_min;
+
             using var bmp = tile.CreatePixelAccessor();
             var tile_size = tile.TilePixelSize;
 
             for (var y = 0; y < tile_size; y++)
             {
                 cancel.ThrowIfCancellationRequested();
-                var lat = lat_max - ((lat_max - lat_min) * y / (tile_size - 1.0));
+
+                var lat = lat_max - (lat_delta * y / (tile_size - 1));
                 for (var x = 0; x < tile_size; x++)
                 {
-                    var lon = lon_min + ((lon_max - lon_min) * x / (tile_size - 1.0));
-                    var loc = new Location(lat, lon);
+                    var lon = lon_min + (lon_delta * x / (tile_size - 1));
 
-                    var distance_rad = Projections.Base.AzimuthalProjection.GetAzimuthDistance(center, loc).Distance; // радианы
-                    var distance_m = distance_rad * Projections.Base.MapProjection.Wgs84EquatorialRadius; // м
+                    var distance_rad = AzimuthalProjection.GetDistance(center, new Location(lat, lon)); // радианы
+                    var distance_m = distance_rad * MapProjection.Wgs84EquatorialRadius; // м
 
                     var r = distance_m / 1000.0; // нормировка
                     var f = r == 0 ? 1.0 : Math.Sin(r) / r;
                     f = Math.Max(0, f);
 
-                    var (b, g, r8) = HeatColor(f);
-                    //accessor[x, y].Set(r, g, b, 200); // A чуть прозрачный
-                    bmp[x, y] = (b, g, r8, 200);
+                    bmp[x, y] = HeatColor(f);
                 }
             }
 
             return bmp.Bitmap;
 
-            static (byte B, byte G, byte R) HeatColor(double v)
+            static (byte B, byte G, byte R, byte A) HeatColor(double v, byte opacity = 200)
             {
                 v = Math.Max(0, Math.Min(1, v));
                 double r, g, b;
@@ -169,7 +171,7 @@ public class MainWindowViewModel() : TitledViewModel("Главное окно")
                     var t = (v - 0.75) / 0.25;
                     r = 255; g = (1 - t) * 255; b = 0;
                 }
-                return ((byte)b, (byte)g, (byte)r);
+                return ((byte)b, (byte)g, (byte)r, opacity);
             }
         }
     };
