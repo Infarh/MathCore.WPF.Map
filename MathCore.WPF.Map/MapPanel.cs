@@ -19,6 +19,7 @@ namespace MathCore.WPF.Map;
 /// </remarks>
 public class MapPanel : Panel, IMapElement
 {
+    /// <summary>Прикреплённое свойство геопозиции элемента</summary>
     public static readonly DependencyProperty LocationProperty = DependencyProperty
        .RegisterAttached(
             "Location", 
@@ -26,6 +27,7 @@ public class MapPanel : Panel, IMapElement
             typeof(MapPanel), 
             new(null, LocationPropertyChanged));
 
+    /// <summary>Прикреплённое свойство прямоугольной области элемента</summary>
     public static readonly DependencyProperty BoundingBoxProperty = DependencyProperty
        .RegisterAttached(
             "BoundingBox", 
@@ -42,32 +44,55 @@ public class MapPanel : Panel, IMapElement
              typeof(MapPanel),
              new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits, ParentMapPropertyChanged));
 
+    /// <summary>Прикреплённое свойство: ссылка на карту-владельца для наследования вниз по дереву визуальных элементов</summary>
     public static readonly DependencyProperty ParentMapProperty = __ParentMapPropertyKey.DependencyProperty;
 
+    /// <summary>Читает прикреплённое свойство <see cref="ParentMapProperty"/></summary>
+    /// <param name="element">Элемент визуального дерева</param>
+    /// <returns>Ссылка на карту-владельца или null</returns>
     public static MapBase? GetParentMap(UIElement element) => (MapBase?)element.GetValue(ParentMapProperty);
 
+    /// <summary>Инициализирует прикреплённое свойство <see cref="ParentMapProperty"/> для элемента</summary>
+    /// <param name="element">Элемент визуального дерева</param>
     public static void InitMapElement(FrameworkElement element) => (element as MapBase)?.SetValue(__ParentMapPropertyKey, element); 
 
     #endregion
 
     private MapBase? _ParentMap;
 
+    /// <summary>Создаёт панель и инициализирует связь с владельцем-картой</summary>
     public MapPanel() => InitMapElement(this);
 
+    /// <summary>Получает прикреплённое свойство геопозиции</summary>
+    /// <param name="element">Элемент</param>
+    /// <returns>Географическая позиция</returns>
     public static Location? GetLocation(UIElement element) => (Location?)element.GetValue(LocationProperty);
 
+    /// <summary>Устанавливает прикреплённое свойство геопозиции</summary>
+    /// <param name="element">Элемент</param>
+    /// <param name="value">Географическая позиция</param>
     public static void SetLocation(UIElement element, Location? value) => element.SetValue(LocationProperty, value);
 
+    /// <summary>Получает прикреплённое свойство прямоугольной области</summary>
+    /// <param name="element">Элемент</param>
+    /// <returns>Границы области</returns>
     public static BoundingBox? GetBoundingBox(UIElement element) => (BoundingBox?)element.GetValue(BoundingBoxProperty);
 
+    /// <summary>Устанавливает прикреплённое свойство прямоугольной области</summary>
+    /// <param name="element">Элемент</param>
+    /// <param name="value">Границы области</param>
     public static void SetBoundingBox(UIElement element, BoundingBox? value) => element.SetValue(BoundingBoxProperty, value);
 
+    /// <summary>Ссылка на карту-владельца для элементов на панели</summary>
     public MapBase? ParentMap
     {
         get => _ParentMap;
         set => SetParentMap(value);
     }
 
+    /// <summary>Вычисляет желаемый размер, измеряя дочерние элементы</summary>
+    /// <param name="AvailableSize">Доступный размер</param>
+    /// <returns>Желаемый размер</returns>
     protected override Size MeasureOverride(Size AvailableSize)
     {
         AvailableSize = new(double.PositiveInfinity, double.PositiveInfinity);
@@ -78,6 +103,9 @@ public class MapPanel : Panel, IMapElement
         return new();
     }
 
+    /// <summary>Располагает элементы на итоговом размере панели</summary>
+    /// <param name="FinalSize">Итоговый размер</param>
+    /// <returns>Итоговый размер</returns>
     protected override Size ArrangeOverride(Size FinalSize)
     {
         foreach (UIElement element in Children)
@@ -97,6 +125,8 @@ public class MapPanel : Panel, IMapElement
         return FinalSize;
     }
 
+    /// <summary>Устанавливает карту-владельца и подписывается на изменения области видимости</summary>
+    /// <param name="ParentMap">Экземпляр карты</param>
     protected virtual void SetParentMap(MapBase? ParentMap)
     {
         if (_ParentMap is not null && _ParentMap != this) 
@@ -110,6 +140,8 @@ public class MapPanel : Panel, IMapElement
         OnViewportChanged(new());
     }
 
+    /// <summary>Обновляет размещение элементов при изменении видимой области</summary>
+    /// <param name="e">Аргументы события</param>
     protected virtual void OnViewportChanged(ViewportChangedEventArgs e)
     {
         foreach (UIElement element in Children)

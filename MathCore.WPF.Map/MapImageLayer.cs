@@ -23,7 +23,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
             typeof(MapImageLayer),
             new(double.NaN));
 
-    /// <summary>Минимальное значение широты. По умолчанию NaN.</summary>
+    /// <summary>Минимальное значение широты по краю отображаемой области</summary>
     public double MinLatitude
     {
         get => (double)GetValue(MinLatitudeProperty);
@@ -41,7 +41,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
             typeof(MapImageLayer),
             new(double.NaN));
 
-    /// <summary>Максимальное значение широты. По умолчанию NaN.</summary>
+    /// <summary>Максимальное значение широты по краю отображаемой области</summary>
     public double MaxLatitude
     {
         get => (double)GetValue(MaxLatitudeProperty);
@@ -59,7 +59,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
             typeof(MapImageLayer),
             new(double.NaN));
 
-    /// <summary>Минимальное значение долготы. По умолчанию NaN.</summary>
+    /// <summary>Минимальное значение долготы по краю отображаемой области</summary>
     public double MinLongitude
     {
         get => (double)GetValue(MinLongitudeProperty);
@@ -77,7 +77,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
             typeof(MapImageLayer),
             new(double.NaN));
 
-    /// <summary>Минимальное значение долготы. По умолчанию NaN.</summary>
+    /// <summary>Максимальное значение долготы по краю отображаемой области</summary>
     public double MaxLongitude
     {
         get => (double)GetValue(MaxLongitudeProperty);
@@ -95,7 +95,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
            typeof(MapImageLayer),
            new(double.NaN));
 
-    /// <summary>Максимальная ширина области изображения карты. По умолчанию NaN.</summary>
+    /// <summary>Максимальная ширина диапазона долгот запрашиваемого изображения</summary>
     public double MaxBoundingBoxWidth
     {
         get => (double)GetValue(MaxBoundingBoxWidthProperty);
@@ -113,10 +113,9 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
            typeof(MapImageLayer),
            new(1d));
 
-    /// <summary>Относительный размер изображения карты в соотношении с текущим размером визуальной части</summary>
+    /// <summary>Относительный коэффициент размера запрашиваемого изображения относительно видимой области</summary>
     /// <remarks>
-    /// Установка значения больше 1 позволит <see cref="MapImageLayer"/> запросить изображения,
-    /// которые больше чем визуальный размер компонента, для обеспечения плавного панорамирования.
+    /// Значение больше 1 позволяет запросить изображение большего размера для плавного панорамирования
     /// </remarks>
     public double RelativeImageSize
     {
@@ -137,7 +136,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
                 TimeSpan.FromSeconds(0.2),
                 (o, e) => ((MapImageLayer)o)._UpdateTimer.Interval = (TimeSpan)e.NewValue));
 
-    /// <summary>Минимальное время между обновлениями изображений</summary>
+    /// <summary>Минимальный интервал времени между запросами изображений</summary>
     public TimeSpan UpdateInterval
     {
         get => (TimeSpan)GetValue(UpdateIntervalProperty);
@@ -155,7 +154,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
             typeof(MapImageLayer),
             new(false));
 
-    /// <summary>Обновлять изображения при изменении элемента управления</summary>
+    /// <summary>Разрешить обновление изображений во время изменения области видимости</summary>
     public bool UpdateWhileViewportChanging
     {
         get => (bool)GetValue(UpdateWhileViewportChangingProperty);
@@ -173,7 +172,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
             typeof(MapImageLayer),
             new(null));
 
-    /// <summary>Описание</summary>
+    /// <summary>Текстовое описание слоя</summary>
     public string Description
     {
         get => (string)GetValue(DescriptionProperty);
@@ -191,7 +190,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
             typeof(MapImageLayer),
             new(null));
 
-    /// <summary>Подложка карты</summary>
+    /// <summary>Кисть подложки слоя</summary>
     public Brush MapBackground
     {
         get => (Brush)GetValue(MapBackgroundProperty);
@@ -209,7 +208,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
            typeof(MapImageLayer),
            new(null));
 
-    /// <summary>Основная кисть слоя</summary>
+    /// <summary>Основная кисть рисования для элементов слоя</summary>
     public Brush MapForeground
     {
         get => (Brush)GetValue(MapForegroundProperty);
@@ -218,14 +217,15 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
 
     #endregion
 
-    private readonly DispatcherTimer _UpdateTimer;
+    private readonly DispatcherTimer _UpdateTimer; // таймер периодического обновления изображений
 
-    private BoundingBox? _BoundingBox;
+    private BoundingBox? _BoundingBox; // текущие границы запрашиваемого изображения
 
-    private int _TopImageIndex;
+    private int _TopImageIndex; // индекс верхнего изображения в Children
 
-    private bool _UpdateInProgress;
+    private bool _UpdateInProgress; // флаг выполнения обновления
 
+    /// <summary>Создаёт слой изображений и инициализирует таймер обновления</summary>
     protected MapImageLayer()
     {
         Children.Add(new Image { Opacity = 0, Stretch = Stretch.Fill });
@@ -234,6 +234,8 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
         _UpdateTimer = new DispatcherTimer().WithTick(UpdateInterval, UpdateImage);
     }
 
+    /// <summary>Обновляет верхнее изображение и запускает анимацию переключения при необходимости</summary>
+    /// <param name="ImageSource">Источник изображения</param>
     protected void UpdateImage(ImageSource? ImageSource)
     {
         SetTopImage(ImageSource);
@@ -249,7 +251,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
 
     private void BitmapDownloadCompleted(object? sender, EventArgs e)
     {
-        var bitmap_source = (BitmapSource)sender!;
+        var bitmap_source = (BitmapSource)sender!; // событие приходит только от BitmapSource
 
         bitmap_source.DownloadCompleted -= BitmapDownloadCompleted;
         bitmap_source.DownloadFailed -= BitmapDownloadFailed;
@@ -259,7 +261,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
 
     private void BitmapDownloadFailed(object? sender, ExceptionEventArgs e)
     {
-        var bitmap_source = (BitmapSource)sender!;
+        var bitmap_source = (BitmapSource)sender!; // событие приходит только от BitmapSource
 
         bitmap_source.DownloadCompleted -= BitmapDownloadCompleted;
         bitmap_source.DownloadFailed -= BitmapDownloadFailed;
@@ -268,6 +270,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
         SwapImages();
     }
 
+    /// <summary>Реакция слоя на изменение области видимости карты</summary>
     protected override void OnViewportChanged(ViewportChangedEventArgs e)
     {
         base.OnViewportChanged(e);
@@ -302,6 +305,7 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
         }
     }
 
+    /// <summary>Выполняет расчёт требуемой области и инициирует загрузку изображения</summary>
     protected virtual void UpdateImage()
     {
         _UpdateTimer.Stop();
@@ -339,26 +343,20 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
                 } box)
             {
                 if (!double.IsNaN(MinLatitude) && south < MinLatitude)
-                    //_BoundingBox.South = MinLatitude;
                     _BoundingBox = box with { South = MinLatitude };
 
                 if (!double.IsNaN(MinLongitude) && west < MinLongitude)
-                    //_BoundingBox.West = MinLongitude;
                     _BoundingBox = box with { West = MinLongitude };
 
                 if (!double.IsNaN(MaxLatitude) && north > MaxLatitude)
-                    //_BoundingBox.North = MaxLatitude;
                     _BoundingBox = box with { North = MaxLatitude };
 
                 if (!double.IsNaN(MaxLongitude) && east > MaxLongitude)
-                    //_BoundingBox.East = MaxLongitude;
                     _BoundingBox = box with { East = MaxLongitude };
 
                 if (!double.IsNaN(MaxBoundingBoxWidth) && bounding_box_width > MaxBoundingBoxWidth)
                 {
                     var d = (bounding_box_width - MaxBoundingBoxWidth) / 2;
-                    //_BoundingBox.West += d;
-                    //_BoundingBox.East -= d;
                     var bb = (BoundingBox)_BoundingBox;
                     _BoundingBox = bb with
                     {
@@ -384,6 +382,8 @@ public abstract class MapImageLayer : MapPanel, IMapLayer
     }
 
     /// <summary>Изображение для заданной области карты</summary>
+    /// <param name="BoundingBox">Границы области в географических координатах</param>
+    /// <returns>Источник изображения для отображения</returns>
     protected abstract ImageSource? GetImage(BoundingBox BoundingBox);
 
     private void SetTopImage(ImageSource? ImageSource)

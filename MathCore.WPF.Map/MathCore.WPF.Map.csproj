@@ -1,84 +1,86 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>
-      net10.0-windows;
-      net9.0-windows;
-      net8.0-windows;
-      net4.8-windows;
-      net4.7-windows;
-      net4.6.1-windows;
-    </TargetFrameworks>
-    <!--<TargetFramework>net6.0-windows</TargetFramework>-->
-    <!--<TargetFramework>net4.8-windows</TargetFramework>-->
-    <!--<TargetFramework>net4.7-windows</TargetFramework>-->
-    <!--<TargetFramework>net4.6.1-windows</TargetFramework>-->
-    <UseWPF>true</UseWPF>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <LangVersion>preview</LangVersion>
-    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>
+            net10.0-windows;
+            net9.0-windows;
+            net8.0-windows;
+            net4.8-windows;
+            net4.7-windows;
+            net4.6.1-windows;
+        </TargetFrameworks>
+        <!--<TargetFramework>net6.0-windows</TargetFramework>-->
+        <!--<TargetFramework>net4.8-windows</TargetFramework>-->
+        <!--<TargetFramework>net4.7-windows</TargetFramework>-->
+        <!--<TargetFramework>net4.6.1-windows</TargetFramework>-->
+        <UseWPF>true</UseWPF>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <LangVersion>preview</LangVersion>
+        <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <Version>0.0.4</Version>
-    <PackageReleaseNotes>
-      Миграция проекта на .NET 10.0 и обновление зависимостей
-    </PackageReleaseNotes>
-  </PropertyGroup>
+    <PropertyGroup>
+        <Version>0.1.0</Version>
+        <PackageReleaseNotes>
+          Добавлен новый вид слоя - расчётный, позволяющий создавать слои с динамически генерируемым содержимым.
+        </PackageReleaseNotes>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <Authors>Shmachilin P.A.</Authors>
-    <Description>Библиотека инструментов для работы с картами в WPF</Description>
-    <Copyright>shmachilin@gmail.com</Copyright>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/infarh/mathcore.wpf.map</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/infarh/mathcore.wpf.map.git</RepositoryUrl>
-    <PackageTags>wpf;toolkit;map</PackageTags>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>MathCoreWPFMapSign.snk</AssemblyOriginatorKeyFile>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <Authors>Shmachilin P.A.</Authors>
+        <Description>Библиотека инструментов для работы с картами в WPF</Description>
+        <Copyright>shmachilin@gmail.com</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/infarh/mathcore.wpf.map</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/infarh/mathcore.wpf.map.git</RepositoryUrl>
+        <PackageTags>wpf;toolkit;map</PackageTags>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>MathCoreWPFMapSign.snk</AssemblyOriginatorKeyFile>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <DocumentationFile>$(MSBuildProjectName.Replace(" ", "_")).xml</DocumentationFile>
-    <NoWarn>
-      1701;1702;
-      1591;
-      8600;8602;8603;8604;8618;8625
-    </NoWarn>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Release'">
+        <GenerateDocumentationFile>True</GenerateDocumentationFile>
+        <DocumentationFile>$(MSBuildProjectName.Replace(" ", "_")).xml</DocumentationFile>
+        <NoWarn>
+            1701;1702;
+            1591;
+            8600;8602;8603;8604;8618;8625
+        </NoWarn>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net4.6.1-windows'">
-    <Define>NET461</Define>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net4.6.1-windows'">
+        <Define>NET461</Define>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Primitives" Version="10.0.0" />
-    <PackageReference Include="System.Runtime.Caching" Version="10.0.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Primitives" Version="10.0.0" />
+        <PackageReference Include="System.Runtime.Caching" Version="10.0.0" />
+    </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net4.6.1-windows'">
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
-    <PackageReference Include="System.Text.Json" Version="9.0.0" />
-  </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net4.6.1-windows'">
+        <PackageReference Include="System.Net.Http" Version="4.3.4" />
+        <PackageReference Include="System.Text.Json" Version="10.0.0" />
+    </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net4.7-windows'">
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
-    <PackageReference Include="System.Text.Json" Version="9.0.0" />
-  </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net4.7-windows'">
+        <PackageReference Include="System.Net.Http" Version="4.3.4" />
+        <PackageReference Include="System.Text.Json" Version="10.0.0" />
+    </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net4.8-windows'">
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
-    <PackageReference Include="System.Text.Json" Version="9.0.0" />
-  </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net4.8-windows'">
+        <PackageReference Include="System.Net.Http" Version="4.3.4" />
+        <PackageReference Include="System.Text.Json" Version="10.0.0" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Using Include="System" />
-    <Using Include="System.Threading.Tasks" />
-  </ItemGroup>
+    <ItemGroup>
+        <Using Include="MathCore.WPF.Map.Infrastructure" />
+        <Using Include="System" />
+        <Using Include="System.Threading.Tasks" />
+    </ItemGroup>
 
 </Project>

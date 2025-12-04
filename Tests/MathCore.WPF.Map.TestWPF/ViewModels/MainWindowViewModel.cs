@@ -1,12 +1,16 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Windows.Input;
 
 using MathCore.DI;
 using MathCore.Geolocation;
 using MathCore.WPF.Commands;
+using MathCore.WPF.Map.Extensions;
 using MathCore.WPF.Map.Primitives.Base;
+using MathCore.WPF.Map.Projections.Base;
 using MathCore.WPF.Map.TestWPF.Commands;
+using MathCore.WPF.Map.TileLayers;
 using MathCore.WPF.ViewModels;
 
 using Microsoft.Win32;
@@ -16,15 +20,11 @@ namespace MathCore.WPF.Map.TestWPF.ViewModels;
 [Service]
 public class MainWindowViewModel() : TitledViewModel("Главное окно")
 {
-    #region MapCenter : Location? - Центр карты
-
     /// <summary>Центр карты</summary>
-    private Location? _MapCenter = new(55.65505, 37.7578);
+    public Location? MapCenter { get; set => Set(ref field, value); } = new(55.65505, 37.7578);
 
-    /// <summary>Центр карты</summary>
-    public Location? MapCenter { get => _MapCenter; set => Set(ref _MapCenter, value); }
-
-    #endregion
+    /// <summary>Курсор на карте</summary>
+    public Location? MapCursorPosition { get; set => Set(ref field, value); }
 
     #region Command ClearCacheCommand - Очистка кеша
 
@@ -104,6 +104,79 @@ public class MainWindowViewModel() : TitledViewModel("Главное окно")
     }
 
     #endregion
+
+    private Location _FunctionTileSourceCenter = new(55.75, 37.62);
+
+    [field: MaybeNull, AllowNull]
+    public TileSource FunctionTileSource => field ??= new FunctionalTileSource
+    {
+        TileFunc = async (tile, cancel) =>
+        {
+            var center = _FunctionTileSourceCenter;
+            using var bmp = tile.CreatePixelAccessor();
+
+            // Вариант 1: foreach с перечислителем
+            foreach (var (x, y, location) in tile.GetPixelEnumerator())
+            {
+                if (y % 64 == 0)
+                    cancel.ThrowIfCancellationRequested();
+
+                var distance_rad = AzimuthalProjection.GetDistance(center, location); // радианы
+                var distance_m = distance_rad * MapProjection.Wgs84EquatorialRadius; // м
+
+                var r = distance_m / 1000.0; // нормировка
+                var f = r == 0 ? 1.0 : Math.Sin(r) / r;
+                f = Math.Max(0, f);
+
+                bmp[x, y] = HeatColor(f);
+            }
+
+            // Вариант 2: прямой доступ через tile.GetLocation(x, y)
+            //for (var y = 0; y < tile.TilePixelSize; y++)
+            //{
+            //    cancel.ThrowIfCancellationRequested();
+            //    for (var x = 0; x < tile.TilePixelSize; x++)
+            //    {
+            //        var location = tile.GetLocation(x, y);
+            //        var distance_rad = AzimuthalProjection.GetDistance(center, location);
+            //        var distance_m = distance_rad * MapProjection.Wgs84EquatorialRadius;
+            //        var r = distance_m / 1000.0;
+            //        var f = r == 0 ? 1.0 : Math.Sin(r) / r;
+            //        f = Math.Max(0, f);
+            //        bmp[x, y] = HeatColor(f);
+            //    }
+            //}
+
+            return bmp.Bitmap;
+
+            static (byte B, byte G, byte R, byte A) HeatColor(double v, byte opacity = 200)
+            {
+                v = Math.Max(0, Math.Min(1, v));
+                double r, g, b;
+                if (v < 0.25)
+                {
+                    var t = v / 0.25;
+                    r = 0; g = t * 255; b = 255;
+                }
+                else if (v < 0.5)
+                {
+                    var t = (v - 0.25) / 0.25;
+                    r = 0; g = 255; b = (1 - t) * 255;
+                }
+                else if (v < 0.75)
+                {
+                    var t = (v - 0.5) / 0.25;
+                    r = t * 255; g = 255; b = 0;
+                }
+                else
+                {
+                    var t = (v - 0.75) / 0.25;
+                    r = 255; g = (1 - t) * 255; b = 0;
+                }
+                return ((byte)b, (byte)g, (byte)r, opacity);
+            }
+        }
+    };
 
     private void UpdateLocationsListLength()
     {
@@ -230,4 +303,11 @@ public class MainWindowViewModel() : TitledViewModel("Главное окно")
         });
 
     #endregion
+
+    public ICommand ResetFunctionLayer => field ??= Command.New(
+        () =>
+        {
+            _FunctionTileSourceCenter = MapCenter ?? throw new InvalidOperationException();
+            (FunctionTileSource as FunctionalTileSource)?.ResetLayer();
+        });
 }

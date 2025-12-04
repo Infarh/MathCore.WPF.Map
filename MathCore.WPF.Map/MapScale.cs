@@ -18,6 +18,7 @@ public class MapScale : MapOverlay
            typeof(MapScale),
            null);
 
+    /// <summary>Внутренние отступы вокруг шкалы</summary>
     public Thickness Padding
     {
         get => (Thickness)GetValue(PaddingProperty);
@@ -30,6 +31,7 @@ public class MapScale : MapOverlay
 
     private readonly Polyline _Line = new();
 
+    /// <summary>Создаёт элемент шкалы карты с преднастройкой стилей и привязок</summary>
     public MapScale()
     {
         IsHitTestVisible = false;
@@ -70,6 +72,7 @@ public class MapScale : MapOverlay
         Children.Add(_Label);
     }
 
+    /// <summary>Измеряет желаемый размер с учётом текущего масштаба карты</summary>
     protected override Size MeasureOverride(Size AvailableSize)
     {
         var size = new Size();
@@ -120,5 +123,6 @@ public class MapScale : MapOverlay
         return size;
     }
 
+    /// <summary>При изменении области видимости пересчитывает размеры</summary>
     protected override void OnViewportChanged(ViewportChangedEventArgs e) => InvalidateMeasure();
 }

@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Threading;
 
-using MathCore.WPF.Map.Infrastructure;
+using MathCore.WPF.Map.Commands;
 using MathCore.WPF.Map.Primitives;
 using MathCore.WPF.Map.Projections;
 using MathCore.WPF.Map.Projections.Base;
@@ -63,13 +64,31 @@ public class MapTileLayer : Panel, IMapLayer
             nameof(TileSource),
             typeof(TileSource),
             typeof(MapTileLayer),
-            new(null, (o, _) => ((MapTileLayer)o).TileSourcePropertyChanged()));
+            new(null, OnTileSourceChanged));
+
+    private static void OnTileSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        var layer = (MapTileLayer)d;
+        layer.TileSourcePropertyChanged();
+
+        if (e.OldValue is TileSource old_source) old_source.Reset -= layer.OnTileSourceReset;
+        if (e.NewValue is TileSource new_source) new_source.Reset += layer.OnTileSourceReset;
+    }
+
+    /// <summary>
+    /// Обраобтчик события сброса источника тайлов.
+    /// В ходе обработки выполняет сброс всего слоя.
+    /// Позволяет выполнять управление сбросом слоя из источника тайлов.
+    /// </summary>
+    /// <param name="sender">Источник тайлов, событие сброса в котором произошло</param>
+    /// <param name="e">Аргумент события (не используется)</param>
+    protected virtual void OnTileSourceReset(object? sender, EventArgs e) => Reset();
 
     #endregion
 
     #region SourceName : string - Название слоя. Используется как ключ для кеширования данных
 
-    /// <summary>Название слоя. Используется как ключ для кеширования данных</summary>
+    /// <summary>Название слоя Используется как ключ для кеширования данных</summary>
     public string SourceName
     {
         get => (string)GetValue(SourceNameProperty);
@@ -87,7 +106,7 @@ public class MapTileLayer : Panel, IMapLayer
 
     #region Description : string - Описание слоя. Может выводиться на карту
 
-    /// <summary>Описание слоя. Может выводиться на карту</summary>
+    /// <summary>Описание слоя Может выводиться на карту</summary>
     public string Description
     {
         get => (string)GetValue(DescriptionProperty);
@@ -189,7 +208,7 @@ public class MapTileLayer : Panel, IMapLayer
             nameof(UpdateInterval),
             typeof(TimeSpan),
             typeof(MapTileLayer),
-            new(TimeSpan.FromSeconds(0.2), (o, e) => ((MapTileLayer)o)._UpdateTimer.Interval = (TimeSpan)e.NewValue));
+            new(TimeSpan.FromMilliseconds(500), (o, e) => ((MapTileLayer)o)._UpdateTimer.Interval = (TimeSpan)e.NewValue));
 
     #endregion
 
@@ -247,6 +266,10 @@ public class MapTileLayer : Panel, IMapLayer
 
     #endregion
 
+    /// <summary>Команда сброса слоя к начальному состоянию</summary>
+    /// <remarks>Выполняет повторную загрузку всех тайлов слоя</remarks>
+    public ICommand ResetCommand => field ??= new LambdaCommand(_ => Reset());
+
     /// <summary>Таймер обновления данных слоя</summary>
     private readonly DispatcherTimer _UpdateTimer;
 
@@ -280,8 +303,11 @@ public class MapTileLayer : Panel, IMapLayer
         }
     }
 
+    /// <summary>Создаёт слой тайлов с загрузчиком по умолчанию</summary>
     public MapTileLayer() : this(new TileImageLoader()) { }
 
+    /// <summary>Создаёт слой тайлов с указанным загрузчиком изображений</summary>
+    /// <param name="TileImageLoader">Реализация загрузчика тайлов</param>
     public MapTileLayer(ITileImageLoader TileImageLoader)
     {
         IsHitTestVisible = false;
@@ -307,6 +333,9 @@ public class MapTileLayer : Panel, IMapLayer
         return new();
     }
 
+    /// <summary>Размещение дочерних элементов в пределах панели на основе текущей сетки тайлов</summary>
+    /// <param name="FinalSize">Итоговый размер панели</param>
+    /// <returns>Итоговый размер панели</returns>
     protected override Size ArrangeOverride(Size FinalSize)
     {
         if (TileGrid is not { ZoomLevel: var zoom, XMin: var x_min, YMin: var y_min })
@@ -326,6 +355,7 @@ public class MapTileLayer : Panel, IMapLayer
         return FinalSize;
     }
 
+    /// <summary>Обновляет сетку размещения тайлов в зависимости от параметров карты</summary>
     protected virtual void UpdateTileGrid()
     {
         _UpdateTimer.Stop();
@@ -344,12 +374,17 @@ public class MapTileLayer : Panel, IMapLayer
         UpdateTiles();
     }
 
+    /// <summary>Обработчик изменения источника тайлов слоя</summary>
     private void TileSourcePropertyChanged()
     {
         if (TileGrid is null) return;
         Tiles.Clear();
         UpdateTiles();
     }
+
+    /// <summary>Сброс слоя к начальному состоянию</summary>
+    /// <remarks>Выполняет повторную загрузку всех тайлов слоя</remarks>
+    public void Reset() => TileSourcePropertyChanged();
 
     private void OnViewportChanged(object? sender, ViewportChangedEventArgs e)
     {
@@ -420,6 +455,7 @@ public class MapTileLayer : Panel, IMapLayer
             Translation2Y: view_center_y);
     }
 
+    /// <summary>Обновляет коллекцию тайлов слоя в соответствии с текущей сеткой тайлов</summary>
     private void UpdateTiles()
     {
         var new_tiles = new TilesCollection();

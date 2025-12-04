@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/Tests/">
+    <Project Path="Tests/MathCore.WPF.Map.TestConsole/MathCore.WPF.Map.TestConsole.csproj" />
+    <Project Path="Tests/MathCore.WPF.Map.TestWPF/MathCore.WPF.Map.TestWPF.csproj" />
+  </Folder>
+  <Project Path="MathCore.WPF.Map/MathCore.WPF.Map.csproj" />
+</Solution>

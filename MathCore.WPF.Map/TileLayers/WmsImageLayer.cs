@@ -12,6 +12,7 @@ using MathCore.WPF.Map.Primitives;
 
 namespace MathCore.WPF.Map.TileLayers;
 
+/// <summary>Слой WMS, загружающий растровые карты по стандартному интерфейсу Web Map Service</summary>
 public class WmsImageLayer : MapImageLayer
 {
     #region Property ServerUri : Uri
@@ -23,6 +24,7 @@ public class WmsImageLayer : MapImageLayer
             typeof(WmsImageLayer),
             new(null, (o, _) => ((WmsImageLayer)o).UpdateImage()));
 
+    /// <summary>Базовый адрес WMS‑сервера</summary>
     public Uri? ServerUri
     {
         get => (Uri?)GetValue(ServerUriProperty);
@@ -40,6 +42,7 @@ public class WmsImageLayer : MapImageLayer
            typeof(WmsImageLayer),
            new("1.3.0", (o, _) => ((WmsImageLayer)o).UpdateImage()));
 
+    /// <summary>Версия протокола WMS</summary>
     public string Version
     {
         get => (string)GetValue(VersionProperty);
@@ -57,6 +60,7 @@ public class WmsImageLayer : MapImageLayer
             typeof(WmsImageLayer),
             new(string.Empty, (o, _) => ((WmsImageLayer)o).UpdateImage()));
 
+    /// <summary>Список слоёв WMS через запятую</summary>
     public string Layers
     {
         get => (string)GetValue(LayersProperty);
@@ -74,6 +78,7 @@ public class WmsImageLayer : MapImageLayer
             typeof(WmsImageLayer),
             new(string.Empty, (o, _) => ((WmsImageLayer)o).UpdateImage()));
 
+    /// <summary>Стиль отрисовки слоёв</summary>
     public string Styles
     {
         get => (string)GetValue(StylesProperty);
@@ -91,6 +96,7 @@ public class WmsImageLayer : MapImageLayer
             typeof(WmsImageLayer),
             new("image/png", (o, _) => ((WmsImageLayer)o).UpdateImage()));
 
+    /// <summary>Формат изображения, возвращаемого сервером</summary>
     public string Format
     {
         get => (string)GetValue(FormatProperty);
@@ -108,6 +114,7 @@ public class WmsImageLayer : MapImageLayer
             typeof(WmsImageLayer),
             new(false, (o, _) => ((WmsImageLayer)o).UpdateImage()));
 
+    /// <summary>Включить прозрачность изображения</summary>
     public bool Transparent
     {
         get => (bool)GetValue(TransparentProperty);
@@ -116,8 +123,11 @@ public class WmsImageLayer : MapImageLayer
 
     #endregion
 
-    private string _Layers = string.Empty;
+    private string _Layers = string.Empty; // локальная копия имени слоёв
 
+    /// <summary>Создаёт изображение для заданного прямоугольника карты</summary>
+    /// <param name="BoundingBox">Границы области</param>
+    /// <returns>Источник изображения WMS</returns>
     protected override ImageSource? GetImage(BoundingBox BoundingBox)
     {
         if (ServerUri is null)
@@ -136,14 +146,12 @@ public class WmsImageLayer : MapImageLayer
            .Append("&TRANSPARENT=").Append(Transparent ? "TRUE" : "FALSE")
            .Append('&').Append(projection_parameters);
 
-        //var uri = GetRequestUri("GetMap"
-        //    + "&LAYERS=" + Layers + "&STYLES=" + Styles + "&FORMAT=" + Format
-        //    + "&TRANSPARENT=" + (Transparent ? "TRUE" : "FALSE") + "&" + projection_parameters);
-
         var uri = GetRequestUri(query);
         return new BitmapImage(uri);
     }
 
+    /// <summary>Запрашивает доступные имена слоёв на сервере</summary>
+    /// <returns>Список имён слоёв или null при ошибке</returns>
     public async Task<IList<string>?> GetLayerNamesAsync()
     {
         if (ServerUri is null)
@@ -155,13 +163,6 @@ public class WmsImageLayer : MapImageLayer
         {
             var xml = await Task.Factory.StartNew(v => XDocument.Load((string)v!), GetRequestUri("GetCapabilities").ToString()).ConfigureAwait(false);
             layer_names.AddRange(xml.XPathSelectElements("//Name").Select(node => node.Value));
-
-            //var document = await XmlDocument.LoadFromUriAsync(GetRequestUri("GetCapabilities")).ConfigureAwait(false);
-            //if (ChildElements(document.DocumentElement, "Capability").FirstOrDefault() is { } capability)
-            //    if (ChildElements(capability, "Layer").FirstOrDefault() is { } root_layer)
-            //        foreach (var layer in ChildElements(root_layer, "Layer"))
-            //            if (ChildElements(layer, "Name").FirstOrDefault() is { InnerText: var inner_text })
-            //                layer_names.Add(inner_text);
         }
         catch (Exception ex)
         {

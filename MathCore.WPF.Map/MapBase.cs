@@ -201,11 +201,11 @@ public class MapBase : MapPanel
            new(null, (o, e) => ((MapBase)o).MapLayerPropertyChanged((UIElement)e.OldValue, (UIElement)e.NewValue)));
 
     /// <summary>
-    /// Базовый слой карты, который добавляется первым элементов в коллекцию <c>Children</c>.<br/>
-    /// Если объект слоя карты реализует интерфейс <see cref="IMapLayer"/> (на пример <see cref="MapTileLayer"/>
-    /// или <see cref="MapImageLayer"/>), обладающие значением <see cref="IMapLayer.MapBackground"/>
+    /// Базовый слой карты, который добавляется первым элементов в коллекцию <c>Children</c><br/>
+    /// Если объект слоя карты реализует интерфейс <see cref="IMapLayer"/> (на пример <see cref="MapTileLayer"/>)
+    /// или <see cref="MapImageLayer"/>, обладающие значением <see cref="IMapLayer.MapBackground"/>
     /// и <see cref="IMapLayer.MapForeground"/>, то эти свойства используются в качестве
-    /// <see cref="Panel.Background"/> and <see cref="MapBase.Foreground"/> значений свойств карты.
+    /// <see cref="Panel.Background"/> and <see cref="MapBase.Foreground"/> значений свойств карты
     /// </summary>
     public UIElement MapLayer
     {
@@ -225,8 +225,8 @@ public class MapBase : MapPanel
             new(null, (o, _) => ((MapBase)o).ProjectionCenterPropertyChanged()));
 
     /// <summary>
-    /// Опциональный центр азимутальной проекции.
-    /// Если <see cref="MapBase.ProjectionCenter"/> <c>is null</c>, то в качестве центра будет использоваться значение свойства <see cref="MapBase.Center"/>.
+    /// Опциональный центр азимутальной проекции
+    /// Если <see cref="MapBase.ProjectionCenter"/> <c>is null</c>, то в качестве центра будет использоваться значение свойства <see cref="MapBase.Center"/>
     /// </summary>
     public Location? ProjectionCenter
     {
@@ -249,7 +249,7 @@ public class MapBase : MapPanel
                 (o, e) => Math.Max(0, Math.Min((double)e, ((MapBase)o).MaxZoomLevel))),
             v => (double)v >= 0);
 
-    /// <summary>Минимально допустимый уровень приближения карты в интервале [0 .. <see cref="MapBase.MaxZoomLevel"/>]. По умолчанию 1</summary>
+    /// <summary>Минимально допустимый уровень приближения карты в интервале [0 .. <see cref="MapBase.MaxZoomLevel"/>] По умолчанию 1</summary>
     public double MinZoomLevel
     {
         get => (double)GetValue(MinZoomLevelProperty);
@@ -271,7 +271,7 @@ public class MapBase : MapPanel
                 (o, e) => Math.Min(20, Math.Max((double)e, ((MapBase)o).MinZoomLevel))),
             v => (double)v is >= 0 and <= 20);
 
-    /// <summary>Максимально допустимый уровень приближения карты в интервале [<see cref="MapBase.MinZoomLevel"/> ..20]. По умолчанию 19</summary>
+    /// <summary>Максимально допустимый уровень приближения карты в интервале [<see cref="MapBase.MinZoomLevel"/> ..20] По умолчанию 19</summary>
     public double MaxZoomLevel
     {
         get => (double)GetValue(MaxZoomLevelProperty);
@@ -289,7 +289,7 @@ public class MapBase : MapPanel
             typeof(MapBase),
             new(TimeSpan.FromSeconds(0.3)));
 
-    /// <summary>Длительность анимации карты. По умолчанию 0.3 с.</summary>
+    /// <summary>Длительность анимации карты По умолчанию 0.3 с</summary>
     public TimeSpan AnimationDuration
     {
         get => (TimeSpan)GetValue(AnimationDurationProperty);
@@ -307,7 +307,7 @@ public class MapBase : MapPanel
             typeof(MapBase),
             new(new QuadraticEase { EasingMode = EasingMode.EaseOut }));
 
-    /// <summary>Функция гладкости анимации. По умолчанию <see cref="QuadraticEase"/> со значением <see cref="EasingMode.EaseOut"/>.</summary>
+    /// <summary>Функция гладкости анимации По умолчанию <see cref="QuadraticEase"/> со значением <see cref="EasingMode.EaseOut"/></summary>
     public EasingFunctionBase AnimationEasingFunction
     {
         get => (EasingFunctionBase)GetValue(AnimationEasingFunctionProperty);
@@ -325,7 +325,7 @@ public class MapBase : MapPanel
             typeof(MapBase),
             new(Tile.FadeDuration, (_, e) => Tile.FadeDuration = (TimeSpan)e.NewValue));
 
-    /// <summary>Длительность анимации проявления тайла на карте после его загрузки. По умолчанию 0.2 с.</summary>
+    /// <summary>Длительность анимации проявления тайла на карте после его загрузки По умолчанию 0.2 с</summary>
     public TimeSpan TileFadeDuration
     {
         get => (TimeSpan)GetValue(TileFadeDurationProperty);
@@ -340,6 +340,7 @@ public class MapBase : MapPanel
             typeof(MapBase),
             new(new Point(), (o, e) => ((MapBase)o).CenterPointPropertyChanged((Point)e.NewValue)));
 
+    /// <summary>Проекция слоя, используемая для преобразований координат отображения</summary>
     public MapProjection LayerMapProjection => (MapLayer as MapTileLayer)?.Projection ?? MapProjection;
 
     /// <summary>Визуальное графическое преобразование масштабированием элементов карты относительно центра</summary>
@@ -354,8 +355,10 @@ public class MapBase : MapPanel
 
     private ZoomToBoundsCommand? _ZoomToBoundsCommand;
 
+    /// <summary>Команда масштабирования карты до прямоугольника видимости</summary>
     public ZoomToBoundsCommand ZoomToBoundsCommand => _ZoomToBoundsCommand ??= new(this);
 
+    /// <summary>Создаёт экземпляр карты с проекцией по умолчанию</summary>
     public MapBase()
     {
         MapProjection = new WebMercatorProjection();
@@ -364,11 +367,18 @@ public class MapBase : MapPanel
     }
 
     /// <summary>Изменить положение центра карты в системе координат слоя</summary>
+    /// <param name="translation">Вектор смещения в экранных координатах</param>
     public void TranslateMap(Vector translation) => TranslateMap((Point)translation);
 
     /// <summary>Изменить центр, угол поворота и масштаб карты</summary>
+    /// <param name="center">Точка центра преобразований в экранных координатах</param>
+    /// <param name="translation">Вектор смещения</param>
+    /// <param name="rotation">Приращение угла поворота в градусах</param>
+    /// <param name="scale">Коэффициент масштабирования</param>
     public void TransformMap(Point center, Vector translation, double rotation, double scale) => TransformMap(center, (Point)translation, rotation, scale);
 
+    /// <summary>Реакция на изменение размеров визуального элемента</summary>
+    /// <param name="SizeInfo">Информация об изменении размера</param>
     protected override void OnRenderSizeChanged(SizeChangedInfo SizeInfo)
     {
         base.OnRenderSizeChanged(SizeInfo);
@@ -392,15 +402,20 @@ public class MapBase : MapPanel
     private bool _InternalPropertyChange;
 
     /// <summary>Преобразование географических координат в экранные</summary>
+    /// <param name="location">Географическое положение</param>
+    /// <returns>Точка на экране</returns>
     public Point LocationToViewportPoint(Location location) => LayerMapProjection.LocationToViewportPoint(location);
 
     /// <summary>Преобразование экранных координат в географические</summary>
+    /// <param name="point">Точка на экране</param>
+    /// <returns>Географическое положение</returns>
     public Location ViewportPointToLocation(Point point) => LayerMapProjection.ViewportPointToLocation(point);
 
     /// <summary>
-    /// Установка точки временного центра карты в экранных координатах для масштабирования и поворота.<br/>
-    /// Данная точка будет автоматически сброшена при установке свойства <see cref="Center"/> в коде.
+    /// Установка точки временного центра карты в экранных координатах для масштабирования и поворота<br/>
+    /// Данная точка будет автоматически сброшена при установке свойства <see cref="Center"/> в коде
     /// </summary>
+    /// <param name="center">Точка центра в экранных координатах</param>
     public void SetTransformCenter(Point center)
     {
         _TransformCenter = LayerMapProjection.ViewportPointToLocation(center);
@@ -415,6 +430,7 @@ public class MapBase : MapPanel
     }
 
     /// <summary>Изменение положения <see cref="Center"/> в соответствии с установленным преобразованием в экранных координатах</summary>
+    /// <param name="translation">Вектор смещения в экранных координатах</param>
     public void TranslateMap(Point translation)
     {
         if (_TransformCenter is not null)
@@ -448,8 +464,12 @@ public class MapBase : MapPanel
 
     /// <summary>
     /// Изменение центра, угла поворота, и масштаба карты в соответствии с установленными приращениями
-    /// перемещения, поворота и масштаба. Поворот и масштаб выполняется относительно выбранной точки центра в экранных координатах.
+    /// перемещения, поворота и масштаба Поворот и масштаб выполняется относительно выбранной точки центра в экранных координатах
     /// </summary>
+    /// <param name="center">Центр преобразований в экранных координатах</param>
+    /// <param name="translation">Вектор смещения</param>
+    /// <param name="rotation">Приращение угла поворота в градусах</param>
+    /// <param name="scale">Коэффициент масштабирования</param>
     public void TransformMap(Point center, Point translation, double rotation, double scale)
     {
         if (rotation == 0 && scale == 1)
@@ -479,6 +499,8 @@ public class MapBase : MapPanel
     }
 
     /// <summary>Установка значения <see cref="TargetZoomLevel"/> сохраняя заданную центральную точку экранных координат</summary>
+    /// <param name="center">Точка центра масштабирования в экранных координатах</param>
+    /// <param name="ZoomLevel">Целевое значение масштаба</param>
     public void ZoomMap(Point center, double ZoomLevel)
     {
         ZoomLevel = Math.Min(Math.Max(ZoomLevel, MinZoomLevel), MaxZoomLevel);
@@ -495,8 +517,9 @@ public class MapBase : MapPanel
 
     /// <summary>
     /// Установка <see cref="TargetZoomLevel"/> и <see cref="TargetCenter"/> в соответствии с определённым значением
-    /// интервалов отображаемых координат, вписываемых в текущий экран карты. <see cref="TargetHeading"/> устанавливается в значение 0.
+    /// интервалов отображаемых координат, вписываемых в текущий экран карты <see cref="TargetHeading"/> устанавливается в значение 0
     /// </summary>
+    /// <param name="BoundingBox">Границы области для вписывания</param>
     public void ZoomToBounds(BoundingBox BoundingBox)
     {
         if (BoundingBox is not { HasValidBounds: true }) return;
@@ -783,6 +806,9 @@ public class MapBase : MapPanel
         _InternalPropertyChange = false;
     }
 
+    /// <summary>Обновляет внутренние графические преобразования и уведомляет о изменении области видимости</summary>
+    /// <param name="ResetTransformCenter">Сбрасывать временный центр преобразований</param>
+    /// <param name="ProjectionChanged">Проекция была изменена</param>
     private void UpdateTransform(bool ResetTransformCenter = false, bool ProjectionChanged = false)
     {
         var projection = LayerMapProjection;
@@ -827,6 +853,8 @@ public class MapBase : MapPanel
         _CenterLongitude = Center.Longitude;
     }
 
+    /// <summary>Вызывается при изменении видимой области карты</summary>
+    /// <param name="e">Аргументы события</param>
     protected override void OnViewportChanged(ViewportChangedEventArgs e)
     {
         base.OnViewportChanged(e);

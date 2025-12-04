@@ -7,9 +7,13 @@ using System.Windows.Media.Imaging;
 
 namespace MathCore.WPF.Map;
 
+/// <summary>Тайл карты</summary>
 [DebuggerDisplay("Tile[x:{X}y:{Y}z:{ZoomLevel}]")]
 public sealed class Tile(int ZoomLevel, int X, int Y)
 {
+    /// <summary>Устанавливает изображение тайла с опциональной анимацией проявления</summary>
+    /// <param name="ImageSource">Источник изображения</param>
+    /// <param name="FadeIn">Включить плавное проявление</param>
     public void SetImage(ImageSource ImageSource, bool FadeIn = true)
     {
         Pending = false;
@@ -52,6 +56,7 @@ public sealed class Tile(int ZoomLevel, int X, int Y)
 
     private static DoubleAnimation __FadeAnimation = new(1d, TimeSpan.FromSeconds(0.15));
 
+    /// <summary>Длительность анимации проявления изображения тайла</summary>
     public static TimeSpan FadeDuration
     {
         get => __FadeDuration;
@@ -63,16 +68,22 @@ public sealed class Tile(int ZoomLevel, int X, int Y)
         }
     }
 
+    /// <summary>Уровень масштаба тайла</summary>
     public int ZoomLevel { get; } = ZoomLevel;
 
+    /// <summary>Индекс тайла по оси X (логический, без нормализации)</summary>
     public int X { get; } = X;
 
+    /// <summary>Индекс тайла по оси Y</summary>
     public int Y { get; } = Y;
 
+    /// <summary>Визуальный элемент изображения тайла</summary>
     public Image Image { get; } = new() { Opacity = 0d };
 
+    /// <summary>Флаг ожидания загрузки изображения тайла</summary>
     public bool Pending { get; set; } = true;
 
+    /// <summary>Индекс тайла по оси X с нормализацией в пределах доступного диапазона текущего уровня</summary>
     public int XIndex
     {
         get
@@ -82,7 +93,14 @@ public sealed class Tile(int ZoomLevel, int X, int Y)
         }
     }
 
+    /// <summary>Деконструктор кортежа (X, Y)</summary>
+    /// <param name="X">Индекс X</param>
+    /// <param name="Y">Индекс Y</param>
     public void Deconstruct(out int X, out int Y) => (X, Y) = (this.X, this.Y);
 
+    /// <summary>Деконструктор кортежа (X, Y, ZoomLevel)</summary>
+    /// <param name="X">Индекс X</param>
+    /// <param name="Y">Индекс Y</param>
+    /// <param name="ZoomLevel">Уровень масштаба</param>
     public void Deconstruct(out int X, out int Y, out int ZoomLevel) => (X, Y, ZoomLevel) = (this.X, this.Y, this.ZoomLevel);
 }

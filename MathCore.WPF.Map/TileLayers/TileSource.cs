@@ -17,12 +17,15 @@ namespace MathCore.WPF.Map.TileLayers;
 [TypeConverter(typeof(TileSourceConverter))]
 public class TileSource
 {
+    /// <summary>Создание и настройка HTTP клиента для загрузки тайлов</summary>
+    /// <returns>Настроенный HTTP клиент</returns>
+    /// <remarks>Настройки заголовков имитируют запросы из браузера для обхода ограничений тайловых серверов</remarks>
     private static HttpClient GetClient()
     {
         var client = new HttpClient();
 
         var rnd = new Random();
-        var user_agent = 
+        var user_agent =
             $"Mozilla/5.0 (Windows NT 10.0; Win64; x64) " +
             $"AppleWebKit/537.36 (KHTML, like Gecko) " +
             $"Chrome/124.0.0.0 " +
@@ -48,6 +51,8 @@ public class TileSource
     public static bool TileAvailable(HttpResponseHeaders ResponseHeaders) =>
         !ResponseHeaders.TryGetValues("X-VE-Tile-Info", out var tile_info) || !tile_info.Contains("no-tile");
 
+    /// <summary>Загрузка локального изображения тайла по URI</summary>
+    /// <param name="Uri">URI локального файла изображения тайла</param>
     protected static Task<ImageSource> LoadLocalImageAsync(Uri Uri) => Task.Factory.StartNew(o =>
     {
         var uri = (Uri)o!;
@@ -59,6 +64,8 @@ public class TileSource
         return (ImageSource)BitmapFrame.Create(stream, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
     }, Uri)!;
 
+    /// <summary>Загрузка изображения тайла по HTTP(S) URI</summary>
+    /// <param name="uri">URI изображения тайла</param>
     protected static async Task<ImageSource?> LoadHttpImageAsync(Uri uri)
     {
         using var response = await HttpClient.GetAsync(uri).ConfigureAwait(false);
@@ -80,16 +87,35 @@ public class TileSource
         return null;
     }
 
+    /* ------------------------------------------------------------------------ */
+
+    /// <summary>Событие запроса сброса состояния</summary>
+    public event EventHandler? Reset;
+
+    /// <summary>Вызывает событие Reset</summary>
+    /// <param name="e">Аргументы события</param>
+    protected virtual void OnReset(EventArgs e) => Reset?.Invoke(this, e);
+
+    /* ------------------------------------------------------------------------ */
+
+    /// <summary>Создание источника данных тайлового слоя карты</summary>
     public TileSource() { }
 
+    /// <summary>Создание источника данных тайлового слоя карты с заданным форматом URI</summary>
+    /// <param name="URIFormat">Формат адреса данных тайлового сервера</param>
     protected TileSource(string URIFormat) => _URIFormat = URIFormat;
 
+    /// <summary>Функция формирования адреса тайла на основе его координат</summary>
     private Func<int, int, int, string?>? _GetUri;
 
+    /// <summary>Индекс поддомена для балансировки нагрузки при наличии нескольких поддоменов у тайлового сервера</summary>
     private int _SubdomainIndex = -1;
 
+    /// <summary>Коллекция поддоменов тайлового сервера</summary>
+    /// <remarks>Используется для балансировки нагрузки при наличии нескольких поддоменов у тайлового сервера</remarks>
     public SubdomainsCollection? Subdomains { get; set; }
 
+    /// <summary>Формат адреса данных тайлового сервера</summary>
     private string? _URIFormat;
 
     /// <summary>Формат адреса данных тайлового сервера</summary>
@@ -98,12 +124,12 @@ public class TileSource
         get => _URIFormat;
         set
         {
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrWhiteSpace(value))
                 throw new ArgumentException("The value of the UriFormat property must not be null or empty.");
 
             _URIFormat = value;
 
-            if (value.Contains("{x}") && value.Contains("{z}"))
+            if (value!.Contains("{x}") && value.Contains("{z}"))
                 if (value.Contains("yandex"))
                     _GetUri = GetYandexUri;
                 else if (value.Contains("{i}"))
@@ -149,8 +175,7 @@ public class TileSource
             return uri switch
             {
                 { IsAbsoluteUri: false, Scheme: "file" } => await LoadLocalImageAsync(uri).ConfigureAwait(false),
-                { Scheme: "http" } => await LoadHttpImageAsync(uri).ConfigureAwait(false),
-                { Scheme: "https" } => await LoadHttpImageAsync(uri).ConfigureAwait(false),
+                { Scheme: "http" or "https" } => await LoadHttpImageAsync(uri).ConfigureAwait(false),
                 _ => new BitmapImage(uri)
             };
         }
@@ -177,11 +202,23 @@ public class TileSource
        .Replace("{y}", y.ToString())
        .Replace("{z}", ZoomLevel.ToString());
 
+    /// <summary>Генерирует URI TMS подстановкой координат тайла и уровня масштабирования</summary>
+    /// <param name="x">Горизонтальная координата тайла (индекс столбца)</param>
+    /// <param name="y">Вертикальная координата тайла (индекс строки) инвертируемая по спецификации TMS</param>
+    /// <param name="ZoomLevel">Уровень масштабирования тайла</param>
+    /// <returns>Строка с URI TMS с подставленными значениями координат и уровня масштабирования</returns>
+    /// <remarks>Инверсия координаты y выполняется по спецификации TMS где начало координат внизу слева</remarks>
     private string GetTmsUri(int x, int y, int ZoomLevel) => _URIFormat!
        .Replace("{x}", x.ToString())
        .Replace("{v}", ((1 << ZoomLevel) - 1 - y).ToString())
        .Replace("{z}", ZoomLevel.ToString());
 
+    /// <summary>Генерирует URI с использованием QuadKey подстановки</summary>
+    /// <param name="x">Горизонтальная координата тайла (индекс столбца)</param>
+    /// <param name="y">Вертикальная координата тайла (индекс строки)</param>
+    /// <param name="ZoomLevel">Уровень масштабирования тайла</param>
+    /// <returns>Строка с URI с подставленными значениями координат и уровня масштабирования</returns>
+    /// <remarks>QuadKey - это строковое представление координат тайла в виде последовательности цифр от 0 до 3, определяющих положение тайла на каждом уровне масштабирования</remarks>
     private string? GetQuadKeyUri(int x, int y, int ZoomLevel)
     {
         if (ZoomLevel < 1)
@@ -197,6 +234,12 @@ public class TileSource
            .Replace("{q}", new(quad_key));
     }
 
+    /// <summary>Генерирует URI с использованием координат ограничивающего прямоугольника в метрах</summary>
+    /// <param name="x">Горизонтальная координата тайла (индекс столбца)</param>
+    /// <param name="y">Вертикальная координата тайла (индекс строки)</param>
+    /// <param name="ZoomLevel">Уровень масштабирования тайла</param>
+    /// <returns>Строка с URI с подставленными значениями координат и уровня масштабирования</returns>
+    /// <remarks>Координаты ограничивающего прямоугольника вычисляются на основе координат тайла и уровня масштабирования</remarks>
     private string GetBoundingBoxUri(int x, int y, int ZoomLevel)
     {
         var tile_size = 360d / (1 << ZoomLevel); // ширина тайла в градусах

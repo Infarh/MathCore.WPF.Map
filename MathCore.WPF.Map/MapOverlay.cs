@@ -12,6 +12,7 @@ public class MapOverlay : MapPanel
 
     public static readonly DependencyProperty FontSizeProperty = Control.FontSizeProperty.AddOwner(typeof(MapOverlay));
 
+    /// <summary>Размер шрифта для текстовых элементов оверлея</summary>
     public double FontSize
     {
         get => (double)GetValue(FontSizeProperty);
@@ -24,6 +25,7 @@ public class MapOverlay : MapPanel
 
     public static readonly DependencyProperty FontFamilyProperty = Control.FontFamilyProperty.AddOwner(typeof(MapOverlay));
 
+    /// <summary>Семейство шрифтов для текстовых элементов оверлея</summary>
     public FontFamily FontFamily
     {
         get => (FontFamily)GetValue(FontFamilyProperty);
@@ -36,6 +38,7 @@ public class MapOverlay : MapPanel
 
     public static readonly DependencyProperty FontStyleProperty = Control.FontStyleProperty.AddOwner(typeof(MapOverlay));
 
+    /// <summary>Стиль шрифта для текстовых элементов оверлея</summary>
     public FontStyle FontStyle
     {
         get => (FontStyle)GetValue(FontStyleProperty);
@@ -48,6 +51,7 @@ public class MapOverlay : MapPanel
 
     public static readonly DependencyProperty FontStretchProperty = Control.FontStretchProperty.AddOwner(typeof(MapOverlay));
 
+    /// <summary>Растяжение шрифта для текстовых элементов оверлея</summary>
     public FontStretch FontStretch
     {
         get => (FontStretch)GetValue(FontStretchProperty);
@@ -60,6 +64,7 @@ public class MapOverlay : MapPanel
 
     public static readonly DependencyProperty FontWeightProperty = Control.FontWeightProperty.AddOwner(typeof(MapOverlay));
 
+    /// <summary>Начертание шрифта для текстовых элементов оверлея</summary>
     public FontWeight FontWeight
     {
         get => (FontWeight)GetValue(FontWeightProperty);
@@ -72,6 +77,7 @@ public class MapOverlay : MapPanel
 
     public static readonly DependencyProperty ForegroundProperty = Control.ForegroundProperty.AddOwner(typeof(MapOverlay));
 
+    /// <summary>Основная кисть рисования элементов оверлея</summary>
     public Brush Foreground
     {
         get => (Brush)GetValue(ForegroundProperty);
@@ -86,6 +92,7 @@ public class MapOverlay : MapPanel
         typeof(MapOverlay), 
         new FrameworkPropertyMetadata { AffectsRender = true });
 
+    /// <summary>Кисть контура для фигур оверлея</summary>
     public Brush? Stroke
     {
         get => (Brush?)GetValue(StrokeProperty);
@@ -99,6 +106,7 @@ public class MapOverlay : MapPanel
         typeof(MapOverlay),
         new FrameworkPropertyMetadata { AffectsRender = true });
 
+    /// <summary>Толщина контура фигур оверлея</summary>
     public double StrokeThickness
     {
         get => (double)GetValue(StrokeThicknessProperty);
@@ -113,6 +121,7 @@ public class MapOverlay : MapPanel
         typeof(MapOverlay),
         new FrameworkPropertyMetadata { AffectsRender = true });
 
+    /// <summary>Шаблон штриховки контура фигур оверлея</summary>
     public DoubleCollection StrokeDashArray
     {
         get => (DoubleCollection)GetValue(StrokeDashArrayProperty);
@@ -127,6 +136,7 @@ public class MapOverlay : MapPanel
         typeof(MapOverlay),
         new FrameworkPropertyMetadata { AffectsRender = true });
 
+    /// <summary>Смещение шаблона штриховки контура</summary>
     public double StrokeDashOffset
     {
         get => (double)GetValue(StrokeDashOffsetProperty);
@@ -141,6 +151,7 @@ public class MapOverlay : MapPanel
         typeof(MapOverlay), 
         new FrameworkPropertyMetadata { AffectsRender = true });
 
+    /// <summary>Тип окончания штрихов контура</summary>
     public PenLineCap StrokeDashCap
     {
         get => (PenLineCap)GetValue(StrokeDashCapProperty);
@@ -155,6 +166,7 @@ public class MapOverlay : MapPanel
         typeof(MapOverlay), 
         new FrameworkPropertyMetadata { AffectsRender = true });
 
+    /// <summary>Тип окончания контура в начале линии</summary>
     public PenLineCap StrokeStartLineCap
     {
         get => (PenLineCap)GetValue(StrokeStartLineCapProperty);
@@ -169,6 +181,7 @@ public class MapOverlay : MapPanel
         typeof(MapOverlay), 
         new FrameworkPropertyMetadata { AffectsRender = true });
 
+    /// <summary>Тип окончания контура в конце линии</summary>
     public PenLineCap StrokeEndLineCap
     {
         get => (PenLineCap)GetValue(StrokeEndLineCapProperty);
@@ -183,6 +196,7 @@ public class MapOverlay : MapPanel
         typeof(MapOverlay), 
         new FrameworkPropertyMetadata { AffectsRender = true });
 
+    /// <summary>Тип соединения сегментов контура</summary>
     public PenLineJoin StrokeLineJoin
     {
         get => (PenLineJoin)GetValue(StrokeLineJoinProperty);
@@ -197,6 +211,7 @@ public class MapOverlay : MapPanel
         typeof(MapOverlay), 
         new FrameworkPropertyMetadata { AffectsRender = true });
 
+    /// <summary>Предел скоса для соединений типа Miter</summary>
     public double StrokeMiterLimit
     {
         get => (double)GetValue(StrokeMiterLimitProperty);
@@ -205,6 +220,8 @@ public class MapOverlay : MapPanel
 
     #endregion
 
+    /// <summary>Устанавливает карту‑владельца и настраивает привязки кистей</summary>
+    /// <param name="ParentMap">Экземпляр карты</param>
     protected override void SetParentMap(MapBase? ParentMap)
     {
         if (GetBindingExpression(StrokeProperty) is not null) 
