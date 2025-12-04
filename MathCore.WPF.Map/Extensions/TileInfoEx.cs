@@ -18,5 +18,8 @@ public static class TileInfoEx
 
         /// <summary>Создаёт accessor для работы с пикселями тайла</summary>
         public BitmapPixelAccessor CreatePixelAccessor() => new(tile.CreateBitmap());
+
+        /// <summary>Создаёт перечислитель пикселей тайла с автоматическим преобразованием координат</summary>
+        public TilePixelEnumerator GetPixelEnumerator() => new(tile);
     }
 }

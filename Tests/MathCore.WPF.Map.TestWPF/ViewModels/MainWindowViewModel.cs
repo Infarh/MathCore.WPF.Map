@@ -113,36 +113,21 @@ public class MainWindowViewModel() : TitledViewModel("Главное окно")
         TileFunc = async (tile, cancel) =>
         {
             var center = _FunctionTileSourceCenter;
-
-            var lat_min = tile.Min.Latitude;
-            var lat_max = tile.Max.Latitude;
-            var lon_min = tile.Min.Longitude;
-            var lon_max = tile.Max.Longitude;
-
-            var lat_delta = lat_max - lat_min;
-            var lon_delta = lon_max - lon_min;
-
             using var bmp = tile.CreatePixelAccessor();
-            var tile_size = tile.TilePixelSize;
 
-            for (var y = 0; y < tile_size; y++)
+            foreach (var (x, y, location) in tile.GetPixelEnumerator())
             {
-                cancel.ThrowIfCancellationRequested();
+                if (y % 64 == 0)
+                    cancel.ThrowIfCancellationRequested();
 
-                var lat = lat_max - (lat_delta * y / (tile_size - 1));
-                for (var x = 0; x < tile_size; x++)
-                {
-                    var lon = lon_min + (lon_delta * x / (tile_size - 1));
+                var distance_rad = AzimuthalProjection.GetDistance(center, location); // радианы
+                var distance_m = distance_rad * MapProjection.Wgs84EquatorialRadius; // м
 
-                    var distance_rad = AzimuthalProjection.GetDistance(center, new Location(lat, lon)); // радианы
-                    var distance_m = distance_rad * MapProjection.Wgs84EquatorialRadius; // м
+                var r = distance_m / 1000.0; // нормировка
+                var f = r == 0 ? 1.0 : Math.Sin(r) / r;
+                f = Math.Max(0, f);
 
-                    var r = distance_m / 1000.0; // нормировка
-                    var f = r == 0 ? 1.0 : Math.Sin(r) / r;
-                    f = Math.Max(0, f);
-
-                    bmp[x, y] = HeatColor(f);
-                }
+                bmp[x, y] = HeatColor(f);
             }
 
             return bmp.Bitmap;
