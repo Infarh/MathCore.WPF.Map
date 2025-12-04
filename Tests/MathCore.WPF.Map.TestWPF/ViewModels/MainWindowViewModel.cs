@@ -119,11 +119,8 @@ public class MainWindowViewModel() : TitledViewModel("Главное окно")
             var lon_min = tile.Min.Longitude;
             var lon_max = tile.Max.Longitude;
 
-            var wb = tile.CreateBitmap();
+            using var accessor = tile.CreatePixelAccessor();
             var tile_size = tile.TilePixelSize;
-
-            var stride = wb.BackBufferStride;
-            var pixels = new byte[stride * tile_size];
 
             for (var y = 0; y < tile_size; y++)
             {
@@ -142,16 +139,11 @@ public class MainWindowViewModel() : TitledViewModel("Главное окно")
                     f = Math.Max(0, f);
 
                     var (b, g, r8) = HeatColor(f);
-                    var index = y * stride + x * 4;
-                    pixels[index + 0] = b; // B
-                    pixels[index + 1] = g; // G
-                    pixels[index + 2] = r8; // R
-                    pixels[index + 3] = 200; // A чуть прозрачный
+                    accessor[x, y].Set(r8, g, b, 200); // A чуть прозрачный
                 }
             }
 
-            wb.WritePixels(new Int32Rect(0, 0, tile_size, tile_size), pixels, stride, 0);
-            return wb;
+            return accessor.Bitmap;
 
             static (byte B, byte G, byte R) HeatColor(double v)
             {
