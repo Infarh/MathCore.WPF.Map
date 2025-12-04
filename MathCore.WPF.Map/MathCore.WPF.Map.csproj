@@ -21,9 +21,9 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Version>0.0.4</Version>
+        <Version>0.1.0</Version>
         <PackageReleaseNotes>
-            Миграция проекта на .NET 10.0 и обновление зависимостей
+          Добавлен новый вид слоя - расчётный, позволяющий создавать слои с динамически генерируемым содержимым.
         </PackageReleaseNotes>
     </PropertyGroup>
 
