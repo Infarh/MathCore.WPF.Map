@@ -3,12 +3,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 using MathCore.DI;
 using MathCore.Geolocation;
 using MathCore.WPF.Commands;
+using MathCore.WPF.Map.Extensions;
 using MathCore.WPF.Map.Primitives.Base;
 using MathCore.WPF.Map.TestWPF.Commands;
 using MathCore.WPF.Map.TileLayers;
@@ -115,15 +114,16 @@ public class MainWindowViewModel() : TitledViewModel("Главное окно")
         {
             var center = _FunctionTileSourceCenter;
 
-            var tile_size = tile.TilePixelSize;
-            var wb = new WriteableBitmap(tile_size, tile_size, 96, 96, PixelFormats.Bgra32, null);
-            var stride = wb.BackBufferStride;
-            var pixels = new byte[stride * tile_size];
-
             var lat_min = tile.Min.Latitude;
             var lat_max = tile.Max.Latitude;
             var lon_min = tile.Min.Longitude;
             var lon_max = tile.Max.Longitude;
+
+            var wb = tile.CreateBitmap();
+            var tile_size = tile.TilePixelSize;
+
+            var stride = wb.BackBufferStride;
+            var pixels = new byte[stride * tile_size];
 
             for (var y = 0; y < tile_size; y++)
             {
