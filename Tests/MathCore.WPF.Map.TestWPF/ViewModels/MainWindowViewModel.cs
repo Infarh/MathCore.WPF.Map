@@ -115,6 +115,7 @@ public class MainWindowViewModel() : TitledViewModel("Главное окно")
             var center = _FunctionTileSourceCenter;
             using var bmp = tile.CreatePixelAccessor();
 
+            // Вариант 1: foreach с перечислителем
             foreach (var (x, y, location) in tile.GetPixelEnumerator())
             {
                 if (y % 64 == 0)
@@ -129,6 +130,22 @@ public class MainWindowViewModel() : TitledViewModel("Главное окно")
 
                 bmp[x, y] = HeatColor(f);
             }
+
+            // Вариант 2: прямой доступ через tile.GetLocation(x, y)
+            //for (var y = 0; y < tile.TilePixelSize; y++)
+            //{
+            //    cancel.ThrowIfCancellationRequested();
+            //    for (var x = 0; x < tile.TilePixelSize; x++)
+            //    {
+            //        var location = tile.GetLocation(x, y);
+            //        var distance_rad = AzimuthalProjection.GetDistance(center, location);
+            //        var distance_m = distance_rad * MapProjection.Wgs84EquatorialRadius;
+            //        var r = distance_m / 1000.0;
+            //        var f = r == 0 ? 1.0 : Math.Sin(r) / r;
+            //        f = Math.Max(0, f);
+            //        bmp[x, y] = HeatColor(f);
+            //    }
+            //}
 
             return bmp.Bitmap;
 

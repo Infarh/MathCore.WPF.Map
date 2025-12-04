@@ -6,12 +6,7 @@ namespace MathCore.WPF.Map.Extensions;
 /// <summary>Перечислитель пикселей тайла с поддержкой преобразования координат</summary>
 public ref struct TilePixelEnumerator
 {
-    private readonly double _LatMin;
-    private readonly double _LatMax;
-    private readonly double _LonMin;
-    private readonly double _LatDelta;
-    private readonly double _LonDelta;
-    private readonly int _TileSize;
+    private readonly TileInfo _Tile;
     private int _X;
     private int _Y;
 
@@ -32,46 +27,28 @@ public ref struct TilePixelEnumerator
 
     internal TilePixelEnumerator(TileInfo Tile)
     {
-        _LatMin = Tile.Min.Latitude;
-        _LatMax = Tile.Max.Latitude;
-        _LonMin = Tile.Min.Longitude;
-        _LatDelta = Tile.LatWidth;
-        _LonDelta = Tile.LonWidth;
-        _TileSize = Tile.TilePixelSize;
+        _Tile = Tile;
         _X = -1;
         _Y = 0;
     }
 
     /// <summary>Текущая позиция пикселя с координатами</summary>
-    public readonly PixelPosition Current
-    {
-        get
-        {
-            var lat = _LatMax - (_LatDelta * _Y / (_TileSize - 1));
-            var lon = _LonMin + (_LonDelta * _X / (_TileSize - 1));
-            return new(_X, _Y, new(lat, lon));
-        }
-    }
+    public readonly PixelPosition Current => new(_X, _Y, _Tile.GetLocation(_X, _Y));
 
     /// <summary>Переход к следующему пикселю</summary>
     public bool MoveNext()
     {
         _X++;
-        if (_X >= _TileSize)
+        if (_X >= _Tile.TilePixelSize)
         {
             _X = 0;
             _Y++;
         }
-        return _Y < _TileSize;
+        return _Y < _Tile.TilePixelSize;
     }
 
     /// <summary>Возвращает координаты для заданного индекса пикселя</summary>
-    public readonly Location GetLocation(int X, int Y)
-    {
-        var lat = _LatMax - (_LatDelta * Y / (_TileSize - 1));
-        var lon = _LonMin + (_LonDelta * X / (_TileSize - 1));
-        return new(lat, lon);
-    }
+    public readonly Location GetLocation(int X, int Y) => _Tile.GetLocation(X, Y);
 
     /// <summary>Возвращает перечислитель для поддержки foreach</summary>
     public TilePixelEnumerator GetEnumerator() => this;
