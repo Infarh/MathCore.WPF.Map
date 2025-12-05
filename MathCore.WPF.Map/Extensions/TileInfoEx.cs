@@ -1,7 +1,6 @@
 ﻿using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-using MathCore.WPF.Map.Infrastructure;
 using MathCore.WPF.Map.TileLayers;
 
 namespace MathCore.WPF.Map.Extensions;
@@ -20,6 +19,6 @@ public static class TileInfoEx
         public BitmapPixelAccessor CreatePixelAccessor() => new(tile.CreateBitmap());
 
         /// <summary>Создаёт перечислитель пикселей тайла с автоматическим преобразованием координат</summary>
-        public TilePixelEnumerator GetPixelEnumerator() => new(tile);
+        public TilePixelEnumerator GetEnumerator() => new(tile);
     }
 }
