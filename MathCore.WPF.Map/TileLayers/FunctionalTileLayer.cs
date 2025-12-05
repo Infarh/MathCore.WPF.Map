@@ -1,15 +1,15 @@
-namespace MathCore.WPF.Map.TileLayers;
+п»їnamespace MathCore.WPF.Map.TileLayers;
 
-/// <summary>Тайловый слой, использующий функциональный источник тайлов</summary>
+/// <summary>РўР°Р№Р»РѕРІС‹Р№ СЃР»РѕР№, РёСЃРїРѕР»СЊР·СѓСЋС‰РёР№ С„СѓРЅРєС†РёРѕРЅР°Р»СЊРЅС‹Р№ РёСЃС‚РѕС‡РЅРёРє С‚Р°Р№Р»РѕРІ</summary>
 public sealed class FunctionalTileLayer : MapTileLayer
 {
-    /// <summary>Конструктор по умолчанию для XAML</summary>
+    /// <summary>РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РґР»СЏ XAML</summary>
     public FunctionalTileLayer() { }
 
-    /// <summary>Создаёт функциональный тайловый слой</summary>
-    /// <param name="SourceName">Имя источника для кеша</param>
-    /// <param name="Description">Описание слоя</param>
-    /// <param name="TileFunc">Функция генерации тайлов</param>
+    /// <summary>РЎРѕР·РґР°С‘С‚ С„СѓРЅРєС†РёРѕРЅР°Р»СЊРЅС‹Р№ С‚Р°Р№Р»РѕРІС‹Р№ СЃР»РѕР№</summary>
+    /// <param name="SourceName">РРјСЏ РёСЃС‚РѕС‡РЅРёРєР° РґР»СЏ РєРµС€Р°</param>
+    /// <param name="Description">РћРїРёСЃР°РЅРёРµ СЃР»РѕСЏ</param>
+    /// <param name="TileFunc">Р¤СѓРЅРєС†РёСЏ РіРµРЅРµСЂР°С†РёРё С‚Р°Р№Р»РѕРІ</param>
     public FunctionalTileLayer(
         string SourceName,
         string Description,

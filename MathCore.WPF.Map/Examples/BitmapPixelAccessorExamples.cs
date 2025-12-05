@@ -1,4 +1,6 @@
-﻿using MathCore.WPF.Map.Extensions;
+﻿#if DEBUG
+
+using MathCore.WPF.Map.Extensions;
 using MathCore.WPF.Map.Primitives.Base;
 using MathCore.WPF.Map.TileLayers;
 
@@ -160,3 +162,6 @@ public static class BitmapPixelAccessorExamples
         return ((byte)r, (byte)g, (byte)b);
     }
 }
+
+
+#endif
