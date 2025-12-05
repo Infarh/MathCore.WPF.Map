@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.Json.Serialization;
 
-using MathCore.WPF.Map.Infrastructure;
+using MathCore.WPF.Map.Projections.Base;
 
 using Microsoft.Extensions.Primitives;
 
@@ -41,7 +41,7 @@ public readonly record struct Location : IEquatable<Location?>, IFormattable
     }
 
     public Location WithLongitude(double longitude) => new(Latitude, longitude);
-         
+
     /// <summary>Новая географическая точка</summary>
     public Location() { }
 
@@ -75,12 +75,12 @@ public readonly record struct Location : IEquatable<Location?>, IFormattable
 
     public static bool operator !=(Location? a, Location? b) => !Equals(a, b);
 
-//    public override int GetHashCode() =>
-//#if NET5_0_OR_GREATER
-//        HashCode.Combine(_Latitude, _Longitude);
-//#else
-//        HashBuilder.Create().Append(_Latitude).Append(_Longitude);
-//#endif
+    //    public override int GetHashCode() =>
+    //#if NET5_0_OR_GREATER
+    //        HashCode.Combine(_Latitude, _Longitude);
+    //#else
+    //        HashBuilder.Create().Append(_Latitude).Append(_Longitude);
+    //#endif
 
     //private static readonly string __NumberFormat = "F5";
 
@@ -207,4 +207,8 @@ public readonly record struct Location : IEquatable<Location?>, IFormattable
 
         return result.ToString();
     }
+
+    public double DistanceRadiansTo(Location point) => AzimuthalProjection.GetDistance(this, point);
+
+    public double DistanceTo(Location point) => DistanceRadiansTo(point) * MapProjection.Wgs84EquatorialRadius;
 }

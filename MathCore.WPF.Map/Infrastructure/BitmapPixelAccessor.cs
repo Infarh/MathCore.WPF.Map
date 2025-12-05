@@ -1,6 +1,7 @@
 ﻿using System.Windows;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
+
+using Color = System.Windows.Media.Color;
 
 namespace MathCore.WPF.Map.Infrastructure;
 
@@ -37,20 +38,20 @@ public sealed class BitmapPixelAccessor : IDisposable
             B = this.B;
         }
 
-        public static implicit operator Pixel((byte b, byte g, byte r, byte a) v) => new()
+        public static implicit operator Pixel((byte r, byte g, byte b, byte a) v) => new()
         {
-            B = v.b,
-            G = v.g,
             R = v.r,
-            A = v.a
+            G = v.g,
+            B = v.b,
+            A = v.a,
         };
 
         public static implicit operator Pixel(Color color) => new()
         {
+            A = color.A,
             R = color.R,
             G = color.G,
             B = color.B,
-            A = color.A
         };
 
         public static implicit operator Color(Pixel pixel) => Color.FromArgb(pixel.A, pixel.R, pixel.G, pixel.B);
@@ -94,6 +95,13 @@ public sealed class BitmapPixelAccessor : IDisposable
     public WriteableBitmap Bitmap => _Bitmap;
 
     /// <summary>Доступ к пикселю по координатам</summary>
+    public Pixel this[System.Drawing.Point point]
+    {
+        get => this[point.X, point.Y];
+        set => this[point.X, point.Y] = value;
+    }
+
+    /// <summary>Доступ к пикселю по координатам</summary>
     public Pixel this[int X, int Y]
     {
         get => _Pixels.AsSpan((Y * _Stride) + (X * 4), 4);
@@ -128,4 +136,6 @@ public sealed class BitmapPixelAccessor : IDisposable
         Flush();
         _Disposed = true;
     }
+
+    public static implicit operator WriteableBitmap(BitmapPixelAccessor accessor) => accessor.Bitmap;
 }

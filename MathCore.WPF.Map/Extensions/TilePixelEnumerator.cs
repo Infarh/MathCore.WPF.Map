@@ -1,4 +1,6 @@
-﻿using MathCore.WPF.Map.Primitives.Base;
+﻿using System.Drawing;
+
+using MathCore.WPF.Map.Primitives.Base;
 using MathCore.WPF.Map.TileLayers;
 
 namespace MathCore.WPF.Map.Extensions;
@@ -23,6 +25,8 @@ public ref struct TilePixelEnumerator
         public Location Location { get; } = Location;
 
         public void Deconstruct(out int X, out int Y, out Location Location) => (X, Y, Location) = (this.X, this.Y, this.Location);
+
+        public void Deconstruct(out Point Point, out Location Location) => (Point, Location) = (new Point(X, Y), this.Location);
     }
 
     internal TilePixelEnumerator(TileInfo Tile)
