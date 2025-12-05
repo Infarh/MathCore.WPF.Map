@@ -21,7 +21,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Version>0.1.0.1</Version>
+        <Version>0.1.0.2</Version>
         <PackageReleaseNotes>
           Добавлен новый вид слоя - расчётный, позволяющий создавать слои с динамически генерируемым содержимым.
         </PackageReleaseNotes>

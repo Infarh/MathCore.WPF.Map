@@ -18,7 +18,7 @@
                 <StatusBarItem DockPanel.Dock="Right">
                     <ResizeGrip />
                 </StatusBarItem>
-                <StatusBarItem Content="Готов!"/>
+                <StatusBarItem Content="{Binding ZoomLevel, ElementName=MapControl}"/>
             </StatusBar>
             <Grid>
                 <!-- 55.65505,37.7578 -->
