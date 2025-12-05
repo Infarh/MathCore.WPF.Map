@@ -1,4 +1,4 @@
-using System.Diagnostics;
+п»їusing System.Diagnostics;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -9,27 +9,27 @@ using MathCore.WPF.Map.Projections.Base;
 
 namespace MathCore.WPF.Map.TileLayers;
 
-/// <summary>Источник тайлов, формируемых функцией</summary>
+/// <summary>РСЃС‚РѕС‡РЅРёРє С‚Р°Р№Р»РѕРІ, С„РѕСЂРјРёСЂСѓРµРјС‹С… С„СѓРЅРєС†РёРµР№</summary>
 public sealed class FunctionalTileSource : TileSource
 {
-    /// <summary>Функция генерации изображения тайла</summary>
-    /// <remarks>Диапазоны широты и долготы в градусах, размер тайла в пикселях</remarks>
+    /// <summary>Р¤СѓРЅРєС†РёСЏ РіРµРЅРµСЂР°С†РёРё РёР·РѕР±СЂР°Р¶РµРЅРёСЏ С‚Р°Р№Р»Р°</summary>
+    /// <remarks>Р”РёР°РїР°Р·РѕРЅС‹ С€РёСЂРѕС‚С‹ Рё РґРѕР»РіРѕС‚С‹ РІ РіСЂР°РґСѓСЃР°С…, СЂР°Р·РјРµСЂ С‚Р°Р№Р»Р° РІ РїРёРєСЃРµР»СЏС…</remarks>
     public FunctionalTileSourceDelegate? TileFunc { get; set; }
 
-    /// <summary>Конструктор по умолчанию для использования из XAML</summary>
+    /// <summary>РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РґР»СЏ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ РёР· XAML</summary>
     public FunctionalTileSource() { }
 
-    /// <summary>Создаёт функциональный источник тайлов</summary>
-    /// <param name="TileFunc">Функция генерации изображения тайла</param>
+    /// <summary>РЎРѕР·РґР°С‘С‚ С„СѓРЅРєС†РёРѕРЅР°Р»СЊРЅС‹Р№ РёСЃС‚РѕС‡РЅРёРє С‚Р°Р№Р»РѕРІ</summary>
+    /// <param name="TileFunc">Р¤СѓРЅРєС†РёСЏ РіРµРЅРµСЂР°С†РёРё РёР·РѕР±СЂР°Р¶РµРЅРёСЏ С‚Р°Р№Р»Р°</param>
     public FunctionalTileSource(FunctionalTileSourceDelegate TileFunc) => this.TileFunc = TileFunc;
 
-    /// <summary>Асинхронная генерация изображения тайла</summary>
+    /// <summary>РђСЃРёРЅС…СЂРѕРЅРЅР°СЏ РіРµРЅРµСЂР°С†РёСЏ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ С‚Р°Р№Р»Р°</summary>
     public override async Task<ImageSource?> LoadImageAsync(int x, int y, int ZoomLevel)
     {
         var func = TileFunc;
-        if (func is null) return null; // нет функции — нет тайла
+        if (func is null) return null; // РЅРµС‚ С„СѓРЅРєС†РёРё вЂ” РЅРµС‚ С‚Р°Р№Р»Р°
 
-        // Вычисляем географические границы тайла для WebMercator
+        // Р’С‹С‡РёСЃР»СЏРµРј РіРµРѕРіСЂР°С„РёС‡РµСЃРєРёРµ РіСЂР°РЅРёС†С‹ С‚Р°Р№Р»Р° РґР»СЏ WebMercator
         var tile_size_deg = 360d / (1 << ZoomLevel);
         var lon_min = (x * tile_size_deg) - 180d;
         var lon_max = ((x + 1) * tile_size_deg) - 180d;
@@ -48,7 +48,7 @@ public sealed class FunctionalTileSource : TileSource
 #endif
         try
         {
-            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)); // ограничение по времени
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)); // РѕРіСЂР°РЅРёС‡РµРЅРёРµ РїРѕ РІСЂРµРјРµРЅРё
             return await func(tile_info, cts.Token).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
@@ -70,9 +70,9 @@ public sealed class FunctionalTileSource : TileSource
 #endif
     }
 
-    /// <summary>Генерирует событие сброса тайлового слоя, к которому данный источник присоединён</summary>
+    /// <summary>Р“РµРЅРµСЂРёСЂСѓРµС‚ СЃРѕР±С‹С‚РёРµ СЃР±СЂРѕСЃР° С‚Р°Р№Р»РѕРІРѕРіРѕ СЃР»РѕСЏ, Рє РєРѕС‚РѕСЂРѕРјСѓ РґР°РЅРЅС‹Р№ РёСЃС‚РѕС‡РЅРёРє РїСЂРёСЃРѕРµРґРёРЅС‘РЅ</summary>
     public void ResetLayer() => OnReset(EventArgs.Empty);
 
-    /// <summary>Команда сброса тайлового слоя</summary>
+    /// <summary>РљРѕРјР°РЅРґР° СЃР±СЂРѕСЃР° С‚Р°Р№Р»РѕРІРѕРіРѕ СЃР»РѕСЏ</summary>
     public ICommand ResetLayerCommand => field ??= new LambdaCommand(_ => ResetLayer());
 }
