@@ -16,6 +16,15 @@ public sealed class FunctionalTileSource : TileSource
     /// <remarks>Диапазоны широты и долготы в градусах, размер тайла в пикселях</remarks>
     public FunctionalTileSourceDelegate? TileFunc { get; set; }
 
+    /// <summary>Таймаут генерации тайла (минимум 1 секунда)</summary>
+    public TimeSpan TileGenerationTimeout
+    {
+        get;
+        set => field = value < TimeSpan.FromSeconds(1)
+            ? TimeSpan.FromSeconds(1)
+            : value;
+    } = TimeSpan.FromSeconds(10);
+
     /// <summary>Конструктор по умолчанию для использования из XAML</summary>
     public FunctionalTileSource() { }
 
@@ -40,7 +49,8 @@ public sealed class FunctionalTileSource : TileSource
         {
             Min = new Location(lat_min, lon_min),
             Max = new Location(lat_max, lon_max),
-            TilePixelSize = MapProjection.TileSize
+            TilePixelSize = MapProjection.TileSize,
+            TileZoomLevel = ZoomLevel
         };
 
 #if DEBUG
@@ -48,7 +58,7 @@ public sealed class FunctionalTileSource : TileSource
 #endif
         try
         {
-            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)); // ограничение по времени
+            using var cts = new CancellationTokenSource(TileGenerationTimeout);
             return await func(tile_info, cts.Token).ConfigureAwait(false);
         }
         catch (OperationCanceledException)

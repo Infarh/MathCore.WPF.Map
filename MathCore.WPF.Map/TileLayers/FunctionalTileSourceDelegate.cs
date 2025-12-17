@@ -11,13 +11,16 @@ namespace MathCore.WPF.Map.TileLayers;
 public delegate Task<ImageSource?> FunctionalTileSourceDelegate(TileInfo Tile, CancellationToken Cancel);
 
 /// <summary>Информация о тайле с географическими границами и размером</summary>
-public readonly struct TileInfo
+public readonly record struct TileInfo
 {
     /// <summary>Минимальная координата тайла (юго-западный угол)</summary>
     public Location Min { get; init; }
 
     /// <summary>Максимальная координата тайла (северо-восточный угол)</summary>
     public Location Max { get; init; }
+
+    /// <summary>Уровень масштабирования тайла</summary>
+    public int TileZoomLevel { get; init; }
 
     /// <summary>Размер тайла в пикселях</summary>
     public int TilePixelSize { get; init; }
@@ -43,4 +46,7 @@ public readonly struct TileInfo
     /// <param name="Y">Индекс пикселя по вертикали</param>
     /// <returns>Географические координаты центра пикселя</returns>
     public Location GetLocation(int X, int Y) => new(GetLat(Y), GetLon(X));
+
+    /// <summary>Преобразование в строку</summary>
+    public override string ToString() => $"[{Min} - {Max}]({TileZoomLevel}), Size={TilePixelSize}px";
 }
