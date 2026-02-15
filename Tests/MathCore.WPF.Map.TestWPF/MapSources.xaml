@@ -22,6 +22,7 @@
         <m:MapTileLayer SourceName="Open street maps" 
                         TileSource="http://a.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         Description="Maps © [OpenStreetMap Contributors](http://www.openstreetmap.org/copyright)"/>
+
         <!--<m:MapTileLayer SourceName="Ланшафт">
             <m:MapTileLayer.TileSource>
                 http://{c}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png
@@ -38,22 +39,6 @@
                 Maps © [Thunderforest](http://www.thunderforest.com/), Data © [OpenStreetMap Contributors](http://www.openstreetmap.org/copyright)
             </m:MapTileLayer.Description>
         </m:MapTileLayer>-->
-
-        <m:MapTileLayer SourceName="Яндекс"
-                        TileSource="https://core-renderer-tiles.maps.yandex.net/tiles?l=map&amp;v=22.06.25-0-b220606200930&amp;x={x}&amp;y={y}&amp;z={z}&amp;scale=1&amp;lang=ru_RU&amp;projection=web_mercator"
-                        Description="YandexMaps © [Яндекс](http://www.yandex.ru/), Data © [Yandex Contributors](http://legal.yandex.ru/maps_termsofuse/)"/>
-        
-        <m:MapTileLayer SourceName="Яндекс спутник"
-                        TileSource="https://core-sat.maps.yandex.net/tiles?l=sat&amp;v=22.06.25-0-b220606200930&amp;x={x}&amp;y={y}&amp;z={z}&amp;scale=1&amp;lang=ru_RU&amp;projection=web_mercator"
-                        Description="YandexMaps © [Яндекс](http://www.yandex.ru/), Data © [Yandex Contributors](http://legal.yandex.ru/maps_termsofuse/)"/>
-
-        <m:MapTileLayer SourceName="2GIS" 
-                        Description="2GIS © [2GIS](https://info.2gis.ru), Data © [2GIS License](http://law.2gis.ru/licensing-agreement)">
-            <m:MapTileLayer.TileSource>
-                <m:TileSource Subdomains="tile0, tile1, tile2, tile3" 
-                              UriFormat="https://{c}.maps.2gis.com/tiles?x={x}&amp;y={y}&amp;z={z}&amp;v=1"/>
-            </m:MapTileLayer.TileSource>
-        </m:MapTileLayer>
-
+       
     </CompositeCollection>
 </ResourceDictionary>
